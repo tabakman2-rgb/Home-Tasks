@@ -3,938 +3,284 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>המרחב המשותף של רונן ועדי ⚡ ניהול משימות, טיולים, חתונה ופרויקטים</title>
-  <!-- Tailwind CSS CDN -->
+  <title>המרחב המשותף של רונן ועדי ⚡</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Heebo & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #f8fafc;
-      color: #0f172a;
-      overflow-x: hidden;
-    }
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-    /* עיצוב גלילה נקי לטבלה ההנדסית */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
+    body { font-family: 'Heebo', sans-serif; background: #f8fafc; color: #0f172a; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-indigo-600 selection:text-white">
-
-  <!-- קונטיינר התראות צפות (Toast Notifications) -->
-  <div id="toast-container" class="fixed bottom-5 left-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-  <!-- שורש האפליקציה -->
-  <div id="app-header-Slot"></div>
-
-  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1">
-    <div id="app-quickadd-slot"></div>
-    <div id="app-toolbar-slot"></div>
-    <div id="app-mainview-slot"></div>
+<body class="min-h-screen flex flex-col">
+  <div id="toast-box" class="fixed bottom-4 left-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+  <div id="header-slot"></div>
+  <main class="max-w-6xl w-full mx-auto px-3 sm:px-6 py-5 flex-1">
+    <div id="quickadd-slot"></div>
+    <div id="toolbar-slot"></div>
+    <div id="view-slot"></div>
   </main>
+  <div id="modal-slot"></div>
 
-  <div id="app-modal-slot"></div>
-
-  <footer class="bg-white border-t border-slate-200 py-4 mt-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
-      <div>⚡ נבנה במיוחד עבור <strong>רונן טבקמן ועדי עזריאל</strong> | ארכיטקטורת סנכרון היברידית + גשר Gemini</div>
-      <div class="flex items-center gap-3">
-        <button type="button" data-action="export-backup-file" class="hover:text-indigo-600 font-semibold cursor-pointer">💾 הורד קובץ גיבוי (JSON)</button>
-        <span>•</span>
-        <button type="button" data-action="reset-demo-data" class="hover:text-red-600 font-semibold cursor-pointer">🔄 איפוס לברירת מחדל</button>
-      </div>
-    </div>
-  </footer>
-
-  <!-- ====================================================================== -->
-  <!-- קוד המאסטר המאוחד (חלקים 1 + 2 + 3 + 4 יחד)                            -->
-  <!-- ====================================================================== -->
   <script type="module">
-    // ------------------------------------------------------------------------
-    // [PART 1] ליבת הנתונים, קבועים, משתמשים, קטגוריות ותבניות
-    // ------------------------------------------------------------------------
-    const APP_CONFIG = {
-      DEFAULT_ROOM_ID: 'ronen-adi-shared-2026',
-      LOCAL_STORAGE_KEY: 'ronen_adi_tasks_v1',
-      LOCAL_AUDIT_KEY: 'ronen_adi_audit_v1',
-      LOCAL_USER_KEY: 'ronen_adi_active_user_v1',
-      LOCAL_ROOM_KEY: 'ronen_adi_room_id_v1'
+    const KEYS = {
+      TASKS: 'ra_tasks_v2',
+      AUDIT: 'ra_audit_v2',
+      USER: 'ra_user_v2',
+      CLOUD: 'ra_cloud_url_v2'
     };
 
     const USERS = {
-      ronen: {
-        id: 'ronen',
-        name: 'רונן',
-        fullName: 'רונן טבקמן',
-        avatar: '👨🏻‍💻',
-        badgeClass: 'bg-blue-100 text-blue-800 border-blue-300'
-      },
-      adi: {
-        id: 'adi',
-        name: 'עדי',
-        fullName: 'עדי עזריאל',
-        avatar: '👩🏻',
-        badgeClass: 'bg-pink-100 text-pink-800 border-pink-300'
-      },
-      both: {
-        id: 'both',
-        name: 'משותף (רונן ועדי)',
-        fullName: 'רונן ועדי יחד',
-        avatar: '💑',
-        badgeClass: 'bg-violet-100 text-violet-800 border-violet-300'
-      }
+      ronen: { id: 'ronen', name: 'רונן', avatar: '👨🏻‍💻', badge: 'bg-blue-100 text-blue-800 border-blue-300' },
+      adi: { id: 'adi', name: 'עדי', avatar: '👩🏻', badge: 'bg-pink-100 text-pink-800 border-pink-300' },
+      both: { id: 'both', name: 'משותף', avatar: '💑', badge: 'bg-violet-100 text-violet-800 border-violet-300' }
     };
 
     const CATEGORIES = {
-      wedding: { id: 'wedding', label: 'חתונה ואירועים', icon: '💍', badge: 'bg-pink-50 text-pink-700 border-pink-200' },
+      wedding: { id: 'wedding', label: 'חתונה ורבנות', icon: '💍', badge: 'bg-pink-50 text-pink-700 border-pink-200' },
       trip: { id: 'trip', label: 'טיולים וצימר', icon: '🏕️', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-      home: { id: 'home', label: 'בית ושוטף', icon: '🏠', badge: 'bg-blue-50 text-blue-700 border-blue-200' },
       shopping: { id: 'shopping', label: 'קניות ועל האש', icon: '🥩', badge: 'bg-amber-50 text-amber-700 border-amber-200' },
-      projects: { id: 'projects', label: 'פרויקטים וסידורים', icon: '⚡', badge: 'bg-indigo-50 text-indigo-700 border-indigo-200' }
+      home: { id: 'home', label: 'בית ופרויקטים', icon: '🏠', badge: 'bg-blue-50 text-blue-700 border-blue-200' }
     };
 
     const PRIORITIES = {
-      urgent: { id: 'urgent', label: 'דחוף / קריטי', weight: 4, icon: '🔥', badge: 'bg-red-100 text-red-800 border-red-300 font-bold' },
+      urgent: { id: 'urgent', label: 'דחוף', weight: 4, icon: '🔥', badge: 'bg-red-100 text-red-800 border-red-300 font-bold' },
       high: { id: 'high', label: 'גבוהה', weight: 3, icon: '⚡', badge: 'bg-orange-100 text-orange-800 border-orange-300' },
       medium: { id: 'medium', label: 'רגילה', weight: 2, icon: '📌', badge: 'bg-sky-100 text-sky-800 border-sky-300' },
       low: { id: 'low', label: 'נמוכה', weight: 1, icon: '🌱', badge: 'bg-slate-100 text-slate-700 border-slate-300' }
     };
 
-    const TASK_STATUSES = {
-      todo: { id: 'todo', label: 'לביצוע', icon: '⭕' },
-      in_progress: { id: 'in_progress', label: 'בתהליך', icon: '⏳' },
-      done: { id: 'done', label: 'בוצע', icon: '✅' }
-    };
+    const uid = (p = 'id') => `${p}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+    const esc = (s = '') => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-    const PRESET_TEMPLATES = {
-      zimmer_kineret: {
-        id: 'zimmer_kineret',
-        title: '🏕️ חבילת סופ"ש צימר בכינרת',
-        tasks: [
-          {
-            title: 'בחירת וסגירת צימר בכינרת (בדיקת מועדון "ביחד בשבילך" / "טוב")',
-            category: 'trip',
-            assignee: 'both',
-            priority: 'high',
-            estimatedBudget: 1600,
-            notes: 'לוודא חניה צמודה, פרטיות וביקורות גוגל מעל 4.7.',
-            subtasks: [
-              { title: 'בדיקת 3 אופציות ברמות / חד נס', done: false },
-              { title: 'בדיקת הנחות מועדון טוב / ביחד בשבילך', done: false },
-              { title: 'אישור סופי עם עדי והזמנה', done: false }
-            ]
-          },
-          {
-            title: 'הזמנת מסעדת בשרים מובילה לסופ"ש',
-            category: 'trip',
-            assignee: 'ronen',
-            priority: 'high',
-            estimatedBudget: 500,
-            notes: 'לוודא מבחר סלטים מתאים (כרוב לבן, בטטה, חומוס, טחינה, מטבוחה, פלפלים קלויים).',
-            subtasks: [
-              { title: 'בדיקת תפריט ודירוג ביקורות', done: false },
-              { title: 'שריון שולחן מראש', done: false }
-            ]
-          },
-          {
-            title: 'הכנת רכב, מצלמת Canon V10 ומסלול ללא כבישי אגרה',
-            category: 'trip',
-            assignee: 'ronen',
-            priority: 'medium',
-            estimatedBudget: 0,
-            notes: 'להגדיר ב-Waze הימנעות מכבישי אגרה (כביש 6 / מנהרות הכרמל).',
-            subtasks: [
-              { title: 'טעינת מצלמת Canon PowerShot V10 וכרטיס SDXC', done: false },
-              { title: 'ווידוא הגדרה ב-Waze: ללא כבישי אגרה', done: false }
-            ]
-          }
-        ]
-      },
-      wedding_kickoff: {
-        id: 'wedding_kickoff',
-        title: '💍 חבילת תכנון חתונה ו-Save The Date',
-        tasks: [
-          {
-            title: 'הפקת צילומי שקיעה (Save The Date)',
-            category: 'wedding',
-            assignee: 'both',
-            priority: 'high',
-            estimatedBudget: 500,
-            notes: 'לבחור חוף עם גישה נוחה ושקיעה נקייה.',
-            subtasks: [
-              { title: 'בחירת לוקיישן ושעת שקיעה מדויקת', done: false },
-              { title: 'תיאום לבוש תואם לרונן ולעדי', done: false }
-            ]
-          },
-          {
-            title: 'בניית רשימת מוזמנים ראשונית לחתונה',
-            category: 'wedding',
-            assignee: 'both',
-            priority: 'medium',
-            estimatedBudget: 0,
-            subtasks: [
-              { title: 'רשימת מוזמנים צד רונן ונלי', done: false },
-              { title: 'רשימת מוזמנים צד עדי', done: false },
-              { title: 'רשימת חברים משותפים, בראודה ועבודה', done: false }
-            ]
-          }
-        ]
-      },
-      bbq_hosting: {
-        id: 'bbq_hosting',
-        title: '🥩 חבילת קניות והכנות ל"על האש"',
-        tasks: [
-          {
-            title: 'קניית בשרים וסלטים מותאמים לעל האש',
-            category: 'shopping',
-            assignee: 'ronen',
-            priority: 'high',
-            estimatedBudget: 450,
-            notes: 'סלטים קבועים בלבד: כרוב לבן, סלט בטטה, חומוס, טחינה, מטבוחה, טאבולה ופלפלים קלויים.',
-            subtasks: [
-              { title: 'קצביה: אנטריקוט, פרגיות וקבב', done: false },
-              { title: 'סלטים: כרוב לבן, בטטה, חומוס, טחינה, מטבוחה, טאבולה, פלפלים קלויים', done: false },
-              { title: 'פיתות טריות ושתייה קרה', done: false }
-            ]
-          }
-        ]
-      }
-    };
-
-    function generateUniqueId(prefix = 'tsk') {
-      return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
-    }
-
-    function escapeHtml(str = '') {
-      return String(str ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function formatHebrewDateTime(isoString) {
-      if (!isoString) return '';
-      try {
-        return new Intl.DateTimeFormat('he-IL', {
-          day: '2-digit', month: '2-digit', year: 'numeric',
-          hour: '2-digit', minute: '2-digit'
-        }).format(new Date(isoString));
-      } catch {
-        return isoString;
-      }
-    }
-
-    function formatHebrewDateShort(dateString) {
-      if (!dateString) return 'ללא תאריך יעד';
-      try {
-        return new Intl.DateTimeFormat('he-IL', {
-          weekday: 'short', day: '2-digit', month: '2-digit'
-        }).format(new Date(dateString));
-      } catch {
-        return dateString;
-      }
-    }
-
-    function createNormalizedTask(rawInput = {}, activeUser = 'ronen') {
-      const now = new Date().toISOString();
-      const isDone = Boolean(rawInput.done || rawInput.status === 'done');
-      const normalizedSubtasks = Array.isArray(rawInput.subtasks)
-        ? rawInput.subtasks.map((st, idx) => ({
-            id: st.id || generateUniqueId(`sub_${idx}`),
-            title: String(st.title || '').trim(),
-            done: Boolean(st.done),
-            completedBy: st.completedBy || null,
-            completedAt: st.completedAt || null
-          })).filter(st => st.title.length > 0)
-        : [];
-
+    function normTask(raw = {}, actor = 'ronen') {
+      const done = Boolean(raw.done);
       return {
-        id: rawInput.id || generateUniqueId('task'),
-        title: String(rawInput.title || 'משימה חדשה').trim(),
-        category: CATEGORIES[rawInput.category] ? rawInput.category : 'home',
-        assignee: USERS[rawInput.assignee] ? rawInput.assignee : 'both',
-        priority: PRIORITIES[rawInput.priority] ? rawInput.priority : 'medium',
-        status: isDone ? 'done' : (TASK_STATUSES[rawInput.status] ? rawInput.status : 'todo'),
-        done: isDone,
-        dueDate: rawInput.dueDate || '',
-        estimatedBudget: Number(rawInput.estimatedBudget) || 0,
-        actualCost: Number(rawInput.actualCost) || 0,
-        notes: String(rawInput.notes || '').trim(),
-        subtasks: normalizedSubtasks,
-        createdBy: USERS[rawInput.createdBy] ? rawInput.createdBy : activeUser,
-        createdAt: rawInput.createdAt || now,
-        updatedBy: activeUser,
-        updatedAt: now,
-        completedBy: isDone ? (rawInput.completedBy || activeUser) : null,
-        completedAt: isDone ? (rawInput.completedAt || now) : null,
-        pinned: Boolean(rawInput.pinned),
-        source: rawInput.source || 'manual'
+        id: raw.id || uid('t'),
+        title: String(raw.title || 'משימה חדשה').trim(),
+        category: CATEGORIES[raw.category] ? raw.category : 'wedding',
+        assignee: USERS[raw.assignee] ? raw.assignee : 'both',
+        priority: PRIORITIES[raw.priority] ? raw.priority : 'medium',
+        done,
+        dueDate: raw.dueDate || '',
+        estimatedBudget: Number(raw.estimatedBudget) || 0,
+        actualCost: Number(raw.actualCost) || 0,
+        notes: String(raw.notes || '').trim(),
+        subtasks: Array.isArray(raw.subtasks) ? raw.subtasks.map(s => ({
+          id: s.id || uid('s'), title: String(s.title || '').trim(), done: Boolean(s.done)
+        })).filter(s => s.title) : [],
+        updatedAt: raw.updatedAt || new Date().toISOString(),
+        completedBy: done ? (raw.completedBy || actor) : null
       };
     }
 
-    function calculateSubtaskProgress(task) {
-      if (!task || !Array.isArray(task.subtasks) || task.subtasks.length === 0) {
-        return { hasSubtasks: false, total: 0, completed: 0, percentage: task?.done ? 100 : 0 };
-      }
-      const total = task.subtasks.length;
-      const completed = task.subtasks.filter(st => st.done).length;
-      return {
-        hasSubtasks: true,
-        total,
-        completed,
-        percentage: Math.round((completed / total) * 100)
-      };
-    }
-
-    function calculateDashboardMetrics(tasks = []) {
-      const metrics = {
-        totalTasks: tasks.length,
-        completedTasks: 0,
-        pendingTasks: 0,
-        urgentPending: 0,
-        completionRate: 0,
-        byAssignee: {
-          ronen: { total: 0, done: 0, pending: 0 },
-          adi: { total: 0, done: 0, pending: 0 },
-          both: { total: 0, done: 0, pending: 0 }
-        },
-        budget: { totalEstimated: 0, totalActual: 0, variance: 0 }
-      };
-
-      tasks.forEach(task => {
-        const isDone = Boolean(task.done || task.status === 'done');
-        if (isDone) {
-          metrics.completedTasks += 1;
-        } else {
-          metrics.pendingTasks += 1;
-          if (task.priority === 'urgent') metrics.urgentPending += 1;
-        }
-        const aKey = metrics.byAssignee[task.assignee] ? task.assignee : 'both';
-        metrics.byAssignee[aKey].total += 1;
-        if (isDone) metrics.byAssignee[aKey].done += 1;
-        else metrics.byAssignee[aKey].pending += 1;
-
-        metrics.budget.totalEstimated += Number(task.estimatedBudget) || 0;
-        metrics.budget.totalActual += Number(task.actualCost) || 0;
-      });
-
-      metrics.completionRate = metrics.totalTasks > 0
-        ? Math.round((metrics.completedTasks / metrics.totalTasks) * 100)
-        : 0;
-      metrics.budget.variance = metrics.budget.totalEstimated - metrics.budget.totalActual;
-      return metrics;
-    }
-
-    // ------------------------------------------------------------------------
-    // [PART 2] גשר הסנכרון ל-Gemini, מנוע ה-AI לפירוק טקסט ומחולל הוואטסאפ
-    // ------------------------------------------------------------------------
-    class GeminiProtocolBridge {
-      static exportStateForGeminiChat(tasks = [], activeUser = 'ronen', roomId = APP_CONFIG.DEFAULT_ROOM_ID) {
-        const metrics = calculateDashboardMetrics(tasks);
-        const nowIso = new Date().toISOString();
-        const openTasks = tasks.filter(t => !t.done);
-        const completedTasks = tasks.filter(t => t.done);
-
-        const openLines = openTasks.map((t, i) => {
-          const cat = CATEGORIES[t.category]?.label || t.category;
-          const assignee = USERS[t.assignee]?.name || t.assignee;
-          const prio = PRIORITIES[t.priority]?.label || t.priority;
-          const subProg = calculateSubtaskProgress(t);
-          const subText = subProg.hasSubtasks ? ` | שלבים: ${subProg.completed}/${subProg.total}` : '';
-          const budgetText = t.estimatedBudget > 0 ? ` | תקציב: ₪${t.estimatedBudget}` : '';
-          return `${i + 1}. [פתוח] "${t.title}" (אחראי: ${assignee} | קטגוריה: ${cat} | דחיפות: ${prio}${budgetText}${subText})`;
-        });
-
-        const completedLines = completedTasks.map((t, i) => {
-          const completedBy = USERS[t.completedBy]?.name || 'משותף';
-          return `${i + 1}. [בוצע ✅ ע"י ${completedBy}] "${t.title}"`;
-        });
-
-        const syncPayload = {
-          protocol: 'RONEN_ADI_GEMINI_SYNC_V1',
-          exportedAt: nowIso,
-          exportedBy: activeUser,
-          roomId,
-          tasks: tasks.map(t => ({
-            id: t.id,
-            title: t.title,
-            category: t.category,
-            assignee: t.assignee,
-            priority: t.priority,
-            status: t.status,
-            done: t.done,
-            dueDate: t.dueDate,
-            estimatedBudget: t.estimatedBudget,
-            actualCost: t.actualCost,
-            notes: t.notes,
-            subtasks: (t.subtasks || []).map(st => ({ id: st.id, title: st.title, done: st.done }))
-          }))
-        };
-
-        return [
-          `=== 🔄 דוח סנכרון לוח משימות רונן ועדי עבור Gemini ===`,
-          `זמן: ${formatHebrewDateTime(nowIso)} | הושלמו: ${metrics.completedTasks}/${metrics.totalTasks} (${metrics.completionRate}%)`,
-          ``,
-          `📌 משימות פתוחות כרגע (${openTasks.length}):`,
-          openLines.length > 0 ? openLines.join('\n') : 'אין משימות פתוחות.',
-          ``,
-          `✅ משימות שכבר בוצעו (${completedTasks.length}):`,
-          completedLines.length > 0 ? completedLines.join('\n') : 'טרם סומנו משימות כבוצעות.',
-          ``,
-          `🤖 הנחיה ל-Gemini: כשאתה מוסיף או מעדכן עבורנו משימות, החזר בלוק JSON תקני בפורמט הבא להדבקה ישירה בדף:`,
-          '```json',
-          JSON.stringify(syncPayload, null, 2),
-          '```'
-        ].join('\n');
-      }
-
-      static parseIncomingGeminiPayload(rawText = '') {
-        const cleanInput = String(rawText || '').trim();
-        if (!cleanInput) throw new Error('לא הוזן טקסט לפענוח.');
-
-        let extracted = cleanInput;
-        const blockMatch = cleanInput.match(/```(?:json)?\s*([\s\S]*?)```/i);
-        if (blockMatch && blockMatch[1]) {
-          extracted = blockMatch[1].trim();
-        } else {
-          const fb = cleanInput.indexOf('{');
-          const lb = cleanInput.lastIndexOf('}');
-          const fArr = cleanInput.indexOf('[');
-          const lArr = cleanInput.lastIndexOf(']');
-          if (fb !== -1 && lb > fb && (fArr === -1 || fb < fArr)) {
-            extracted = cleanInput.substring(fb, lb + 1);
-          } else if (fArr !== -1 && lArr > fArr) {
-            extracted = cleanInput.substring(fArr, lArr + 1);
-          }
-        }
-
-        const parsed = JSON.parse(extracted);
-        let rawTasks = [];
-        let mode = 'merge';
-
-        if (Array.isArray(parsed)) {
-          rawTasks = parsed;
-        } else if (parsed && typeof parsed === 'object') {
-          if (Array.isArray(parsed.tasks)) rawTasks = parsed.tasks;
-          else if (Array.isArray(parsed.items)) rawTasks = parsed.items;
-          else if (parsed.title) rawTasks = [parsed];
-          if (parsed.mode) mode = parsed.mode;
-        }
-
-        if (!rawTasks.length) throw new Error('לא נמצאו משימות ב-JSON.');
-        return { mode, tasks: rawTasks };
-      }
-
-      static mergeTasksWithExisting(existingTasks = [], incomingRawTasks = [], activeUser = 'ronen', mode = 'merge') {
-        if (mode === 'replace') {
-          const replaced = incomingRawTasks.map(item => createNormalizedTask({ ...item, source: 'gemini_sync' }, activeUser));
-          return { mergedTasks: replaced, addedCount: replaced.length, updatedCount: 0 };
-        }
-
-        const byId = new Map();
-        const byTitle = new Map();
-        existingTasks.forEach(t => {
-          byId.set(t.id, t);
-          byTitle.set(t.title.trim().toLowerCase(), t);
-        });
-
-        let addedCount = 0;
-        let updatedCount = 0;
-        const updatedList = [...existingTasks];
-
-        incomingRawTasks.forEach(raw => {
-          const norm = createNormalizedTask({ ...raw, source: 'gemini_sync' }, activeUser);
-          const match = (raw.id && byId.get(raw.id)) || byTitle.get(norm.title.toLowerCase());
-
-          if (match) {
-            updatedCount += 1;
-            const existingSubs = match.subtasks || [];
-            const subMap = new Set(existingSubs.map(s => s.title.trim().toLowerCase()));
-            const mergedSubs = [...existingSubs];
-            (norm.subtasks || []).forEach(ns => {
-              if (!subMap.has(ns.title.trim().toLowerCase())) mergedSubs.push(ns);
-            });
-
-            const idx = updatedList.findIndex(item => item.id === match.id);
-            if (idx !== -1) {
-              updatedList[idx] = {
-                ...match,
-                ...norm,
-                id: match.id,
-                done: raw.done !== undefined ? Boolean(raw.done) : match.done,
-                subtasks: mergedSubs,
-                updatedAt: new Date().toISOString()
-              };
-            }
-          } else {
-            addedCount += 1;
-            updatedList.unshift(norm);
-          }
-        });
-
-        return { mergedTasks: updatedList, addedCount, updatedCount };
-      }
-    }
-
-    class SmartHebrewTaskParser {
-      static parseFreeTextLocally(rawText = '') {
-        const lines = String(rawText || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-        const parsedTasks = [];
-
-        lines.forEach(line => {
-          const cleanLine = line.replace(/^[-*•✅⭕📌\d.)\]]+\s*/, '').trim();
-          if (!cleanLine) return;
-
-          let assignee = 'both';
-          if (/\b(עדי|לעדי|של עדי)\b/.test(cleanLine) && !/\b(רונן ועדי|עדי ורונן)\b/.test(cleanLine)) assignee = 'adi';
-          else if (/\b(רונן|לרונן|של רונן)\b/.test(cleanLine) && !/\b(רונן ועדי|עדי ורונן)\b/.test(cleanLine)) assignee = 'ronen';
-
-          let category = 'home';
-          if (/(חתונה|אולם|צילום|צלם|שמלה|חליפה|טבעות|מוזמנים|save the date|שקיעה|יום השנה)/i.test(cleanLine)) category = 'wedding';
-          else if (/(צימר|כינרת|טיול|מלון|חופשה|מסלול|יקב|נסיעה|אגרה|ווייז|waze|גולן)/i.test(cleanLine)) category = 'trip';
-          else if (/(קניות|סופר|בשר|על האש|מנגל|סלט|כרוב|טחינה|חומוס|מטבוחה|בטטה|פיתות|קצב|מסעדה|meatbar|מיטבר)/i.test(cleanLine)) category = 'shopping';
-          else if (/(מעגל|לוח|ספק|הנדסה|פרויקט|מצלמה|canon|אליאקספרס|קוד)/i.test(cleanLine)) category = 'projects';
-
-          let priority = 'medium';
-          if (/(דחוף|קריטי|מיידי|היום|חובה|🔥|!!)/.test(cleanLine)) priority = 'urgent';
-          else if (/(חשוב|גבוה|בהקדם|לפני הסופ"ש)/.test(cleanLine)) priority = 'high';
-
-          let estimatedBudget = 0;
-          const budgetMatch = cleanLine.match(/(?:₪|ש"ח|שח|תקציב|עלות)\s*(\d[\d,]*)|(\d[\d,]*)\s*(?:₪|ש"ח|שח)/);
-          if (budgetMatch) {
-            estimatedBudget = Number((budgetMatch[1] || budgetMatch[2] || '').replace(/,/g, '')) || 0;
-          }
-
-          const subtasks = [];
-          let finalTitle = cleanLine;
-          const colonParts = cleanLine.split(':');
-          if (colonParts.length === 2 && colonParts[1].includes(',')) {
-            finalTitle = colonParts[0].trim();
-            colonParts[1].split(',').map(s => s.trim()).filter(Boolean).forEach(sub => {
-              subtasks.push({ id: generateUniqueId('sub'), title: sub, done: false });
-            });
-          }
-
-          parsedTasks.push(createNormalizedTask({
-            title: finalTitle,
-            category,
-            assignee,
-            priority,
-            estimatedBudget,
-            subtasks,
-            source: 'ai_breakdown'
-          }, 'ronen'));
-        });
-
-        return parsedTasks;
-      }
-    }
-
-    class UrlPayloadCodec {
-      static encodeTasksToUrlParam(tasks = []) {
-        try {
-          const minimal = tasks.slice(0, 30).map(t => ({
-            i: t.id, t: t.title, c: t.category, a: t.assignee, p: t.priority,
-            d: t.done ? 1 : 0, u: t.dueDate || '', b: t.estimatedBudget || 0, n: t.notes || '',
-            s: (t.subtasks || []).map(st => ({ t: st.title, d: st.done ? 1 : 0 }))
-          }));
-          const utf8Bytes = new TextEncoder().encode(JSON.stringify(minimal));
-          let bin = '';
-          utf8Bytes.forEach(b => { bin += String.fromCharCode(b); });
-          return encodeURIComponent(btoa(bin));
-        } catch {
-          return '';
-        }
-      }
-
-      static decodeTasksFromUrlParam(encoded = '') {
-        if (!encoded) return null;
-        try {
-          const bin = atob(decodeURIComponent(encoded));
-          const bytes = new Uint8Array(bin.length);
-          for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-          const arr = JSON.parse(new TextDecoder().decode(bytes));
-          if (!Array.isArray(arr)) return null;
-          return arr.map(item => createNormalizedTask({
-            id: item.i, title: item.t, category: item.c, assignee: item.a, priority: item.p,
-            done: Boolean(item.d), dueDate: item.u, estimatedBudget: item.b, notes: item.n,
-            subtasks: Array.isArray(item.s) ? item.s.map(s => ({ title: s.t, done: Boolean(s.d) })) : []
-          }));
-        } catch {
-          return null;
-        }
-      }
-
-      static generateShareableLink(tasks = [], roomId = APP_CONFIG.DEFAULT_ROOM_ID) {
-        const base = window.location.href.split('?')[0];
-        const enc = this.encodeTasksToUrlParam(tasks);
-        return `${base}?room=${encodeURIComponent(roomId)}&sync=${enc}`;
-      }
-    }
-
-    class WhatsAppShareEngine {
-      static buildWhatsAppMessage(tasks = [], mode = 'adi_focus') {
-        const metrics = calculateDashboardMetrics(tasks);
-        const openTasks = tasks.filter(t => !t.done);
-        const lines = [];
-
-        if (mode === 'adi_focus') {
-          const adiOpen = openTasks.filter(t => t.assignee === 'adi' || t.assignee === 'both');
-          lines.push(`היי עדי ❤️, הנה עדכון מהלוח המשותף שלנו (${metrics.completedTasks}/${metrics.totalTasks} בוצעו ✅):`);
-          lines.push(``);
-          if (!adiOpen.length) {
-            lines.push(`🎉 כל המשימות שלנו הושלמו!`);
-          } else {
-            lines.push(`📋 *משימות פתוחות שלנו (${adiOpen.length}):*`);
-            adiOpen.forEach((t, i) => {
-              const tag = t.assignee === 'adi' ? '👩🏻 עדי' : '💑 משותף';
-              const subProg = calculateSubtaskProgress(t);
-              const subStr = subProg.hasSubtasks ? ` [${subProg.completed}/${subProg.total}]` : '';
-              lines.push(`${i + 1}. ${PRIORITIES[t.priority]?.icon || '📌'} *${t.title}* (${tag})${subStr}`);
-              if (subProg.hasSubtasks) {
-                t.subtasks.filter(s => !s.done).forEach(s => lines.push(`   ▫️ ${s.title}`));
-              }
-            });
-          }
-        } else if (mode === 'trip_checklist') {
-          lines.push(`🏕️ *צ'ק-ליסט טיול וצימר - רונן ועדי*`);
-          lines.push(``);
-          tasks.filter(t => t.category === 'trip').forEach((t, i) => {
-            lines.push(`${i + 1}. ${t.done ? '✅' : '⭕'} *${t.title}*${t.estimatedBudget > 0 ? ` (₪${t.estimatedBudget})` : ''}`);
-          });
-        } else if (mode === 'wedding_checklist') {
-          lines.push(`💍 *משימות חתונה ואירועים - רונן ועדי*`);
-          lines.push(``);
-          tasks.filter(t => t.category === 'wedding').forEach((t, i) => {
-            lines.push(`${i + 1}. ${t.done ? '✅' : '⭕'} *${t.title}* (${USERS[t.assignee]?.name})`);
-          });
-        } else {
-          lines.push(`📊 *סיכום לוח משימות רונן ועדי (${metrics.completionRate}% הושלם)*`);
-          lines.push(`תקציב מתוכנן כולל: ₪${metrics.budget.totalEstimated.toLocaleString()}`);
-          lines.push(``);
-          openTasks.forEach((t, i) => {
-            lines.push(`${i + 1}. ⭕ *${t.title}* [${USERS[t.assignee]?.name}]`);
-          });
-        }
-
-        const shareLink = UrlPayloadCodec.generateShareableLink(tasks);
-        lines.push(``);
-        lines.push(`🔗 *לפתיחת הלוח האינטראקטיבי וסימון שבוצע:*`);
-        lines.push(shareLink);
-        return lines.join('\n');
-      }
-
-      static buildSingleTaskWhatsAppMessage(task) {
-        if (!task) return '';
-        const lines = [
-          `*משימה מהלוח של רונן ועדי:* ${task.title}`,
-          `סטטוס: ${task.done ? 'בוצע ✅' : 'לביצוע ⭕'} | אחראי: ${USERS[task.assignee]?.name}`
-        ];
-        if (task.estimatedBudget > 0) lines.push(`💰 תקציב משוער: ₪${task.estimatedBudget.toLocaleString()}`);
-        if (task.notes) lines.push(`📝 הערות: ${task.notes}`);
-        if (task.subtasks?.length) {
-          lines.push(``, `*שלבים:*`);
-          task.subtasks.forEach(s => lines.push(`${s.done ? '✅' : '▫️'} ${s.title}`));
-        }
-        return lines.join('\n');
-      }
-    }
-
-    // ------------------------------------------------------------------------
-    // [PART 3 + PART 4] מנהל ה-State והבקר האינטראקטיבי הראשי (AppController)
-    // ------------------------------------------------------------------------
-    class MasterApplication {
+    class App {
       constructor() {
-        this.roomId = localStorage.getItem(APP_CONFIG.LOCAL_ROOM_KEY) || APP_CONFIG.DEFAULT_ROOM_ID;
-        this.activeUser = localStorage.getItem(APP_CONFIG.LOCAL_USER_KEY) || 'ronen';
-        this.syncMode = 'local';
-        this.activeView = 'cards'; // 'cards' | 'table' | 'kanban' | 'audit'
-        this.activeModal = null; // null | 'gemini-hub' | 'whatsapp-share'
-        this.whatsappMode = 'adi_focus';
-        this.isQuickAddExpanded = false;
-        this.expandedTaskIds = new Set();
+        this.user = localStorage.getItem(KEYS.USER) || 'ronen';
+        this.cloudUrl = (localStorage.getItem(KEYS.CLOUD) || '').replace(/\/$/, '');
+        this.cloudStatus = this.cloudUrl ? 'connecting' : 'offline';
+        this.view = 'cards';
+        this.modal = null;
+        this.filters = { q: '', assignee: 'all', category: 'all', status: 'all' };
+        this.lastCloudHash = '';
+        this.isPushing = false;
 
-        this.filters = {
-          searchQuery: '',
-          assignee: 'all',
-          category: 'all',
-          status: 'all'
-        };
+        this.tasks = JSON.parse(localStorage.getItem(KEYS.TASKS) || 'null') || this.seed();
+        this.audit = JSON.parse(localStorage.getItem(KEYS.AUDIT) || '[]');
 
-        this.tasks = [];
-        this.auditLogs = [];
-
-        this.initData();
-        this.checkUrlSyncParams();
-        this.bindGlobalEvents();
-        this.renderAll();
+        this.checkUrlParams();
+        this.bindEvents();
+        this.render();
+        if (this.cloudUrl) this.startCloudSync();
       }
 
-      initData() {
-        try {
-          const savedTasks = localStorage.getItem(`${APP_CONFIG.LOCAL_STORAGE_KEY}_${this.roomId}`);
-          const savedAudit = localStorage.getItem(`${APP_CONFIG.LOCAL_AUDIT_KEY}_${this.roomId}`);
-          if (savedTasks) {
-            this.tasks = JSON.parse(savedTasks);
-          } else {
-            this.tasks = this.getSeedTasks();
-            this.saveData();
-          }
-          if (savedAudit) {
-            this.auditLogs = JSON.parse(savedAudit);
-          }
-        } catch {
-          this.tasks = this.getSeedTasks();
-        }
-      }
-
-      saveData() {
-        try {
-          localStorage.setItem(`${APP_CONFIG.LOCAL_STORAGE_KEY}_${this.roomId}`, JSON.stringify(this.tasks));
-          localStorage.setItem(`${APP_CONFIG.LOCAL_AUDIT_KEY}_${this.roomId}`, JSON.stringify(this.auditLogs.slice(0, 100)));
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      getSeedTasks() {
+      seed() {
         return [
-          createNormalizedTask({
-            id: 'seed_1',
-            title: 'בחירת צימר בכינרת לסופ"ש הבא (בדיקת הנחות "ביחד בשבילך" / "טוב")',
-            category: 'trip',
-            assignee: 'both',
-            priority: 'urgent',
-            dueDate: '2026-11-13',
-            estimatedBudget: 1600,
-            notes: 'לוודא חניה צמודה, דירוג גוגל גבוה, ומסלול נסיעה מוגדר ללא כבישי אגרה.',
-            pinned: true,
-            subtasks: [
-              { id: 'st_1', title: 'סינון 3 צימרים מובילים ברמות או חד נס', done: true, completedBy: 'ronen' },
-              { id: 'st_2', title: 'בדיקת הטבות מועדון טוב / ביחד בשבילך', done: false },
-              { id: 'st_3', title: 'אישור סופי עם עדי והזמנה', done: false }
-            ]
-          }, 'ronen'),
-          createNormalizedTask({
-            id: 'seed_2',
-            title: 'חגיגת יום השנה שלנו (9 בנובמבר) - הזמנת שולחן במסעדה',
+          normTask({
+            id: 'rabbi_1',
+            title: 'חיפוש ומציאת רב לחתונה (בדיקת צהר / רבנות / רב מוסמך)',
             category: 'wedding',
             assignee: 'both',
             priority: 'urgent',
-            dueDate: '2026-11-09',
-            estimatedBudget: 600,
-            notes: 'לבדוק מקום ב-Meatbar או מסעדת בשרים מעולה אחרת עם הרבה ביקורות טובות.',
-            pinned: true,
+            notes: 'לבדוק המלצות, סגנון חופה ותיאום מול המועצה הדתית',
             subtasks: [
-              { id: 'st_4', title: 'בדיקת זמינות שולחן לערב ה-9 בנובמבר', done: false },
-              { id: 'st_5', title: 'שריון הזמנה לזוג', done: false }
+              { id: 's1', title: 'בדיקת רשימת רבנים מומלצים', done: false },
+              { id: 's2', title: 'פגישת הכרות וסגירת תאריך', done: false },
+              { id: 's3', title: 'פתיחת תיק נישואין ברבנות', done: false }
             ]
-          }, 'ronen'),
-          createNormalizedTask({
-            id: 'seed_3',
-            title: 'תיאום צילומי שקיעה (Save The Date)',
-            category: 'wedding',
-            assignee: 'adi',
-            priority: 'high',
-            estimatedBudget: 450,
-            notes: 'לקחת גם את מצלמת ה-Canon PowerShot V10 לצילומי וידאו מאחורי הקלעים.',
-            subtasks: [
-              { id: 'st_6', title: 'בחירת לוקיישן על הים', done: false },
-              { id: 'st_7', title: 'בחירת בגדים מתואמים לרונן ולעדי', done: false }
-            ]
-          }, 'adi'),
-          createNormalizedTask({
-            id: 'seed_4',
-            title: 'בדיקת מלאי פילטרים, שקיות ומטליות לשואב MOVA P70 Pro Ultra',
+          }),
+          normTask({
+            id: 'mova_1',
+            title: 'הזמנת ציוד וחלקים לשואב MOVA P70 Pro Ultra',
             category: 'home',
             assignee: 'ronen',
-            priority: 'low',
+            priority: 'medium',
             estimatedBudget: 120,
-            notes: 'להזמין מראש מאליאקספרס אם המלאי בארון יורד מתחת ל-2 יחידות.'
-          }, 'ronen')
+            notes: 'לבדוק מלאי פילטרים, שקיות אבק, מטליות ומברשות ולהזמין מאליאקספרס'
+          })
         ];
       }
 
-      checkUrlSyncParams() {
+      checkUrlParams() {
         const params = new URLSearchParams(window.location.search);
-        const syncParam = params.get('sync');
-        if (syncParam) {
-          const decodedTasks = UrlPayloadCodec.decodeTasksFromUrlParam(syncParam);
-          if (decodedTasks && decodedTasks.length > 0) {
-            const { mergedTasks, addedCount, updatedCount } =
-              GeminiProtocolBridge.mergeTasksWithExisting(this.tasks, decodedTasks, this.activeUser, 'merge');
-            this.tasks = mergedTasks;
-            this.saveData();
-            this.showToast(`סונכרנו מהקישור ${addedCount} משימות חדשות ו-${updatedCount} עדכונים! 🔗`, 'emerald');
-            window.history.replaceState({}, document.title, window.location.pathname);
-          }
+        const cUrl = params.get('cloud');
+        if (cUrl) {
+          this.cloudUrl = decodeURIComponent(cUrl).replace(/\/$/, '');
+          localStorage.setItem(KEYS.CLOUD, this.cloudUrl);
+          this.toast('חיבור הענן נשמר אוטומטית במכשיר! ☁️', 'emerald');
+          window.history.replaceState({}, '', window.location.pathname);
         }
       }
 
-      logAudit(action, taskTitle = '') {
-        const entry = {
-          id: generateUniqueId('log'),
-          actor: this.activeUser,
-          actorName: USERS[this.activeUser]?.name || 'משתמש',
-          actorAvatar: USERS[this.activeUser]?.avatar || '👤',
-          action,
+      saveLocal() {
+        localStorage.setItem(KEYS.TASKS, JSON.stringify(this.tasks));
+        localStorage.setItem(KEYS.AUDIT, JSON.stringify(this.audit.slice(0, 60)));
+      }
+
+      async syncMutation(actionLabel, taskTitle = '') {
+        this.audit = [{
+          id: uid('log'),
+          actorName: USERS[this.user].name,
+          actorAvatar: USERS[this.user].avatar,
+          action: actionLabel,
           taskTitle,
-          timestamp: new Date().toISOString()
-        };
-        this.auditLogs = [entry, ...this.auditLogs].slice(0, 100);
-        this.saveData();
+          time: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
+        }, ...this.audit].slice(0, 60);
+
+        this.saveLocal();
+        this.render();
+        if (this.cloudUrl) await this.pushToCloud();
       }
 
-      showToast(message, color = 'indigo') {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-        const bgClass = color === 'emerald' ? 'bg-emerald-600' : color === 'red' ? 'bg-red-600' : 'bg-slate-900';
-        const toast = document.createElement('div');
-        toast.className = `${bgClass} text-white px-4 py-2.5 rounded-xl shadow-lg text-xs sm:text-sm font-bold flex items-center gap-2 transition-all duration-300 pointer-events-auto`;
-        toast.innerHTML = `<span>✨</span><span>${escapeHtml(message)}</span>`;
-        container.appendChild(toast);
-        setTimeout(() => {
-          toast.style.opacity = '0';
-          setTimeout(() => toast.remove(), 300);
-        }, 3200);
+      // --- מנוע סנכרון ענן בזמן אמת (Firebase Realtime DB REST) ---
+      getEndpoint() {
+        return `${this.cloudUrl}/ronen_adi_board.json`;
       }
 
-      getFilteredAndSortedTasks() {
-        const q = this.filters.searchQuery.trim().toLowerCase();
-        return [...this.tasks]
-          .filter(t => {
-            if (this.filters.status === 'open' && t.done) return false;
-            if (this.filters.status === 'done' && !t.done) return false;
-
-            if (this.filters.assignee === 'ronen' && !(t.assignee === 'ronen' || t.assignee === 'both')) return false;
-            if (this.filters.assignee === 'adi' && !(t.assignee === 'adi' || t.assignee === 'both')) return false;
-            if (this.filters.assignee === 'both_only' && t.assignee !== 'both') return false;
-
-            if (this.filters.category !== 'all' && t.category !== this.filters.category) return false;
-
-            if (q) {
-              const inTitle = t.title.toLowerCase().includes(q);
-              const inNotes = (t.notes || '').toLowerCase().includes(q);
-              const inSub = (t.subtasks || []).some(s => s.title.toLowerCase().includes(q));
-              if (!inTitle && !inNotes && !inSub) return false;
-            }
-            return true;
-          })
-          .sort((a, b) => {
-            if (a.done !== b.done) return a.done ? 1 : -1;
-            if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-            const wA = PRIORITIES[a.priority]?.weight || 2;
-            const wB = PRIORITIES[b.priority]?.weight || 2;
-            if (wA !== wB) return wB - wA;
-            return new Date(b.createdAt) - new Date(a.createdAt);
+      async pushToCloud() {
+        if (!this.cloudUrl) return;
+        this.isPushing = true;
+        try {
+          const payload = {
+            updatedAt: Date.now(),
+            updatedBy: this.user,
+            tasks: this.tasks,
+            audit: this.audit
+          };
+          const bodyStr = JSON.stringify(payload);
+          this.lastCloudHash = JSON.stringify(this.tasks) + JSON.stringify(this.audit);
+          const res = await fetch(this.getEndpoint(), {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: bodyStr
           });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          this.cloudStatus = 'online';
+          this.renderHeader();
+        } catch (e) {
+          this.cloudStatus = 'error';
+          this.renderHeader();
+        } finally {
+          this.isPushing = false;
+        }
       }
 
-      // ----------------------------------------------------------------------
-      // רינדור חלקי הממשק
-      // ----------------------------------------------------------------------
-      renderAll() {
+      async pullFromCloud(isInitial = false) {
+        if (!this.cloudUrl || this.isPushing) return;
+        try {
+          const res = await fetch(this.getEndpoint());
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          this.cloudStatus = 'online';
+
+          if (!data || !Array.isArray(data.tasks)) {
+            if (isInitial) await this.pushToCloud();
+            this.renderHeader();
+            return;
+          }
+
+          const incomingHash = JSON.stringify(data.tasks) + JSON.stringify(data.audit || []);
+          if (incomingHash !== this.lastCloudHash) {
+            this.lastCloudHash = incomingHash;
+            this.tasks = data.tasks.map(t => normTask(t, this.user));
+            this.audit = Array.isArray(data.audit) ? data.audit : this.audit;
+            this.saveLocal();
+            this.render();
+          } else if (isInitial) {
+            this.renderHeader();
+          }
+        } catch {
+          this.cloudStatus = 'error';
+          this.renderHeader();
+        }
+      }
+
+      startCloudSync() {
+        if (this.pollTimer) clearInterval(this.pollTimer);
+        this.pullFromCloud(true);
+        this.pollTimer = setInterval(() => this.pullFromCloud(false), 3000);
+      }
+
+      toast(msg, color = 'slate') {
+        const box = document.getElementById('toast-box');
+        const el = document.createElement('div');
+        const bg = color === 'emerald' ? 'bg-emerald-600' : color === 'red' ? 'bg-red-600' : 'bg-slate-900';
+        el.className = `${bg} text-white px-4 py-2 rounded-xl shadow-lg text-xs sm:text-sm font-bold`;
+        el.textContent = msg;
+        box.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+      }
+
+      getFiltered() {
+        const q = this.filters.q.trim().toLowerCase();
+        return [...this.tasks].filter(t => {
+          if (this.filters.status === 'open' && t.done) return false;
+          if (this.filters.status === 'done' && !t.done) return false;
+          if (this.filters.assignee === 'ronen' && !(t.assignee === 'ronen' || t.assignee === 'both')) return false;
+          if (this.filters.assignee === 'adi' && !(t.assignee === 'adi' || t.assignee === 'both')) return false;
+          if (this.filters.category !== 'all' && t.category !== this.filters.category) return false;
+          if (q && !t.title.toLowerCase().includes(q) && !(t.notes || '').toLowerCase().includes(q)) return false;
+          return true;
+        }).sort((a, b) => (a.done === b.done ? (PRIORITIES[b.priority]?.weight || 2) - (PRIORITIES[a.priority]?.weight || 2) : a.done ? 1 : -1));
+      }
+
+      render() {
         this.renderHeader();
         this.renderQuickAdd();
         this.renderToolbar();
-        this.renderMainView();
-        this.renderActiveModal();
+        this.renderView();
+        this.renderModal();
       }
 
       renderHeader() {
-        const metrics = calculateDashboardMetrics(this.tasks);
-        const budgetVarianceColor = metrics.budget.variance >= 0 ? 'text-emerald-600' : 'text-red-600';
+        const doneCount = this.tasks.filter(t => t.done).length;
+        const total = this.tasks.length;
+        const pct = total ? Math.round((doneCount / total) * 100) : 0;
+        const budget = this.tasks.reduce((s, t) => s + (Number(t.estimatedBudget) || 0), 0);
 
-        document.getElementById('app-header-Slot').innerHTML = `
-          <header class="bg-white border-b border-slate-200 shadow-xs sticky top-0 z-30">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
-              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div>
-                  <div class="flex items-center gap-2.5 flex-wrap">
-                    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900">⚡ המרחב המשותף של רונן ועדי</h1>
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                      פעיל ומסונכרן
-                    </span>
-                  </div>
-                  <p class="text-xs text-slate-500 mt-0.5">ניהול משימות זוגי, סופ"ש צימר, חתונה, קניות לעל האש ופרויקטים</p>
+        const badge = this.cloudStatus === 'online'
+          ? `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">☁️ מסונכרן חי בענן</span>`
+          : this.cloudStatus === 'error'
+          ? `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-300">⚠️ שגיאת ענן (בדוק קישור)</span>`
+          : `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">💾 שמירה מקומית (לחץ לחיבור ענן)</span>`;
+
+        document.getElementById('header-slot').innerHTML = `
+          <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
+            <div class="max-w-6xl mx-auto px-3 sm:px-6 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h1 class="text-lg sm:text-xl font-extrabold">⚡ המרחב של רונן ועדי</h1>
+                  ${badge}
                 </div>
-
-                <div class="flex flex-wrap items-center gap-2">
-                  <div class="inline-flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
-                    <span class="text-xs text-slate-500 px-2 font-medium">מי מסמן עכשיו?</span>
-                    <button type="button" data-action="switch-user" data-user="ronen"
-                      class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold cursor-pointer transition-all ${
-                        this.activeUser === 'ronen' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                      }">👨🏻‍💻 רונן</button>
-                    <button type="button" data-action="switch-user" data-user="adi"
-                      class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold cursor-pointer transition-all ${
-                        this.activeUser === 'adi' ? 'bg-pink-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                      }">👩🏻 עדי</button>
-                  </div>
-
-                  <button type="button" data-action="open-modal" data-modal="gemini-hub"
-                    class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs cursor-pointer">
-                    ✨ גשר Gemini & AI
-                  </button>
-
-                  <button type="button" data-action="open-modal" data-modal="whatsapp-share"
-                    class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs cursor-pointer">
-                    📲 שלח לעדי ב-WhatsApp
-                  </button>
-                </div>
+                <p class="text-xs text-slate-500 mt-0.5">הושלמו ${doneCount}/${total} (${pct}%) • תקציב משוער: ₪${budget.toLocaleString()}</p>
               </div>
-
-              <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 mt-3.5 pt-3 border-t border-slate-100">
-                <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200/80 flex items-center justify-between">
-                  <div>
-                    <div class="text-xs text-slate-500 font-medium">התקדמות כוללת</div>
-                    <div class="text-lg font-extrabold text-slate-900">${metrics.completedTasks} / ${metrics.totalTasks} <span class="text-xs text-indigo-600">(${metrics.completionRate}%)</span></div>
-                  </div>
-                  <span class="text-xl">🎯</span>
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="inline-flex bg-slate-100 p-1 rounded-xl border">
+                  <button type="button" data-action="user" data-user="ronen" class="px-3 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.user === 'ronen' ? 'bg-blue-600 text-white' : 'text-slate-600'}">👨🏻‍💻 רונן</button>
+                  <button type="button" data-action="user" data-user="adi" class="px-3 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.user === 'adi' ? 'bg-pink-600 text-white' : 'text-slate-600'}">👩🏻 עדי</button>
                 </div>
-                <div class="bg-blue-50/50 rounded-xl p-2.5 border border-blue-200/60 flex items-center justify-between">
-                  <div>
-                    <div class="text-xs text-blue-800 font-medium">👨🏻‍💻 פתוחות לרונן</div>
-                    <div class="text-lg font-extrabold text-slate-900">${metrics.byAssignee.ronen.pending} <span class="text-xs font-normal text-slate-500">(+${metrics.byAssignee.both.pending} משותף)</span></div>
-                  </div>
-                  <span class="text-xl">👨🏻‍💻</span>
-                </div>
-                <div class="bg-pink-50/50 rounded-xl p-2.5 border border-pink-200/60 flex items-center justify-between">
-                  <div>
-                    <div class="text-xs text-pink-800 font-medium">👩🏻 פתוחות לעדי</div>
-                    <div class="text-lg font-extrabold text-slate-900">${metrics.byAssignee.adi.pending} <span class="text-xs font-normal text-slate-500">(+${metrics.byAssignee.both.pending} משותף)</span></div>
-                  </div>
-                  <span class="text-xl">👩🏻</span>
-                </div>
-                <div class="bg-emerald-50/50 rounded-xl p-2.5 border border-emerald-200/60 flex items-center justify-between">
-                  <div>
-                    <div class="text-xs text-emerald-800 font-medium">💰 תקציב מתוכנן</div>
-                    <div class="text-lg font-extrabold text-slate-900">₪${metrics.budget.totalEstimated.toLocaleString()}</div>
-                    <div class="text-[11px] ${budgetVarianceColor} font-bold">בפועל: ₪${metrics.budget.totalActual.toLocaleString()}</div>
-                  </div>
-                  <span class="text-xl">📊</span>
-                </div>
+                <button type="button" data-action="modal" data-modal="cloud" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-white cursor-pointer">☁️ חיבור ענן</button>
+                <button type="button" data-action="modal" data-modal="gemini" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white cursor-pointer">✨ גשר Gemini</button>
+                <button type="button" data-action="share-wa" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 text-white cursor-pointer">📲 שלח לעדי ב-WhatsApp</button>
               </div>
             </div>
           </header>
@@ -942,601 +288,278 @@
       }
 
       renderQuickAdd() {
-        const catOptions = Object.values(CATEGORIES).map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
-        const prioOptions = Object.values(PRIORITIES).map(p => `<option value="${p.id}" ${p.id === 'medium' ? 'selected' : ''}>${p.icon} ${p.label}</option>`).join('');
-        const tplButtons = Object.values(PRESET_TEMPLATES).map(t => `
-          <button type="button" data-action="load-template" data-template="${t.id}"
-            class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200 cursor-pointer">
-            ${escapeHtml(t.title)} +
-          </button>
-        `).join('');
-
-        document.getElementById('app-quickadd-slot').innerHTML = `
-          <section class="bg-white rounded-2xl shadow-xs border border-slate-200 p-4 mb-4">
-            <form id="quick-add-form" class="space-y-3">
-              <div class="flex flex-col sm:flex-row gap-2">
-                <input type="text" id="new-task-title" required
-                  placeholder="הוסף משימה חדשה (למשל: להזמין צימר ברמות, לקנות בשרים וסלטים לעל האש)..."
-                  class="flex-1 rounded-xl border border-slate-300 px-3.5 py-2 text-sm outline-none focus:border-indigo-500" />
-                <div class="flex flex-wrap items-center gap-2">
-                  <select id="new-task-assignee" class="rounded-xl border border-slate-300 px-3 py-2 text-xs sm:text-sm font-medium">
-                    <option value="both" selected>💑 משותף</option>
-                    <option value="ronen">👨🏻‍💻 רונן</option>
-                    <option value="adi">👩🏻 עדי</option>
-                  </select>
-                  <select id="new-task-category" class="rounded-xl border border-slate-300 px-3 py-2 text-xs sm:text-sm font-medium">
-                    ${catOptions}
-                  </select>
-                  <button type="button" data-action="toggle-quickadd-expand"
-                    class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">
-                    ${this.isQuickAddExpanded ? 'פחות ▲' : 'תקציב ושלבים ▼'}
-                  </button>
-                  <button type="submit"
-                    class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs sm:text-sm cursor-pointer">
-                    + הוסף משימה
-                  </button>
-                </div>
-              </div>
-
-              <div class="${this.isQuickAddExpanded ? 'grid' : 'hidden'} grid-cols-1 sm:grid-cols-4 gap-2.5 pt-2.5 border-t border-slate-100">
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1">דחיפות</label>
-                  <select id="new-task-priority" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs">${prioOptions}</select>
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1">תאריך יעד</label>
-                  <input type="date" id="new-task-duedate" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs" />
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1">תקציב משוער (₪)</label>
-                  <input type="number" id="new-task-budget" min="0" step="10" placeholder="0" class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs" />
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1">תתי-משימות (מופרדות בפסיק)</label>
-                  <input type="text" id="new-task-subtasks" placeholder="שלב 1, שלב 2, שלב 3..." class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs" />
-                </div>
-                <div class="sm:col-span-4">
-                  <input type="text" id="new-task-notes" placeholder="הערות, דגשים או לינק..." class="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs" />
-                </div>
-              </div>
-            </form>
-            <div class="flex items-center gap-2 flex-wrap mt-2.5 pt-2 border-t border-slate-100">
-              <span class="text-xs font-bold text-slate-400">⚡ תבניות מהירות:</span>
-              ${tplButtons}
+        const cats = Object.values(CATEGORIES).map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
+        document.getElementById('quickadd-slot').innerHTML = `
+          <form id="add-form" class="bg-white rounded-2xl border border-slate-200 p-3 mb-4 flex flex-col sm:flex-row gap-2 shadow-2xs">
+            <input type="text" id="t-title" required placeholder="הוסף משימה חדשה..." class="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500" />
+            <div class="flex flex-wrap gap-1.5">
+              <select id="t-assignee" class="rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold">
+                <option value="both">💑 משותף</option>
+                <option value="ronen">👨🏻‍💻 רונן</option>
+                <option value="adi">👩🏻 עדי</option>
+              </select>
+              <select id="t-category" class="rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold">${cats}</select>
+              <select id="t-priority" class="rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold">
+                <option value="medium">📌 רגילה</option>
+                <option value="high">⚡ גבוהה</option>
+                <option value="urgent">🔥 דחוף</option>
+                <option value="low">🌱 נמוכה</option>
+              </select>
+              <input type="number" id="t-budget" placeholder="תקציב ₪" class="w-24 rounded-xl border border-slate-300 px-2.5 py-2 text-xs" />
+              <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold cursor-pointer">+ הוסף</button>
             </div>
-          </section>
+          </form>
         `;
       }
 
       renderToolbar() {
-        const views = [
-          { id: 'cards', label: '🗂️ כרטיסיות ושלבים' },
-          { id: 'table', label: '📊 טבלה הנדסית ותקציב' },
-          { id: 'kanban', label: '📋 לוח קנבן' },
-          { id: 'audit', label: `🕒 יומן פעילות (${this.auditLogs.length})` }
-        ];
-
-        const viewBtns = views.map(v => `
-          <button type="button" data-action="switch-view" data-view="${v.id}"
-            class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer transition-all ${
-              this.activeView === v.id ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }">${v.label}</button>
-        `).join('');
-
-        const assigneeBtns = [
-          { id: 'all', label: 'הכל' },
-          { id: 'ronen', label: '👨🏻‍💻 רונן' },
-          { id: 'adi', label: '👩🏻 עדי' },
-          { id: 'both_only', label: '💑 משותף בלבד' }
-        ].map(a => `
-          <button type="button" data-action="filter-assignee" data-assignee="${a.id}"
-            class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${
-              this.filters.assignee === a.id ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'
-            }">${a.label}</button>
-        `).join('');
-
-        const catBtns = [
-          { id: 'all', label: 'כל הקטגוריות' },
-          ...Object.values(CATEGORIES).map(c => ({ id: c.id, label: `${c.icon} ${c.label}` }))
-        ].map(c => `
-          <button type="button" data-action="filter-category" data-category="${c.id}"
-            class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${
-              this.filters.category === c.id ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'
-            }">${c.label}</button>
-        `).join('');
-
-        document.getElementById('app-toolbar-slot').innerHTML = `
-          <section class="bg-white rounded-2xl shadow-xs border border-slate-200 p-3.5 mb-5 space-y-2.5">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
-              <div class="flex flex-wrap gap-1.5">${viewBtns}</div>
-              <div class="flex items-center gap-2">
-                <input type="search" id="search-input" value="${escapeHtml(this.filters.searchQuery)}"
-                  placeholder="חיפוש משימה או שלב..."
-                  class="rounded-xl border border-slate-300 px-3 py-1.5 text-xs sm:text-sm outline-none focus:border-indigo-500" />
-                <select id="status-filter-select" class="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs font-bold">
-                  <option value="all" ${this.filters.status === 'all' ? 'selected' : ''}>כל הסטטוסים</option>
-                  <option value="open" ${this.filters.status === 'open' ? 'selected' : ''}>⭕ פתוחות בלבד</option>
-                  <option value="done" ${this.filters.status === 'done' ? 'selected' : ''}>✅ בוצעו בלבד</option>
-                </select>
-              </div>
+        document.getElementById('toolbar-slot').innerHTML = `
+          <div class="bg-white rounded-2xl border border-slate-200 p-3 mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex gap-1.5">
+              <button type="button" data-action="view" data-view="cards" class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${this.view === 'cards' ? 'bg-slate-900 text-white' : 'bg-slate-100'}">🗂️ כרטיסיות</button>
+              <button type="button" data-action="view" data-view="table" class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${this.view === 'table' ? 'bg-slate-900 text-white' : 'bg-slate-100'}">📊 טבלה ותקציב</button>
+              <button type="button" data-action="view" data-view="audit" class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${this.view === 'audit' ? 'bg-slate-900 text-white' : 'bg-slate-100'}">🕒 יומן (${this.audit.length})</button>
             </div>
-            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-              <div class="flex flex-wrap items-center gap-1.5">${assigneeBtns}</div>
-              <div class="flex flex-wrap items-center gap-1.5">${catBtns}</div>
+            <div class="flex flex-wrap gap-1.5 items-center">
+              <button type="button" data-action="f-assign" data-val="all" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.filters.assignee === 'all' ? 'bg-indigo-600 text-white' : 'bg-slate-100'}">הכל</button>
+              <button type="button" data-action="f-assign" data-val="ronen" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.filters.assignee === 'ronen' ? 'bg-indigo-600 text-white' : 'bg-slate-100'}">👨🏻‍💻 רונן</button>
+              <button type="button" data-action="f-assign" data-val="adi" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.filters.assignee === 'adi' ? 'bg-indigo-600 text-white' : 'bg-slate-100'}">👩🏻 עדי</button>
+              <input type="search" id="q-input" value="${esc(this.filters.q)}" placeholder="חיפוש..." class="rounded-lg border px-2.5 py-1 text-xs" />
             </div>
-          </section>
-        `;
-      }
-
-      renderMainView() {
-        const slot = document.getElementById('app-mainview-slot');
-        const tasks = this.getFilteredAndSortedTasks();
-
-        if (this.activeView === 'cards') {
-          if (!tasks.length) {
-            slot.innerHTML = `<div class="bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-500">אין משימות בתצוגה זו.</div>`;
-            return;
-          }
-          slot.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${tasks.map(t => this.renderSingleCard(t)).join('')}</div>`;
-        } else if (this.activeView === 'table') {
-          slot.innerHTML = this.renderTableView(tasks);
-        } else if (this.activeView === 'kanban') {
-          slot.innerHTML = this.renderKanban(tasks);
-        } else {
-          slot.innerHTML = this.renderAudit();
-        }
-      }
-
-      renderSingleCard(task) {
-        const cat = CATEGORIES[task.category] || CATEGORIES.home;
-        const owner = USERS[task.assignee] || USERS.both;
-        const prio = PRIORITIES[task.priority] || PRIORITIES.medium;
-        const subProg = calculateSubtaskProgress(task);
-
-        const subtasksHtml = (task.subtasks || []).map(sub => `
-          <li class="flex items-center justify-between gap-2 py-1 px-2 rounded-lg hover:bg-slate-100">
-            <label class="flex items-center gap-2 cursor-pointer flex-1">
-              <input type="checkbox" data-action="toggle-subtask" data-task-id="${task.id}" data-subtask-id="${sub.id}"
-                ${sub.done ? 'checked' : ''} class="w-4 h-4 rounded text-indigo-600 cursor-pointer" />
-              <span class="text-xs sm:text-sm ${sub.done ? 'line-through text-slate-400' : 'text-slate-800 font-medium'}">${escapeHtml(sub.title)}</span>
-            </label>
-            <button type="button" data-action="delete-subtask" data-task-id="${task.id}" data-subtask-id="${sub.id}"
-              class="text-slate-300 hover:text-red-500 text-xs px-1 cursor-pointer">✕</button>
-          </li>
-        `).join('');
-
-        return `
-          <article class="bg-white rounded-2xl border ${
-            task.done ? 'border-emerald-200 bg-emerald-50/20 opacity-85' : task.pinned ? 'border-indigo-400 shadow-md' : 'border-slate-200 shadow-xs'
-          } p-4 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between gap-2 flex-wrap mb-2.5">
-                <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="px-2 py-0.5 rounded-full text-xs font-semibold border ${cat.badge}">${cat.icon} ${cat.label}</span>
-                  <span class="px-2 py-0.5 rounded-full text-xs font-semibold border ${owner.badgeClass}">${owner.avatar} ${owner.name}</span>
-                  <span class="px-2 py-0.5 rounded-full text-xs border ${prio.badge}">${prio.icon} ${prio.label}</span>
-                </div>
-                <div class="flex items-center gap-1">
-                  <button type="button" data-action="whatsapp-single" data-task-id="${task.id}" class="p-1 text-xs hover:bg-emerald-50 rounded cursor-pointer" title="שלח משימה זו לעדי בוואטסאפ">📲</button>
-                  <button type="button" data-action="delete-task" data-task-id="${task.id}" class="p-1 text-xs text-slate-400 hover:text-red-600 cursor-pointer" title="מחק">🗑️</button>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-3 my-2">
-                <button type="button" data-action="toggle-task-done" data-task-id="${task.id}"
-                  class="mt-0.5 w-7 h-7 rounded-xl flex items-center justify-center border-2 cursor-pointer shrink-0 ${
-                    task.done ? 'bg-emerald-500 border-emerald-500 text-white font-bold' : 'border-slate-300 bg-white text-transparent hover:border-indigo-500'
-                  }">✓</button>
-                <div class="flex-1">
-                  <h3 class="text-base font-bold ${task.done ? 'line-through text-slate-400' : 'text-slate-900'}">${escapeHtml(task.title)}</h3>
-                  ${task.notes ? `<p class="text-xs text-slate-600 mt-1 bg-slate-50 p-2 rounded-lg border border-slate-100">📝 ${escapeHtml(task.notes)}</p>` : ''}
-                </div>
-              </div>
-
-              <div class="mt-3 pt-2.5 border-t border-slate-100">
-                <div class="flex items-center justify-between text-xs text-slate-600 mb-1">
-                  <span class="font-bold text-indigo-700">שלבים ותתי-משימות (${subProg.completed}/${subProg.total})</span>
-                  <span class="font-mono font-bold">${subProg.percentage}%</span>
-                </div>
-                ${subProg.hasSubtasks ? `
-                  <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mb-2">
-                    <div class="h-full bg-indigo-600" style="width:${subProg.percentage}%"></div>
-                  </div>
-                  <ul class="divide-y divide-slate-100 bg-slate-50 rounded-xl p-1.5 border border-slate-200/60 mb-2">${subtasksHtml}</ul>
-                ` : ''}
-                <div class="flex items-center gap-1.5">
-                  <input type="text" id="sub-input-${task.id}" placeholder="הוסף שלב ביצוע..." class="flex-1 rounded-lg border border-slate-300 px-2.5 py-1 text-xs outline-none" />
-                  <button type="button" data-action="add-subtask" data-task-id="${task.id}" class="px-2.5 py-1 rounded-lg bg-slate-800 text-white text-xs font-bold cursor-pointer">+ שלב</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-              <span>📅 ${formatHebrewDateShort(task.dueDate)}</span>
-              ${task.estimatedBudget > 0 ? `<span class="font-bold text-emerald-700">💰 ₪${Number(task.estimatedBudget).toLocaleString()}</span>` : ''}
-              <span>${task.done ? `✅ סומן ע"י ${USERS[task.completedBy]?.name || 'משותף'}` : ''}</span>
-            </div>
-          </article>
-        `;
-      }
-
-      renderTableView(tasks) {
-        const metrics = calculateDashboardMetrics(tasks);
-        const rows = tasks.map((t, i) => {
-          const diff = (Number(t.estimatedBudget) || 0) - (Number(t.actualCost) || 0);
-          return `
-            <tr class="hover:bg-slate-50 ${t.done ? 'bg-emerald-50/30 text-slate-400' : ''}">
-              <td class="px-3 py-2 text-center font-mono text-xs">${i + 1}</td>
-              <td class="px-3 py-2 text-center">
-                <input type="checkbox" data-action="toggle-task-done" data-task-id="${t.id}" ${t.done ? 'checked' : ''} class="w-4 h-4 rounded cursor-pointer" />
-              </td>
-              <td class="px-3 py-2 font-bold text-xs sm:text-sm ${t.done ? 'line-through' : ''}">${escapeHtml(t.title)}</td>
-              <td class="px-2 py-2">
-                <select data-action="inline-field" data-task-id="${t.id}" data-field="assignee" class="border rounded px-1.5 py-1 text-xs">
-                  <option value="both" ${t.assignee === 'both' ? 'selected' : ''}>💑 משותף</option>
-                  <option value="ronen" ${t.assignee === 'ronen' ? 'selected' : ''}>👨🏻‍💻 רונן</option>
-                  <option value="adi" ${t.assignee === 'adi' ? 'selected' : ''}>👩🏻 עדי</option>
-                </select>
-              </td>
-              <td class="px-2 py-2">
-                <input type="number" value="${Number(t.estimatedBudget) || 0}" data-action="inline-field" data-task-id="${t.id}" data-field="estimatedBudget" class="w-20 border rounded px-1.5 py-1 text-xs font-mono" />
-              </td>
-              <td class="px-2 py-2">
-                <input type="number" value="${Number(t.actualCost) || 0}" data-action="inline-field" data-task-id="${t.id}" data-field="actualCost" class="w-20 border rounded px-1.5 py-1 text-xs font-mono" />
-              </td>
-              <td class="px-3 py-2 font-mono text-xs font-bold ${diff >= 0 ? 'text-emerald-600' : 'text-red-600'}">₪${diff.toLocaleString()}</td>
-            </tr>
-          `;
-        }).join('');
-
-        return `
-          <div class="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
-            <table class="w-full text-right border-collapse">
-              <thead>
-                <tr class="bg-slate-100 text-slate-600 text-xs font-bold border-b">
-                  <th class="px-3 py-2.5 text-center">#</th>
-                  <th class="px-3 py-2.5 text-center">בוצע</th>
-                  <th class="px-3 py-2.5">משימה</th>
-                  <th class="px-2 py-2.5">אחראי</th>
-                  <th class="px-2 py-2.5">תקציב מתוכנן (₪)</th>
-                  <th class="px-2 py-2.5">עלות בפועל (₪)</th>
-                  <th class="px-3 py-2.5">הפרש (₪)</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200">${rows}</tbody>
-              <tfoot>
-                <tr class="bg-slate-900 text-white font-bold text-xs">
-                  <td colspan="4" class="px-3 py-2.5">סה"כ לתצוגה הנוכחית:</td>
-                  <td class="px-2 py-2.5 font-mono">₪${metrics.budget.totalEstimated.toLocaleString()}</td>
-                  <td class="px-2 py-2.5 font-mono">₪${metrics.budget.totalActual.toLocaleString()}</td>
-                  <td class="px-3 py-2.5 font-mono">₪${metrics.budget.variance.toLocaleString()}</td>
-                </tr>
-              </tfoot>
-            </table>
           </div>
         `;
       }
 
-      renderKanban(tasks) {
-        const cols = [
-          { id: 'todo', title: '⭕ לביצוע', list: tasks.filter(t => !t.done && t.status !== 'in_progress') },
-          { id: 'in_progress', title: '⏳ בתהליך', list: tasks.filter(t => !t.done && t.status === 'in_progress') },
-          { id: 'done', title: '✅ בוצע', list: tasks.filter(t => t.done) }
-        ];
-        return `<div class="grid grid-cols-1 md:grid-cols-3 gap-4">${cols.map(c => `
-          <div class="bg-slate-100 rounded-2xl p-3 border border-slate-200">
-            <div class="font-bold text-sm mb-2.5 flex justify-between"><span>${c.title}</span><span>${c.list.length}</span></div>
-            <div class="space-y-2">${c.list.map(t => `
-              <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs space-y-2">
-                <div class="text-xs font-bold text-slate-500">${USERS[t.assignee]?.avatar} ${USERS[t.assignee]?.name}</div>
-                <div class="font-bold text-sm">${escapeHtml(t.title)}</div>
-                <div class="flex gap-1 pt-1">
-                  ${c.id !== 'todo' ? `<button type="button" data-action="set-status" data-task-id="${t.id}" data-status="todo" class="text-[11px] px-2 py-0.5 bg-slate-100 rounded cursor-pointer">לביצוע</button>` : ''}
-                  ${c.id !== 'in_progress' ? `<button type="button" data-action="set-status" data-task-id="${t.id}" data-status="in_progress" class="text-[11px] px-2 py-0.5 bg-amber-100 rounded cursor-pointer">בתהליך</button>` : ''}
-                  ${c.id !== 'done' ? `<button type="button" data-action="set-status" data-task-id="${t.id}" data-status="done" class="text-[11px] px-2 py-0.5 bg-emerald-600 text-white rounded cursor-pointer">בוצע ✓</button>` : ''}
-                </div>
-              </div>
-            `).join('')}</div>
-          </div>
-        `).join('')}</div>`;
-      }
+      renderView() {
+        const slot = document.getElementById('view-slot');
+        const list = this.getFiltered();
 
-      renderAudit() {
-        if (!this.auditLogs.length) {
-          return `<div class="bg-white rounded-2xl border p-6 text-center text-xs text-slate-500">טרם נרשמו פעולות ביומן.</div>`;
-        }
-        return `<div class="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100">${this.auditLogs.map(l => `
-          <div class="p-3 flex items-center justify-between text-xs sm:text-sm">
-            <div><span>${l.actorAvatar}</span> <strong>${escapeHtml(l.actorName)}</strong> ${escapeHtml(l.action)} ${l.taskTitle ? `— <span class="text-indigo-700 font-semibold">"${escapeHtml(l.taskTitle)}"</span>` : ''}</div>
-            <time class="text-xs font-mono text-slate-400">${formatHebrewDateTime(l.timestamp)}</time>
-          </div>
-        `).join('')}</div>`;
-      }
-
-      renderActiveModal() {
-        const slot = document.getElementById('app-modal-slot');
-        if (!this.activeModal) {
-          slot.innerHTML = '';
+        if (this.view === 'audit') {
+          slot.innerHTML = `<div class="bg-white rounded-2xl border divide-y">${this.audit.map(a => `
+            <div class="p-3 flex justify-between text-xs">
+              <span>${a.actorAvatar} <strong>${esc(a.actorName)}</strong> ${esc(a.action)} ${a.taskTitle ? `"${esc(a.taskTitle)}"` : ''}</span>
+              <span class="font-mono text-slate-400">${esc(a.time)}</span>
+            </div>`).join('') || '<div class="p-6 text-center text-xs text-slate-400">אין פעולות עדיין</div>'}</div>`;
           return;
         }
 
-        if (this.activeModal === 'gemini-hub') {
-          const exportText = GeminiProtocolBridge.exportStateForGeminiChat(this.tasks, this.activeUser, this.roomId);
+        if (this.view === 'table') {
+          const totalEst = list.reduce((s, t) => s + (Number(t.estimatedBudget) || 0), 0);
           slot.innerHTML = `
-            <div class="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4 overflow-y-auto">
-              <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border overflow-hidden my-8">
-                <div class="px-5 py-3.5 bg-indigo-600 text-white flex justify-between items-center">
-                  <h2 class="font-extrabold text-base">✨ מרכז ה-AI וגשר הסנכרון הדו-כיווני ל-Gemini</h2>
-                  <button type="button" data-action="close-modal" class="text-white font-bold text-lg cursor-pointer">✕</button>
+            <div class="bg-white rounded-2xl border overflow-x-auto">
+              <table class="w-full text-right text-xs">
+                <thead class="bg-slate-100 font-bold border-b">
+                  <tr><th class="p-2.5 text-center">בוצע</th><th class="p-2.5">משימה</th><th class="p-2.5">אחראי</th><th class="p-2.5">קטגוריה</th><th class="p-2.5">תקציב (₪)</th><th class="p-2.5 text-center">מחק</th></tr>
+                </thead>
+                <tbody class="divide-y">${list.map(t => `
+                  <tr class="${t.done ? 'bg-emerald-50/40 text-slate-400 line-through' : ''}">
+                    <td class="p-2.5 text-center"><input type="checkbox" data-action="toggle" data-id="${t.id}" ${t.done ? 'checked' : ''} class="w-4 h-4 cursor-pointer" /></td>
+                    <td class="p-2.5 font-bold">${esc(t.title)}</td>
+                    <td class="p-2.5">${USERS[t.assignee]?.avatar} ${USERS[t.assignee]?.name}</td>
+                    <td class="p-2.5">${CATEGORIES[t.category]?.icon} ${CATEGORIES[t.category]?.label}</td>
+                    <td class="p-2.5 font-mono">₪${Number(t.estimatedBudget || 0).toLocaleString()}</td>
+                    <td class="p-2.5 text-center"><button type="button" data-action="del" data-id="${t.id}" class="cursor-pointer">🗑️</button></td>
+                  </tr>`).join('')}</tbody>
+                <tfoot class="bg-slate-900 text-white font-bold">
+                  <tr><td colspan="4" class="p-2.5">סה"כ:</td><td colspan="2" class="p-2.5 font-mono">₪${totalEst.toLocaleString()}</td></tr>
+                </tfoot>
+              </table>
+            </div>`;
+          return;
+        }
+
+        slot.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">${list.map(t => {
+          const cat = CATEGORIES[t.category] || CATEGORIES.wedding;
+          const own = USERS[t.assignee] || USERS.both;
+          const prio = PRIORITIES[t.priority] || PRIORITIES.medium;
+          const subs = t.subtasks || [];
+          return `
+            <article class="bg-white rounded-2xl border ${t.done ? 'border-emerald-200 bg-emerald-50/20 opacity-80' : 'border-slate-200'} p-4 flex flex-col justify-between shadow-2xs">
+              <div>
+                <div class="flex justify-between items-center gap-1 flex-wrap mb-2">
+                  <div class="flex gap-1 flex-wrap">
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold border ${cat.badge}">${cat.icon} ${cat.label}</span>
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold border ${own.badge}">${own.avatar} ${own.name}</span>
+                    <span class="px-2 py-0.5 rounded-full text-[11px] border ${prio.badge}">${prio.icon} ${prio.label}</span>
+                  </div>
+                  <button type="button" data-action="del" data-id="${t.id}" class="text-slate-300 hover:text-red-600 text-xs cursor-pointer">🗑️</button>
                 </div>
-                <div class="p-5 space-y-5 max-h-[80vh] overflow-y-auto">
-                  <div class="bg-slate-50 p-3.5 rounded-xl border space-y-2">
-                    <h3 class="text-xs sm:text-sm font-bold">1️⃣ פירוק טקסט חופשי בעברית למשימות (מזהה אוטומטית את רונן/עדי, קטגוריה ותקציב)</h3>
-                    <textarea id="ai-free-text" rows="3" placeholder="לדוגמה:&#10;לעדי להזמין צלם לשקיעה תקציב 450 ש״ח דחוף&#10;לרונן לקנות לעל האש: אנטריקוט, פרגיות, חומוס, טחינה, כרוב לבן 400 ש״ח" class="w-full border rounded-xl p-2.5 text-xs"></textarea>
-                    <button type="button" data-action="run-ai-breakdown" class="px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-bold cursor-pointer">⚡ פרק והוסף ללוח</button>
+                <div class="flex items-start gap-2.5 my-1.5">
+                  <button type="button" data-action="toggle" data-id="${t.id}" class="mt-0.5 w-6 h-6 rounded-lg border-2 flex items-center justify-center cursor-pointer shrink-0 ${t.done ? 'bg-emerald-500 border-emerald-500 text-white font-bold' : 'border-slate-300 bg-white text-transparent'}">✓</button>
+                  <div>
+                    <h3 class="font-bold text-sm sm:text-base ${t.done ? 'line-through text-slate-400' : ''}">${esc(t.title)}</h3>
+                    ${t.notes ? `<p class="text-xs text-slate-500 mt-1">📝 ${esc(t.notes)}</p>` : ''}
                   </div>
-
-                  <div class="bg-blue-50/50 p-3.5 rounded-xl border border-blue-200 space-y-2">
-                    <div class="flex justify-between items-center">
-                      <h3 class="text-xs sm:text-sm font-bold">2️⃣ העתקת דוח סנכרון להדבקה בצ'אט שלנו עם Gemini</h3>
-                      <button type="button" data-action="copy-gemini-export" class="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-bold cursor-pointer">📋 העתק דוח ל-Gemini</button>
-                    </div>
-                    <textarea id="gemini-export-box" readonly rows="4" class="w-full border rounded-xl p-2 text-xs font-mono bg-white">${escapeHtml(exportText)}</textarea>
-                  </div>
-
-                  <div class="bg-emerald-50/50 p-3.5 rounded-xl border border-emerald-200 space-y-2">
-                    <h3 class="text-xs sm:text-sm font-bold">3️⃣ הזרקת משימות מ-Gemini ללוח (הדבק כאן JSON שקיבלת בצ'אט)</h3>
-                    <textarea id="gemini-import-box" rows="3" placeholder="הדבק כאן את בלוק ה-JSON שקיבלת מ-Gemini בצ'אט..." class="w-full border rounded-xl p-2 text-xs font-mono bg-white"></textarea>
-                    <button type="button" data-action="import-gemini-json" class="px-4 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold cursor-pointer">📥 מזג משימות ללוח</button>
+                </div>
+                <div class="mt-2.5 pt-2 border-t border-slate-100 space-y-1.5">
+                  ${subs.map(s => `
+                    <label class="flex items-center gap-2 text-xs cursor-pointer">
+                      <input type="checkbox" data-action="toggle-sub" data-id="${t.id}" data-sub="${s.id}" ${s.done ? 'checked' : ''} class="rounded text-indigo-600" />
+                      <span class="${s.done ? 'line-through text-slate-400' : 'font-medium'}">${esc(s.title)}</span>
+                    </label>`).join('')}
+                  <div class="flex gap-1 pt-1">
+                    <input type="text" id="sub-in-${t.id}" placeholder="הוסף תת-משימה..." class="flex-1 border rounded-lg px-2 py-1 text-xs" />
+                    <button type="button" data-action="add-sub" data-id="${t.id}" class="px-2.5 py-1 bg-slate-800 text-white rounded-lg text-xs font-bold cursor-pointer">+</button>
                   </div>
                 </div>
               </div>
-            </div>
-          `;
-        } else if (this.activeModal === 'whatsapp-share') {
-          const waText = WhatsAppShareEngine.buildWhatsAppMessage(this.tasks, this.whatsappMode);
+              <div class="mt-3 pt-2 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">
+                <span>${t.estimatedBudget > 0 ? `💰 ₪${Number(t.estimatedBudget).toLocaleString()}` : ''}</span>
+                <span>${t.done ? `✅ בוצע ע"י ${USERS[t.completedBy]?.name || 'משותף'}` : ''}</span>
+              </div>
+            </article>`;
+        }).join('')}</div>`;
+      }
+
+      renderModal() {
+        const slot = document.getElementById('modal-slot');
+        if (!this.modal) { slot.innerHTML = ''; return; }
+
+        if (this.modal === 'cloud') {
           slot.innerHTML = `
             <div class="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
-              <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border overflow-hidden">
-                <div class="px-5 py-3.5 bg-emerald-600 text-white flex justify-between items-center">
-                  <h2 class="font-extrabold text-base">📲 שליחת עדכון וקישור סנכרון לעדי ב-WhatsApp</h2>
-                  <button type="button" data-action="close-modal" class="text-white font-bold text-lg cursor-pointer">✕</button>
+              <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl">
+                <div class="flex justify-between items-center">
+                  <h2 class="font-extrabold text-base">☁️ הגדרת סנכרון ענן חי (Firebase)</h2>
+                  <button type="button" data-action="close-modal" class="font-bold cursor-pointer">✕</button>
                 </div>
-                <div class="p-5 space-y-3.5">
-                  <div class="flex flex-wrap gap-1.5">
-                    <button type="button" data-action="wa-mode" data-mode="adi_focus" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.whatsappMode === 'adi_focus' ? 'bg-emerald-600 text-white' : 'bg-slate-100'}">👩🏻 משימות עדי + משותפות</button>
-                    <button type="button" data-action="wa-mode" data-mode="full_status" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.whatsappMode === 'full_status' ? 'bg-emerald-600 text-white' : 'bg-slate-100'}">📊 דוח מלא</button>
-                    <button type="button" data-action="wa-mode" data-mode="trip_checklist" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.whatsappMode === 'trip_checklist' ? 'bg-emerald-600 text-white' : 'bg-slate-100'}">🏕️ צ'ק-ליסט צימר</button>
-                  </div>
-                  <textarea id="wa-preview-box" rows="8" class="w-full border rounded-xl p-3 text-xs sm:text-sm bg-slate-50">${escapeHtml(waText)}</textarea>
-                  <div class="flex justify-end gap-2">
-                    <button type="button" data-action="copy-wa-text" class="px-3.5 py-2 border rounded-xl text-xs font-bold cursor-pointer">📋 העתק הודעה</button>
-                    <button type="button" data-action="send-wa-now" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold cursor-pointer">🚀 שלח ב-WhatsApp לעדי</button>
-                  </div>
+                <p class="text-xs text-slate-600">הדבק כאן את כתובת ה-Realtime Database מ-Firebase. כשתשלח לעדי קישור בוואטסאפ, הענן יתחבר אצלה אוטומטית!</p>
+                <input type="url" id="cloud-url-input" value="${esc(this.cloudUrl)}" placeholder="https://your-project-default-rtdb.firebaseio.com" class="w-full border rounded-xl p-2.5 text-xs font-mono" />
+                <div class="flex justify-end gap-2">
+                  <button type="button" data-action="save-cloud" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold cursor-pointer">💾 שמור והתחבר לענן</button>
                 </div>
               </div>
-            </div>
-          `;
+            </div>`;
+        } else if (this.modal === 'gemini') {
+          const jsonExport = JSON.stringify({ tasks: this.tasks }, null, 2);
+          slot.innerHTML = `
+            <div class="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
+              <div class="bg-white rounded-2xl max-w-lg w-full p-5 space-y-3 shadow-2xl">
+                <div class="flex justify-between items-center">
+                  <h2 class="font-extrabold text-base">✨ סנכרון מול הצ'אט של Gemini</h2>
+                  <button type="button" data-action="close-modal" class="font-bold cursor-pointer">✕</button>
+                </div>
+                <p class="text-xs text-slate-600">העתק להדבקה אצל Gemini, או הדבק כאן JSON ש-Gemini יצר עבורך:</p>
+                <textarea id="gem-box" rows="6" class="w-full border rounded-xl p-2.5 text-xs font-mono">${esc(jsonExport)}</textarea>
+                <div class="flex justify-between">
+                  <button type="button" data-action="copy-gem" class="px-3 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold cursor-pointer">📋 העתק מצב נוכחי</button>
+                  <button type="button" data-action="import-gem" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold cursor-pointer">📥 טען JSON מ-Gemini</button>
+                </div>
+              </div>
+            </div>`;
         }
       }
 
-      // ----------------------------------------------------------------------
-      // חיבור כל האירועים (Event Delegation)
-      // ----------------------------------------------------------------------
-      bindGlobalEvents() {
+      bindEvents() {
         document.addEventListener('submit', e => {
-          if (e.target.id === 'quick-add-form') {
+          if (e.target.id === 'add-form') {
             e.preventDefault();
-            const title = document.getElementById('new-task-title')?.value.trim();
+            const title = document.getElementById('t-title').value.trim();
             if (!title) return;
-            const assignee = document.getElementById('new-task-assignee')?.value || 'both';
-            const category = document.getElementById('new-task-category')?.value || 'home';
-            const priority = document.getElementById('new-task-priority')?.value || 'medium';
-            const dueDate = document.getElementById('new-task-duedate')?.value || '';
-            const estimatedBudget = Number(document.getElementById('new-task-budget')?.value) || 0;
-            const notes = document.getElementById('new-task-notes')?.value || '';
-            const subtasksRaw = document.getElementById('new-task-subtasks')?.value || '';
-
-            const subtasks = subtasksRaw.split(',').map(s => s.trim()).filter(Boolean).map(s => ({
-              id: generateUniqueId('sub'), title: s, done: false
-            }));
-
-            const newTask = createNormalizedTask({
-              title, assignee, category, priority, dueDate, estimatedBudget, notes, subtasks
-            }, this.activeUser);
-
-            this.tasks.unshift(newTask);
-            this.saveData();
-            this.logAudit('הוסיף/ה משימה חדשה', newTask.title);
-            this.showToast(`המשימה "${newTask.title}" נוספה ללוח!`);
-            this.renderAll();
+            const t = normTask({
+              title,
+              assignee: document.getElementById('t-assignee').value,
+              category: document.getElementById('t-category').value,
+              priority: document.getElementById('t-priority').value,
+              estimatedBudget: document.getElementById('t-budget').value
+            }, this.user);
+            this.tasks.unshift(t);
+            this.syncMutation('הוסיף/ה משימה:', t.title);
           }
         });
 
         document.addEventListener('click', e => {
           const btn = e.target.closest('[data-action]');
           if (!btn) return;
-          const action = btn.dataset.action;
+          const act = btn.dataset.action;
 
-          if (action === 'switch-user') {
-            this.activeUser = btn.dataset.user;
-            localStorage.setItem(APP_CONFIG.LOCAL_USER_KEY, this.activeUser);
-            this.showToast(`משתמש פעיל כעת: ${USERS[this.activeUser].name} ${USERS[this.activeUser].avatar}`);
-            this.renderAll();
-          } else if (action === 'toggle-quickadd-expand') {
-            this.isQuickAddExpanded = !this.isQuickAddExpanded;
-            this.renderQuickAdd();
-          } else if (action === 'load-template') {
-            const tpl = PRESET_TEMPLATES[btn.dataset.template];
-            if (tpl) {
-              const created = tpl.tasks.map(t => createNormalizedTask(t, this.activeUser));
-              this.tasks = [...created, ...this.tasks];
-              this.saveData();
-              this.logAudit(`טען/ה תבנית: ${tpl.title}`);
-              this.showToast(`נטענו ${created.length} משימות מתוך "${tpl.title}"!`, 'emerald');
-              this.renderAll();
-            }
-          } else if (action === 'switch-view') {
-            this.activeView = btn.dataset.view;
-            this.renderToolbar();
-            this.renderMainView();
-          } else if (action === 'filter-assignee') {
-            this.filters.assignee = btn.dataset.assignee;
-            this.renderToolbar();
-            this.renderMainView();
-          } else if (action === 'filter-category') {
-            this.filters.category = btn.dataset.category;
-            this.renderToolbar();
-            this.renderMainView();
-          } else if (action === 'toggle-task-done') {
-            const taskId = btn.dataset.taskId;
-            const now = new Date().toISOString();
-            this.tasks = this.tasks.map(t => {
-              if (t.id !== taskId) return t;
-              const nextDone = !t.done;
-              this.logAudit(nextDone ? 'סימן/ה כבוצע ✅' : 'החזיר/ה למצב פתוח', t.title);
-              return {
-                ...t,
-                done: nextDone,
-                status: nextDone ? 'done' : 'todo',
-                completedBy: nextDone ? this.activeUser : null,
-                completedAt: nextDone ? now : null
-              };
-            });
-            this.saveData();
+          if (act === 'user') {
+            this.user = btn.dataset.user;
+            localStorage.setItem(KEYS.USER, this.user);
             this.renderHeader();
-            this.renderMainView();
-          } else if (action === 'add-subtask') {
-            const taskId = btn.dataset.taskId;
-            const input = document.getElementById(`sub-input-${taskId}`);
-            const val = input?.value.trim();
+          } else if (act === 'view') {
+            this.view = btn.dataset.view;
+            this.renderToolbar();
+            this.renderView();
+          } else if (act === 'f-assign') {
+            this.filters.assignee = btn.dataset.val;
+            this.renderToolbar();
+            this.renderView();
+          } else if (act === 'toggle') {
+            let title = '';
+            this.tasks = this.tasks.map(t => {
+              if (t.id !== btn.dataset.id) return t;
+              title = t.title;
+              const next = !t.done;
+              return { ...t, done: next, completedBy: next ? this.user : null };
+            });
+            this.syncMutation('שינה/תה סטטוס משימה:', title);
+          } else if (act === 'add-sub') {
+            const id = btn.dataset.id;
+            const val = document.getElementById(`sub-in-${id}`)?.value.trim();
             if (!val) return;
-            this.tasks = this.tasks.map(t => {
-              if (t.id !== taskId) return t;
-              return {
-                ...t,
-                subtasks: [...(t.subtasks || []), { id: generateUniqueId('sub'), title: val, done: false }]
-              };
-            });
-            this.saveData();
-            this.renderMainView();
-          } else if (action === 'toggle-subtask') {
-            const { taskId, subtaskId } = btn.dataset;
-            this.tasks = this.tasks.map(t => {
-              if (t.id !== taskId) return t;
-              return {
-                ...t,
-                subtasks: (t.subtasks || []).map(s => s.id === subtaskId ? { ...s, done: !s.done, completedBy: this.activeUser } : s)
-              };
-            });
-            this.saveData();
-            this.renderMainView();
-          } else if (action === 'delete-subtask') {
-            const { taskId, subtaskId } = btn.dataset;
-            this.tasks = this.tasks.map(t => t.id === taskId ? { ...t, subtasks: (t.subtasks || []).filter(s => s.id !== subtaskId) } : t);
-            this.saveData();
-            this.renderMainView();
-          } else if (action === 'delete-task') {
-            const taskId = btn.dataset.taskId;
-            this.tasks = this.tasks.filter(t => t.id !== taskId);
-            this.saveData();
-            this.renderAll();
-          } else if (action === 'set-status') {
-            const { taskId, status } = btn.dataset;
-            this.tasks = this.tasks.map(t => t.id === taskId ? { ...t, status, done: status === 'done', completedBy: status === 'done' ? this.activeUser : null } : t);
-            this.saveData();
-            this.renderAll();
-          } else if (action === 'open-modal') {
-            this.activeModal = btn.dataset.modal;
-            this.renderActiveModal();
-          } else if (action === 'close-modal') {
-            this.activeModal = null;
-            this.renderActiveModal();
-          } else if (action === 'run-ai-breakdown') {
-            const raw = document.getElementById('ai-free-text')?.value || '';
-            const created = SmartHebrewTaskParser.parseFreeTextLocally(raw);
-            if (created.length) {
-              this.tasks = [...created, ...this.tasks];
-              this.saveData();
-              this.activeModal = null;
-              this.showToast(`פורקו ונוספו ${created.length} משימות חדשות! ⚡`, 'emerald');
-              this.renderAll();
+            this.tasks = this.tasks.map(t => t.id === id ? { ...t, subtasks: [...(t.subtasks || []), { id: uid('s'), title: val, done: false }] } : t);
+            this.syncMutation('הוסיף/ה שלב:', val);
+          } else if (act === 'toggle-sub') {
+            const { id, sub } = btn.dataset;
+            this.tasks = this.tasks.map(t => t.id === id ? {
+              ...t, subtasks: (t.subtasks || []).map(s => s.id === sub ? { ...s, done: !s.done } : s)
+            } : t);
+            this.syncMutation('סימן/ה שלב בתת-משימה');
+          } else if (act === 'del') {
+            this.tasks = this.tasks.filter(t => t.id !== btn.dataset.id);
+            this.syncMutation('מחק/ה משימה');
+          } else if (act === 'modal') {
+            this.modal = btn.dataset.modal;
+            this.renderModal();
+          } else if (act === 'close-modal') {
+            this.modal = null;
+            this.renderModal();
+          } else if (act === 'save-cloud') {
+            const val = document.getElementById('cloud-url-input')?.value.trim().replace(/\/$/, '');
+            this.cloudUrl = val;
+            localStorage.setItem(KEYS.CLOUD, val);
+            this.modal = null;
+            this.renderModal();
+            if (val) {
+              this.startCloudSync();
+              this.toast('מחובר לענן בזמן אמת! ☁️', 'emerald');
             }
-          } else if (action === 'copy-gemini-export') {
-            const txt = document.getElementById('gemini-export-box')?.value || '';
-            navigator.clipboard.writeText(txt);
-            this.showToast('דוח הסנכרון הועתק! הדבק אותו בצ׳אט עם Gemini 📋', 'emerald');
-          } else if (action === 'import-gemini-json') {
+          } else if (act === 'copy-gem') {
+            navigator.clipboard.writeText(document.getElementById('gem-box').value);
+            this.toast('הועתק ללוח!', 'emerald');
+          } else if (act === 'import-gem') {
             try {
-              const raw = document.getElementById('gemini-import-box')?.value || '';
-              const parsed = GeminiProtocolBridge.parseIncomingGeminiPayload(raw);
-              const res = GeminiProtocolBridge.mergeTasksWithExisting(this.tasks, parsed.tasks, this.activeUser, parsed.mode);
-              this.tasks = res.mergedTasks;
-              this.saveData();
-              this.activeModal = null;
-              this.showToast(`מוזגו מ-Gemini בהצלחה: ${res.addedCount} חדשות, ${res.updatedCount} עודכנו!`, 'emerald');
-              this.renderAll();
-            } catch (err) {
-              this.showToast(err.message, 'red');
+              const raw = document.getElementById('gem-box').value;
+              const match = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
+              const parsed = JSON.parse(match ? match[1] : raw);
+              const arr = Array.isArray(parsed) ? parsed : (parsed.tasks || []);
+              this.tasks = arr.map(t => normTask(t, this.user));
+              this.modal = null;
+              this.syncMutation('עדכן/ה משימות מ-Gemini');
+              this.toast('המשימות עודכנו מ-Gemini!', 'emerald');
+            } catch {
+              this.toast('שגיאה בפענוח ה-JSON', 'red');
             }
-          } else if (action === 'wa-mode') {
-            this.whatsappMode = btn.dataset.mode;
-            this.renderActiveModal();
-          } else if (action === 'copy-wa-text') {
-            const txt = document.getElementById('wa-preview-box')?.value || '';
-            navigator.clipboard.writeText(txt);
-            this.showToast('ההודעה לעדי הועתקה ללוח! 📋', 'emerald');
-          } else if (action === 'send-wa-now') {
-            const txt = document.getElementById('wa-preview-box')?.value || '';
-            window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
-          } else if (action === 'whatsapp-single') {
-            const task = this.tasks.find(t => t.id === btn.dataset.taskId);
-            if (task) {
-              const msg = WhatsAppShareEngine.buildSingleTaskWhatsAppMessage(task);
-              window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-            }
-          } else if (action === 'export-backup-file') {
-            const blob = new Blob([JSON.stringify(this.tasks, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `ronen-adi-tasks-backup-${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-          } else if (action === 'reset-demo-data') {
-            this.tasks = this.getSeedTasks();
-            this.saveData();
-            this.renderAll();
-            this.showToast('הנתונים אופסו לברירת המחדל.');
+          } else if (act === 'share-wa') {
+            const base = window.location.href.split('?')[0];
+            const link = this.cloudUrl ? `${base}?cloud=${encodeURIComponent(this.cloudUrl)}` : base;
+            const openList = this.tasks.filter(t => !t.done).map((t, i) => `${i + 1}. *${t.title}* (${USERS[t.assignee].name})`).join('\n');
+            const msg = `היי עדי ❤️, הנה הלוח המשותף שלנו:\n\n${openList || 'הכל בוצע!'}\n\n🔗 *לפתיחה וסימון בזמן אמת:*\n${link}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
           }
         });
 
         document.addEventListener('input', e => {
-          if (e.target.id === 'search-input') {
-            this.filters.searchQuery = e.target.value;
-            this.renderMainView();
-          }
-        });
-
-        document.addEventListener('change', e => {
-          if (e.target.id === 'status-filter-select') {
-            this.filters.status = e.target.value;
-            this.renderMainView();
-          } else if (e.target.dataset.action === 'inline-field') {
-            const { taskId, field } = e.target.dataset;
-            const val = field === 'estimatedBudget' || field === 'actualCost' ? Number(e.target.value) || 0 : e.target.value;
-            this.tasks = this.tasks.map(t => t.id === taskId ? { ...t, [field]: val } : t);
-            this.saveData();
-            this.renderHeader();
-            this.renderMainView();
+          if (e.target.id === 'q-input') {
+            this.filters.q = e.target.value;
+            this.renderView();
           }
         });
       }
     }
 
-    // אתחול האפליקציה בטעינת הדף
-    window.addEventListener('DOMContentLoaded', () => {
-      window.ronenAdiApp = new MasterApplication();
-    });
+    window.addEventListener('DOMContentLoaded', () => new App());
   </script>
 </body>
 </html>
