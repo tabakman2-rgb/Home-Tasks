@@ -3,30 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>המרחב המשותף של רונן ועדי ⚡</title>
+  <title>המרחב המשותף של רונן ועדי ⚡ v3.0 Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Heebo', sans-serif; background: #f8fafc; color: #0f172a; }
+    :root {
+      --bg-main: #f1f5f9;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --border-color: #e2e8f0;
+    }
+    body.dark-mode {
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --text-main: #f8fafc;
+      --border-color: #334155;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    body.dark-mode .bg-white { background-color: #1e293b !important; color: #f8fafc !important; }
+    body.dark-mode .bg-slate-50 { background-color: #0f172a !important; }
+    body.dark-mode .bg-slate-100 { background-color: #334155 !important; color: #e2e8f0 !important; }
+    body.dark-mode .text-slate-900, body.dark-mode .text-slate-800, body.dark-mode .text-slate-700 { color: #f1f5f9 !important; }
+    body.dark-mode .text-slate-600, body.dark-mode .text-slate-500 { color: #94a3b8 !important; }
+    body.dark-mode .border-slate-200, body.dark-mode .border-slate-300, body.dark-mode .border-slate-100 { border-color: #334155 !important; }
+    body.dark-mode input, body.dark-mode select, body.dark-mode textarea {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: #475569 !important;
+    }
+
+    body {
+      font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-header {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
-  <div id="toast-box" class="fixed bottom-4 left-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- התראות צפות (Toasts) -->
+  <div id="toast-box" class="fixed bottom-4 left-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full px-2"></div>
+
+  <!-- אזורי תצוגה ראשיים -->
   <div id="header-slot"></div>
-  <main class="max-w-6xl w-full mx-auto px-3 sm:px-6 py-5 flex-1">
+
+  <main class="max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 flex-1 space-y-4">
     <div id="quickadd-slot"></div>
     <div id="toolbar-slot"></div>
     <div id="view-slot"></div>
   </main>
+
   <div id="modal-slot"></div>
 
+  <footer class="bg-white border-t border-slate-200 py-4 mt-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+      <div>⚡ <strong>המרחב המשותף של רונן ועדי (v3.0 Pro)</strong> • זיהוי תתי-משימות חכם, חילוץ מ-WhatsApp וסנכרון ענן חי</div>
+      <div class="flex items-center gap-3">
+        <button type="button" data-action="export-backup" class="hover:text-indigo-600 font-bold cursor-pointer">💾 הורד גיבוי JSON</button>
+        <span>•</span>
+        <button type="button" data-action="force-cloud-pull" class="hover:text-emerald-600 font-bold cursor-pointer">🔄 רענן נתונים מהענן</button>
+      </div>
+    </div>
+  </footer>
+
   <script type="module">
+    // ========================================================================
+    // 1. קבועים, מפתחות אחסון (תואם ב-100% לגרסה הקודמת) והגדרות מערכת
+    // ========================================================================
     const KEYS = {
       TASKS: 'ra_tasks_v2',
       AUDIT: 'ra_audit_v2',
       USER: 'ra_user_v2',
-      CLOUD: 'ra_cloud_url_v2'
+      CLOUD: 'ra_cloud_url_v2',
+      THEME: 'ra_theme_v2'
     };
 
     const USERS = {
@@ -43,49 +105,294 @@
     };
 
     const PRIORITIES = {
-      urgent: { id: 'urgent', label: 'דחוף', weight: 4, icon: '🔥', badge: 'bg-red-100 text-red-800 border-red-300 font-bold' },
+      urgent: { id: 'urgent', label: 'דחוף / קריטי', weight: 4, icon: '🔥', badge: 'bg-red-100 text-red-800 border-red-300 font-bold' },
       high: { id: 'high', label: 'גבוהה', weight: 3, icon: '⚡', badge: 'bg-orange-100 text-orange-800 border-orange-300' },
       medium: { id: 'medium', label: 'רגילה', weight: 2, icon: '📌', badge: 'bg-sky-100 text-sky-800 border-sky-300' },
       low: { id: 'low', label: 'נמוכה', weight: 1, icon: '🌱', badge: 'bg-slate-100 text-slate-700 border-slate-300' }
+    };
+
+    const STATUSES = {
+      todo: { id: 'todo', label: 'לביצוע', icon: '⭕' },
+      in_progress: { id: 'in_progress', label: 'בתהליך', icon: '⏳' },
+      done: { id: 'done', label: 'בוצע', icon: '✅' }
     };
 
     const uid = (p = 'id') => `${p}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
     const esc = (s = '') => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
     function normTask(raw = {}, actor = 'ronen') {
-      const done = Boolean(raw.done);
+      const done = Boolean(raw.done || raw.status === 'done');
       return {
         id: raw.id || uid('t'),
         title: String(raw.title || 'משימה חדשה').trim(),
         category: CATEGORIES[raw.category] ? raw.category : 'wedding',
         assignee: USERS[raw.assignee] ? raw.assignee : 'both',
         priority: PRIORITIES[raw.priority] ? raw.priority : 'medium',
+        status: done ? 'done' : (STATUSES[raw.status] ? raw.status : 'todo'),
         done,
+        pinned: Boolean(raw.pinned),
         dueDate: raw.dueDate || '',
         estimatedBudget: Number(raw.estimatedBudget) || 0,
         actualCost: Number(raw.actualCost) || 0,
         notes: String(raw.notes || '').trim(),
-        subtasks: Array.isArray(raw.subtasks) ? raw.subtasks.map(s => ({
-          id: s.id || uid('s'), title: String(s.title || '').trim(), done: Boolean(s.done)
-        })).filter(s => s.title) : [],
+        link: String(raw.link || '').trim(),
+        subtasks: Array.isArray(raw.subtasks)
+          ? raw.subtasks.map(s => ({
+              id: s.id || uid('s'),
+              title: String(s.title || '').trim(),
+              done: Boolean(s.done),
+              completedBy: s.completedBy || null
+            })).filter(s => s.title)
+          : [],
         updatedAt: raw.updatedAt || new Date().toISOString(),
         completedBy: done ? (raw.completedBy || actor) : null
       };
     }
 
+    function calcSubProgress(task) {
+      const subs = task?.subtasks || [];
+      if (!subs.length) return { has: false, done: 0, total: 0, pct: task?.done ? 100 : 0 };
+      const done = subs.filter(s => s.done).length;
+      return { has: true, done, total: subs.length, pct: Math.round((done / subs.length) * 100) };
+    }
+
+    // ========================================================================
+    // 2. מנוע NLP לזיהוי תתי-משימות אוטומטי וחילוץ מ-WhatsApp
+    // ========================================================================
+    const SEMANTIC_CLUSTERS = [
+      {
+        name: 'רבנות וחתונה',
+        keywords: ['רב', 'רבנות', 'צהר', 'חופה', 'קידושין', 'תיק נישואין', 'כתובה', 'הדרכת כלה', 'תעודת רווקות', 'מקווה', 'טבעות']
+      },
+      {
+        name: 'שואב MOVA ובית',
+        keywords: ['mova', 'מובה', 'p70', 'שואב', 'פילטר', 'פילטרים', 'שקיות אבק', 'שקיות', 'מטליות', 'מברשת', 'מברשות', 'נוזל ניקוי', 'אליאקספרס', 'aliexpress']
+      },
+      {
+        name: 'צימר וטיול לכינרת',
+        keywords: ['צימר', 'כינרת', 'כנרת', 'רמות', 'חד נס', 'גולן', 'ווייז', 'waze', 'אגרה', 'ביחד בשבילך', 'מועדון טוב', 'גקוזי', 'בריכה']
+      },
+      {
+        name: 'קניות ועל האש',
+        keywords: ['על האש', 'מנגל', 'בשר', 'בשרים', 'אנטריקוט', 'פרגיות', 'קבב', 'מרגז', 'סלט', 'סלטים', 'חומוס', 'טחינה', 'מטבוחה', 'כרוב לבן', 'בטטה', 'טאבולה', 'פלפלים קלויים', 'פיתות', 'קצביה']
+      },
+      {
+        name: 'צילומים ו-Save The Date',
+        keywords: ['צילום', 'צילומים', 'צלם', 'שקיעה', 'save the date', 'canon', 'קנון', 'v10', 'מצלמה', 'כרטיס זיכרון', 'sdxc']
+      },
+      {
+        name: 'מסעדות ויום השנה',
+        keywords: ['מסעדה', 'מסעדת', 'מיטבר', 'meatbar', 'יום השנה', 'שולחן', 'הזמנת מקום']
+      }
+    ];
+
+    class SmartSubtaskAndWhatsAppEngine {
+      /**
+       * מנרמל מילים בעברית (מסיר תחיליות נפוצות וסימני פיסוק) להשוואה מדויקת
+       */
+      static tokenizeHebrew(text = '') {
+        const clean = String(text || '')
+          .toLowerCase()
+          .replace(/[^\u0590-\u05FFa-z0-9\s]/g, ' ')
+          .trim();
+
+        const stopWords = new Set(['את', 'של', 'על', 'עם', 'או', 'גם', 'כי', 'אם', 'לא', 'כן', 'זה', 'זו', 'לי', 'לך', 'לנו', 'צריך', 'לקנות', 'לעשות', 'לבדוק', 'להזמין', 'רונן', 'עדי', 'משותף']);
+
+        return clean
+          .split(/\s+/)
+          .map(w => w.replace(/^[הובלמכש]/, '')) // הסרת תחילית דקדוקית בסיסית
+          .filter(w => w.length >= 2 && !stopWords.has(w));
+      }
+
+      /**
+       * בודק האם טקסט שהוקלד שייך כתת-משימה לאחת המשימות הקיימות בלוח!
+       * מחזיר את משימת האב המתאימה ביותר וציון ההתאמה.
+       */
+      static findParentTaskMatch(inputText = '', existingTasks = []) {
+        const raw = String(inputText || '').trim();
+        if (raw.length < 3 || !existingTasks.length) return null;
+
+        const openTasks = existingTasks.filter(t => !t.done);
+        const candidates = openTasks.length > 0 ? openTasks : existingTasks;
+
+        // 1. אם המשתמש התחיל ב-">" או "תת:" נשייך למשימה הראשונה או לפי מילת מפתח
+        const explicitSub = raw.startsWith('>') || raw.startsWith('תת:') || raw.startsWith('+');
+        const cleanInput = raw.replace(/^(>|תת:|\+)\s*/, '').trim();
+        const inputLower = cleanInput.toLowerCase();
+        const inputTokens = this.tokenizeHebrew(cleanInput);
+
+        let bestTask = null;
+        let bestScore = 0;
+        let matchReason = '';
+
+        candidates.forEach(task => {
+          let score = 0;
+          let reason = '';
+          const taskText = `${task.title} ${task.notes || ''}`.toLowerCase();
+          const taskTokens = this.tokenizeHebrew(taskText);
+
+          // א. חפיפת מילים ישירה בין הקלט לכותרת משימת האב
+          inputTokens.forEach(tok => {
+            if (taskTokens.some(tTok => tTok === tok || (tTok.length >= 3 && tok.length >= 3 && (tTok.includes(tok) || tok.includes(tTok))))) {
+              score += 35;
+              reason = `מילת מפתח משותפת ("${tok}")`;
+            }
+          });
+
+          // ב. בדיקת שייכות לאותו אשכול סמנטי (למשל "פילטרים" -> שואב MOVA, "רב צהר" -> רב לחתונה)
+          SEMANTIC_CLUSTERS.forEach(cluster => {
+            const inputHasCluster = cluster.keywords.some(kw => inputLower.includes(kw));
+            const taskHasCluster = cluster.keywords.some(kw => taskText.includes(kw));
+            if (inputHasCluster && taskHasCluster) {
+              score += 50;
+              reason = `שייך לנושא "${cluster.name}"`;
+            }
+          });
+
+          // ג. אם הקלט זהה בדיוק לכותרת המשפט כולה, אל תציע כתת-משימה של עצמה
+          if (task.title.trim().toLowerCase() === inputLower) {
+            score = 0;
+          }
+
+          if (score > bestScore) {
+            bestScore = score;
+            bestTask = task;
+            matchReason = reason;
+          }
+        });
+
+        if (explicitSub && !bestTask && candidates.length > 0) {
+          bestTask = candidates[0];
+          bestScore = 100;
+          matchReason = 'סימון תת-משימה מפורש';
+        }
+
+        if (bestTask && bestScore >= 35) {
+          return {
+            parentTask: bestTask,
+            cleanSubtaskTitle: cleanInput,
+            score: bestScore,
+            reason: matchReason
+          };
+        }
+        return null;
+      }
+
+      /**
+       * מפענח הודעות וואטסאפ מועתקות (כולל תאריכים, שעות ושם השולח)
+       * ומסווג כל שורה למשימה חדשה או לתת-משימה של משימה קיימת!
+       */
+      static parseWhatsAppChat(rawText = '', existingTasks = []) {
+        const lines = String(rawText || '')
+          .split(/\r?\n/)
+          .map(l => l.trim())
+          .filter(Boolean);
+
+        const extractedItems = [];
+
+        // תבניות חותמת זמן של וואטסאפ באייפון ובאנדרואיד:
+        // [06/11/2026, 10:15:22] עדי: צריך להזמין...
+        // 06.11.2026, 10:15 - רונן טבקמן: ...
+        const waHeaderRegex = /^(?:\[?\d{1,2}[./-]\d{1,2}[./-]\d{2,4},?\s+\d{1,2}:\d{2}(?::\d{2})?\]?\s*[-–]?\s*)([^:]+):\s*(.+)$/;
+
+        lines.forEach(line => {
+          let sender = '';
+          let content = line;
+
+          const waMatch = line.match(waHeaderRegex);
+          if (waMatch) {
+            sender = waMatch[1].trim();
+            content = waMatch[2].trim();
+          }
+
+          // ניקוי תווי רשימה מובילים
+          content = content.replace(/^[-*•✅⭕📌\d.)\]]+\s*/, '').trim();
+          if (content.length < 2) return;
+
+          // זיהוי אחראי (לפי התוכן או לפי השולח בוואטסאפ)
+          let assignee = 'both';
+          if (/\b(עדי|לעדי|של עדי)\b/.test(content)) assignee = 'adi';
+          else if (/\b(רונן|לרונן|של רונן)\b/.test(content)) assignee = 'ronen';
+          else if (sender.includes('עדי')) assignee = 'adi';
+          else if (sender.includes('רונן')) assignee = 'ronen';
+
+          // זיהוי קטגוריה
+          let category = 'wedding';
+          if (/(צימר|כינרת|כנרת|טיול|מלון|חופשה|מסלול|יקב|ווייז|waze|אגרה|גולן)/i.test(content)) category = 'trip';
+          else if (/(קניות|סופר|בשר|על האש|מנגל|סלט|חומוס|טחינה|מטבוחה|כרוב|בטטה|קצב|מסעדה|מיטבר)/i.test(content)) category = 'shopping';
+          else if (/(שואב|mova|מובה|פילטר|שקיות|בית|ניקיון|אליאקספרס|מצלמה|canon|מעגל|פרויקט)/i.test(content)) category = 'home';
+
+          // זיהוי דחיפות
+          let priority = 'medium';
+          if (/(דחוף|קריטי|מיידי|היום|חובה|🔥|!!)/.test(content)) priority = 'urgent';
+          else if (/(חשוב|גבוה|בהקדם|לפני הסופ"ש)/.test(content)) priority = 'high';
+
+          // חילוץ תקציב
+          let estimatedBudget = 0;
+          const bMatch = content.match(/(?:₪|ש"ח|שח|תקציב|עלות)\s*(\d[\d,]*)|(\d[\d,]*)\s*(?:₪|ש"ח|שח)/);
+          if (bMatch) {
+            estimatedBudget = Number((bMatch[1] || bMatch[2] || '').replace(/,/g, '')) || 0;
+          }
+
+          // בדיקה אוטומטית האם זו תת-משימה של משימה קיימת בלוח
+          const parentMatch = this.findParentTaskMatch(content, existingTasks);
+
+          // אם יש בשורה נקודתיים ורשימת פסיקים (למשל "לקנות לעל האש: פרגיות, אנטריקוט, חומוס")
+          const subtasks = [];
+          let finalTitle = content;
+          const colonParts = content.split(':');
+          if (colonParts.length === 2 && colonParts[1].includes(',')) {
+            finalTitle = colonParts[0].trim();
+            colonParts[1].split(',').map(s => s.trim()).filter(Boolean).forEach(sub => {
+              subtasks.push({ id: uid('s'), title: sub, done: false });
+            });
+          }
+
+          extractedItems.push({
+            tempId: uid('wa'),
+            title: finalTitle,
+            assignee,
+            category,
+            priority,
+            estimatedBudget,
+            subtasks,
+            targetType: parentMatch ? 'subtask' : 'new_task', // 'new_task' | 'subtask'
+            parentTaskId: parentMatch ? parentMatch.parentTask.id : (existingTasks[0]?.id || ''),
+            matchReason: parentMatch ? parentMatch.reason : ''
+          });
+        });
+
+        return extractedItems;
+      }
+    }
+
+    // ========================================================================
+    // 3. מנהל האפליקציה הראשי (Master App v3.0 Pro)
+    // ========================================================================
     class App {
       constructor() {
         this.user = localStorage.getItem(KEYS.USER) || 'ronen';
         this.cloudUrl = (localStorage.getItem(KEYS.CLOUD) || '').replace(/\/$/, '');
+        this.darkMode = localStorage.getItem(KEYS.THEME) === 'dark';
         this.cloudStatus = this.cloudUrl ? 'connecting' : 'offline';
-        this.view = 'cards';
-        this.modal = null;
+
+        this.view = 'cards'; // 'cards' | 'table' | 'kanban' | 'audit'
+        this.modal = null;   // null | 'edit' | 'whatsapp-import' | 'cloud' | 'gemini' | 'wa-share'
+        this.editingTask = null;
+        this.waExtractedDrafts = [];
+        this.waShareMode = 'adi_focus';
+
         this.filters = { q: '', assignee: 'all', category: 'all', status: 'all' };
+        this.liveSubtaskSuggestion = null;
+        this.autoSubtaskMode = false;
+
         this.lastCloudHash = '';
         this.isPushing = false;
 
         this.tasks = JSON.parse(localStorage.getItem(KEYS.TASKS) || 'null') || this.seed();
         this.audit = JSON.parse(localStorage.getItem(KEYS.AUDIT) || '[]');
+
+        if (this.darkMode) document.body.classList.add('dark-mode');
 
         this.checkUrlParams();
         this.bindEvents();
@@ -101,10 +408,11 @@
             category: 'wedding',
             assignee: 'both',
             priority: 'urgent',
-            notes: 'לבדוק המלצות, סגנון חופה ותיאום מול המועצה הדתית',
+            pinned: true,
+            notes: 'לבדוק המלצות, סגנון חופה שמתאים לשניכם, ותיאום מול המועצה הדתית',
             subtasks: [
               { id: 's1', title: 'בדיקת רשימת רבנים מומלצים', done: false },
-              { id: 's2', title: 'פגישת הכרות וסגירת תאריך', done: false },
+              { id: 's2', title: 'פגישת הכרות וסגירת תאריך עם הרב', done: false },
               { id: 's3', title: 'פתיחת תיק נישואין ברבנות', done: false }
             ]
           }),
@@ -115,7 +423,10 @@
             assignee: 'ronen',
             priority: 'medium',
             estimatedBudget: 120,
-            notes: 'לבדוק מלאי פילטרים, שקיות אבק, מטליות ומברשות ולהזמין מאליאקספרס'
+            notes: 'לבדוק מלאי פילטרים, שקיות אבק, מטליות ומברשות ולהזמין מאליאקספרס',
+            subtasks: [
+              { id: 's4', title: 'בדיקת כמות שקיות אבק ופילטרים בארון', done: false }
+            ]
           })
         ];
       }
@@ -133,7 +444,7 @@
 
       saveLocal() {
         localStorage.setItem(KEYS.TASKS, JSON.stringify(this.tasks));
-        localStorage.setItem(KEYS.AUDIT, JSON.stringify(this.audit.slice(0, 60)));
+        localStorage.setItem(KEYS.AUDIT, JSON.stringify(this.audit.slice(0, 80)));
       }
 
       async syncMutation(actionLabel, taskTitle = '') {
@@ -144,14 +455,16 @@
           action: actionLabel,
           taskTitle,
           time: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
-        }, ...this.audit].slice(0, 60);
+        }, ...this.audit].slice(0, 80);
 
         this.saveLocal();
         this.render();
         if (this.cloudUrl) await this.pushToCloud();
       }
 
-      // --- מנוע סנכרון ענן בזמן אמת (Firebase Realtime DB REST) ---
+      // ----------------------------------------------------------------------
+      // סנכרון ענן בזמן אמת (Firebase Realtime DB)
+      // ----------------------------------------------------------------------
       getEndpoint() {
         return `${this.cloudUrl}/ronen_adi_board.json`;
       }
@@ -166,17 +479,16 @@
             tasks: this.tasks,
             audit: this.audit
           };
-          const bodyStr = JSON.stringify(payload);
           this.lastCloudHash = JSON.stringify(this.tasks) + JSON.stringify(this.audit);
           const res = await fetch(this.getEndpoint(), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: bodyStr
+            body: JSON.stringify(payload)
           });
           if (!res.ok) throw new Error('HTTP ' + res.status);
           this.cloudStatus = 'online';
           this.renderHeader();
-        } catch (e) {
+        } catch {
           this.cloudStatus = 'error';
           this.renderHeader();
         } finally {
@@ -185,7 +497,7 @@
       }
 
       async pullFromCloud(isInitial = false) {
-        if (!this.cloudUrl || this.isPushing) return;
+        if (!this.cloudUrl || this.isPushing || this.modal === 'edit') return;
         try {
           const res = await fetch(this.getEndpoint());
           if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -222,12 +534,16 @@
 
       toast(msg, color = 'slate') {
         const box = document.getElementById('toast-box');
+        if (!box) return;
         const el = document.createElement('div');
-        const bg = color === 'emerald' ? 'bg-emerald-600' : color === 'red' ? 'bg-red-600' : 'bg-slate-900';
-        el.className = `${bg} text-white px-4 py-2 rounded-xl shadow-lg text-xs sm:text-sm font-bold`;
-        el.textContent = msg;
+        const bg = color === 'emerald' ? 'bg-emerald-600' : color === 'red' ? 'bg-red-600' : color === 'indigo' ? 'bg-indigo-600' : 'bg-slate-900';
+        el.className = `${bg} text-white px-4 py-2.5 rounded-xl shadow-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all duration-300 pointer-events-auto`;
+        el.innerHTML = `<span>⚡</span><span>${esc(msg)}</span>`;
         box.appendChild(el);
-        setTimeout(() => el.remove(), 3000);
+        setTimeout(() => {
+          el.style.opacity = '0';
+          setTimeout(() => el.remove(), 250);
+        }, 3200);
       }
 
       getFiltered() {
@@ -238,11 +554,23 @@
           if (this.filters.assignee === 'ronen' && !(t.assignee === 'ronen' || t.assignee === 'both')) return false;
           if (this.filters.assignee === 'adi' && !(t.assignee === 'adi' || t.assignee === 'both')) return false;
           if (this.filters.category !== 'all' && t.category !== this.filters.category) return false;
-          if (q && !t.title.toLowerCase().includes(q) && !(t.notes || '').toLowerCase().includes(q)) return false;
+          if (q) {
+            const inTitle = t.title.toLowerCase().includes(q);
+            const inNotes = (t.notes || '').toLowerCase().includes(q);
+            const inSub = (t.subtasks || []).some(s => s.title.toLowerCase().includes(q));
+            if (!inTitle && !inNotes && !inSub) return false;
+          }
           return true;
-        }).sort((a, b) => (a.done === b.done ? (PRIORITIES[b.priority]?.weight || 2) - (PRIORITIES[a.priority]?.weight || 2) : a.done ? 1 : -1));
+        }).sort((a, b) => {
+          if (a.done !== b.done) return a.done ? 1 : -1;
+          if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+          return (PRIORITIES[b.priority]?.weight || 2) - (PRIORITIES[a.priority]?.weight || 2);
+        });
       }
 
+      // ----------------------------------------------------------------------
+      // רינדור שכבות ה-UI
+      // ----------------------------------------------------------------------
       render() {
         this.renderHeader();
         this.renderQuickAdd();
@@ -252,35 +580,91 @@
       }
 
       renderHeader() {
-        const doneCount = this.tasks.filter(t => t.done).length;
         const total = this.tasks.length;
+        const doneCount = this.tasks.filter(t => t.done).length;
         const pct = total ? Math.round((doneCount / total) * 100) : 0;
-        const budget = this.tasks.reduce((s, t) => s + (Number(t.estimatedBudget) || 0), 0);
+        const estTotal = this.tasks.reduce((s, t) => s + (Number(t.estimatedBudget) || 0), 0);
+        const actTotal = this.tasks.reduce((s, t) => s + (Number(t.actualCost) || 0), 0);
+        const ronenOpen = this.tasks.filter(t => !t.done && (t.assignee === 'ronen' || t.assignee === 'both')).length;
+        const adiOpen = this.tasks.filter(t => !t.done && (t.assignee === 'adi' || t.assignee === 'both')).length;
 
-        const badge = this.cloudStatus === 'online'
-          ? `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">☁️ מסונכרן חי בענן</span>`
+        const cloudBadge = this.cloudStatus === 'online'
+          ? `<button type="button" data-action="modal" data-modal="cloud" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 cursor-pointer"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>☁️ מסונכרן חי בענן</button>`
           : this.cloudStatus === 'error'
-          ? `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-300">⚠️ שגיאת ענן (בדוק קישור)</span>`
-          : `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">💾 שמירה מקומית (לחץ לחיבור ענן)</span>`;
+          ? `<button type="button" data-action="modal" data-modal="cloud" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-300 cursor-pointer">⚠️ שגיאת ענן (לחץ לבדיקה)</button>`
+          : `<button type="button" data-action="modal" data-modal="cloud" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300 cursor-pointer">☁️ חבר ענן</button>`;
 
         document.getElementById('header-slot').innerHTML = `
-          <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
-            <div class="max-w-6xl mx-auto px-3 sm:px-6 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-              <div>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <h1 class="text-lg sm:text-xl font-extrabold">⚡ המרחב של רונן ועדי</h1>
-                  ${badge}
+          <header class="bg-white/95 glass-header border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+            <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3">
+              <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <h1 class="text-lg sm:text-2xl font-black tracking-tight text-slate-900">⚡ המרחב של רונן ועדי</h1>
+                      ${cloudBadge}
+                    </div>
+                    <p class="text-xs text-slate-500 mt-0.5">ניהול משימות חכם • זיהוי תתי-משימות אוטומטי • סנכרון WhatsApp ו-Gemini</p>
+                  </div>
+                  <button type="button" data-action="toggle-theme" class="lg:hidden p-2 rounded-xl border border-slate-200 text-sm cursor-pointer" title="מצב כהה/בהיר">
+                    ${this.darkMode ? '☀️' : '🌙'}
+                  </button>
                 </div>
-                <p class="text-xs text-slate-500 mt-0.5">הושלמו ${doneCount}/${total} (${pct}%) • תקציב משוער: ₪${budget.toLocaleString()}</p>
+
+                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <div class="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200">
+                    <button type="button" data-action="user" data-user="ronen" class="px-3 py-1 rounded-lg text-xs font-bold cursor-pointer transition-all ${this.user === 'ronen' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600'}">👨🏻‍💻 רונן</button>
+                    <button type="button" data-action="user" data-user="adi" class="px-3 py-1 rounded-lg text-xs font-bold cursor-pointer transition-all ${this.user === 'adi' ? 'bg-pink-600 text-white shadow-xs' : 'text-slate-600'}">👩🏻 עדי</button>
+                  </div>
+
+                  <button type="button" data-action="modal" data-modal="whatsapp-import" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-xs cursor-pointer">
+                    📥 ייבוא מ-WhatsApp
+                  </button>
+
+                  <button type="button" data-action="modal" data-modal="gemini" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs cursor-pointer">
+                    ✨ גשר Gemini
+                  </button>
+
+                  <button type="button" data-action="modal" data-modal="wa-share" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs cursor-pointer">
+                    📲 שלח לעדי
+                  </button>
+
+                  <button type="button" data-action="toggle-theme" class="hidden lg:inline-flex p-1.5 rounded-xl border border-slate-200 text-xs cursor-pointer" title="מצב כהה/בהיר">
+                    ${this.darkMode ? '☀️' : '🌙'}
+                  </button>
+                </div>
               </div>
-              <div class="flex flex-wrap items-center gap-2">
-                <div class="inline-flex bg-slate-100 p-1 rounded-xl border">
-                  <button type="button" data-action="user" data-user="ronen" class="px-3 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.user === 'ronen' ? 'bg-blue-600 text-white' : 'text-slate-600'}">👨🏻‍💻 רונן</button>
-                  <button type="button" data-action="user" data-user="adi" class="px-3 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.user === 'adi' ? 'bg-pink-600 text-white' : 'text-slate-600'}">👩🏻 עדי</button>
+
+              <!-- 4 מדדי KPI מהירים -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 pt-2.5 border-t border-slate-100 text-xs">
+                <div class="bg-slate-50 rounded-xl px-3 py-2 border border-slate-200/60 flex items-center justify-between">
+                  <div>
+                    <span class="text-slate-500 block">התקדמות</span>
+                    <strong class="text-sm sm:text-base font-extrabold text-slate-900">${doneCount}/${total} (${pct}%)</strong>
+                  </div>
+                  <span class="text-lg">🎯</span>
                 </div>
-                <button type="button" data-action="modal" data-modal="cloud" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-white cursor-pointer">☁️ חיבור ענן</button>
-                <button type="button" data-action="modal" data-modal="gemini" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white cursor-pointer">✨ גשר Gemini</button>
-                <button type="button" data-action="share-wa" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 text-white cursor-pointer">📲 שלח לעדי ב-WhatsApp</button>
+                <div class="bg-blue-50/50 rounded-xl px-3 py-2 border border-blue-200/50 flex items-center justify-between">
+                  <div>
+                    <span class="text-blue-700 block">פתוחות לרונן</span>
+                    <strong class="text-sm sm:text-base font-extrabold text-slate-900">${ronenOpen} משימות</strong>
+                  </div>
+                  <span class="text-lg">👨🏻‍💻</span>
+                </div>
+                <div class="bg-pink-50/50 rounded-xl px-3 py-2 border border-pink-200/50 flex items-center justify-between">
+                  <div>
+                    <span class="text-pink-700 block">פתוחות לעדי</span>
+                    <strong class="text-sm sm:text-base font-extrabold text-slate-900">${adiOpen} משימות</strong>
+                  </div>
+                  <span class="text-lg">👩🏻</span>
+                </div>
+                <div class="bg-emerald-50/50 rounded-xl px-3 py-2 border border-emerald-200/50 flex items-center justify-between">
+                  <div>
+                    <span class="text-emerald-800 block">תקציב (מתוכנן / בפועל)</span>
+                    <strong class="text-sm sm:text-base font-extrabold text-slate-900 font-mono">₪${estTotal.toLocaleString()} <span class="text-xs font-normal text-slate-500">/ ₪${actTotal.toLocaleString()}</span></strong>
+                  </div>
+                  <span class="text-lg">💰</span>
+                </div>
               </div>
             </div>
           </header>
@@ -289,42 +673,138 @@
 
       renderQuickAdd() {
         const cats = Object.values(CATEGORIES).map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
+        const openTasksOptions = this.tasks
+          .filter(t => !t.done)
+          .map(t => `<option value="${t.id}">↳ כתת-משימה תחת: ${esc(t.title.slice(0, 42))}</option>`)
+          .join('');
+
         document.getElementById('quickadd-slot').innerHTML = `
-          <form id="add-form" class="bg-white rounded-2xl border border-slate-200 p-3 mb-4 flex flex-col sm:flex-row gap-2 shadow-2xs">
-            <input type="text" id="t-title" required placeholder="הוסף משימה חדשה..." class="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500" />
-            <div class="flex flex-wrap gap-1.5">
-              <select id="t-assignee" class="rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold">
-                <option value="both">💑 משותף</option>
-                <option value="ronen">👨🏻‍💻 רונן</option>
-                <option value="adi">👩🏻 עדי</option>
-              </select>
-              <select id="t-category" class="rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold">${cats}</select>
-              <select id="t-priority" class="rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold">
-                <option value="medium">📌 רגילה</option>
-                <option value="high">⚡ גבוהה</option>
-                <option value="urgent">🔥 דחוף</option>
-                <option value="low">🌱 נמוכה</option>
-              </select>
-              <input type="number" id="t-budget" placeholder="תקציב ₪" class="w-24 rounded-xl border border-slate-300 px-2.5 py-2 text-xs" />
-              <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold cursor-pointer">+ הוסף</button>
+          <section class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-xs space-y-2.5">
+            <form id="add-form" class="space-y-2.5">
+              <div class="flex flex-col lg:flex-row gap-2">
+                <div class="flex-1 relative">
+                  <input
+                    type="text"
+                    id="t-title"
+                    required
+                    autocomplete="off"
+                    placeholder="הקלד משימה או שלב (המערכת תזהה אוטומטית אם זו תת-משימה של משימה קיימת!)..."
+                    class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                  />
+                </div>
+
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <select id="t-target-parent" class="rounded-xl border border-indigo-200 bg-indigo-50/50 text-indigo-900 px-2.5 py-2 text-xs font-bold max-w-[210px]">
+                    <option value="NEW_TASK">🆕 צור כמשימה ראשית חדשה</option>
+                    ${openTasksOptions}
+                  </select>
+
+                  <select id="t-assignee" class="rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold">
+                    <option value="both">💑 משותף</option>
+                    <option value="ronen">👨🏻‍💻 רונן</option>
+                    <option value="adi">👩🏻 עדי</option>
+                  </select>
+
+                  <select id="t-category" class="rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold">${cats}</select>
+
+                  <select id="t-priority" class="rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-bold">
+                    <option value="medium">📌 רגילה</option>
+                    <option value="high">⚡ גבוהה</option>
+                    <option value="urgent">🔥 דחוף</option>
+                    <option value="low">🌱 נמוכה</option>
+                  </select>
+
+                  <input type="number" id="t-budget" placeholder="תקציב ₪" class="w-20 rounded-xl border border-slate-300 px-2.5 py-2 text-xs font-mono" />
+
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-xs sm:text-sm font-extrabold cursor-pointer transition-all">
+                    + הוסף
+                  </button>
+                </div>
+              </div>
+
+              <!-- באנר זיהוי חכם בזמן הקלדה (Smart Subtask Detection Banner) -->
+              <div id="smart-subtask-banner" class="hidden rounded-xl bg-indigo-50 border border-indigo-200 px-3.5 py-2 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2"></div>
+            </form>
+          </section>
+        `;
+      }
+
+      updateLiveSubtaskBanner(inputValue) {
+        const banner = document.getElementById('smart-subtask-banner');
+        const parentSelect = document.getElementById('t-target-parent');
+        if (!banner) return;
+
+        const match = SmartSubtaskAndWhatsAppEngine.findParentTaskMatch(inputValue, this.tasks);
+        this.liveSubtaskSuggestion = match;
+
+        if (!match) {
+          banner.classList.add('hidden');
+          if (parentSelect && this.autoSubtaskMode) parentSelect.value = 'NEW_TASK';
+          return;
+        }
+
+        if (parentSelect && this.autoSubtaskMode) {
+          parentSelect.value = match.parentTask.id;
+        }
+
+        banner.classList.remove('hidden');
+        banner.innerHTML = `
+          <div class="flex items-center gap-2 text-indigo-950">
+            <span class="text-base">🧠</span>
+            <div>
+              <strong>זיהוי חכם (${esc(match.reason)}):</strong>
+              נראה שמה שהקלדת שייך כתת-משימה למשימה הקיימת:
+              <span class="underline font-extrabold text-indigo-700">"${esc(match.parentTask.title)}"</span>
             </div>
-          </form>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              data-action="quick-attach-subtask"
+              data-parent-id="${match.parentTask.id}"
+              class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold cursor-pointer shadow-2xs">
+              ↳ הוסף כתת-משימה שלה עכשיו
+            </button>
+          </div>
         `;
       }
 
       renderToolbar() {
+        const catFilterBtns = [
+          { id: 'all', label: 'כל הקטגוריות' },
+          ...Object.values(CATEGORIES).map(c => ({ id: c.id, label: `${c.icon} ${c.label}` }))
+        ].map(c => `
+          <button type="button" data-action="f-cat" data-val="${c.id}"
+            class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer transition-all ${
+              this.filters.category === c.id ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }">${c.label}</button>
+        `).join('');
+
         document.getElementById('toolbar-slot').innerHTML = `
-          <div class="bg-white rounded-2xl border border-slate-200 p-3 mb-4 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex gap-1.5">
-              <button type="button" data-action="view" data-view="cards" class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${this.view === 'cards' ? 'bg-slate-900 text-white' : 'bg-slate-100'}">🗂️ כרטיסיות</button>
-              <button type="button" data-action="view" data-view="table" class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${this.view === 'table' ? 'bg-slate-900 text-white' : 'bg-slate-100'}">📊 טבלה ותקציב</button>
-              <button type="button" data-action="view" data-view="audit" class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${this.view === 'audit' ? 'bg-slate-900 text-white' : 'bg-slate-100'}">🕒 יומן (${this.audit.length})</button>
+          <div class="bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" data-action="view" data-view="cards" class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${this.view === 'cards' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700'}">🗂️ כרטיסיות</button>
+                <button type="button" data-action="view" data-view="table" class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${this.view === 'table' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700'}">📊 טבלה הנדסית ותקציב</button>
+                <button type="button" data-action="view" data-view="kanban" class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${this.view === 'kanban' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700'}">📋 לוח קנבן</button>
+                <button type="button" data-action="view" data-view="audit" class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${this.view === 'audit' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700'}">🕒 יומן (${this.audit.length})</button>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button type="button" data-action="f-assign" data-val="all" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.filters.assignee === 'all' ? 'bg-indigo-600 text-white' : 'bg-slate-100'}">הכל</button>
+                <button type="button" data-action="f-assign" data-val="ronen" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.filters.assignee === 'ronen' ? 'bg-indigo-600 text-white' : 'bg-slate-100'}">👨🏻‍💻 רונן</button>
+                <button type="button" data-action="f-assign" data-val="adi" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.filters.assignee === 'adi' ? 'bg-indigo-600 text-white' : 'bg-slate-100'}">👩🏻 עדי</button>
+                <select id="f-status" class="rounded-lg border border-slate-300 px-2 py-1 text-xs font-bold">
+                  <option value="all" ${this.filters.status === 'all' ? 'selected' : ''}>כל הסטטוסים</option>
+                  <option value="open" ${this.filters.status === 'open' ? 'selected' : ''}>⭕ פתוחות</option>
+                  <option value="done" ${this.filters.status === 'done' ? 'selected' : ''}>✅ בוצעו</option>
+                </select>
+                <input type="search" id="q-input" value="${esc(this.filters.q)}" placeholder="חיפוש משימה/שלב..." class="rounded-lg border border-slate-300 px-2.5 py-1 text-xs outline-none focus:border-indigo-500" />
+              </div>
             </div>
-            <div class="flex flex-wrap gap-1.5 items-center">
-              <button type="button" data-action="f-assign" data-val="all" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.filters.assignee === 'all' ? 'bg-indigo-600 text-white' : 'bg-slate-100'}">הכל</button>
-              <button type="button" data-action="f-assign" data-val="ronen" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.filters.assignee === 'ronen' ? 'bg-indigo-600 text-white' : 'bg-slate-100'}">👨🏻‍💻 רונן</button>
-              <button type="button" data-action="f-assign" data-val="adi" class="px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.filters.assignee === 'adi' ? 'bg-indigo-600 text-white' : 'bg-slate-100'}">👩🏻 עדי</button>
-              <input type="search" id="q-input" value="${esc(this.filters.q)}" placeholder="חיפוש..." class="rounded-lg border px-2.5 py-1 text-xs" />
+
+            <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100">
+              ${catFilterBtns}
             </div>
           </div>
         `;
@@ -335,139 +815,524 @@
         const list = this.getFiltered();
 
         if (this.view === 'audit') {
-          slot.innerHTML = `<div class="bg-white rounded-2xl border divide-y">${this.audit.map(a => `
-            <div class="p-3 flex justify-between text-xs">
-              <span>${a.actorAvatar} <strong>${esc(a.actorName)}</strong> ${esc(a.action)} ${a.taskTitle ? `"${esc(a.taskTitle)}"` : ''}</span>
-              <span class="font-mono text-slate-400">${esc(a.time)}</span>
-            </div>`).join('') || '<div class="p-6 text-center text-xs text-slate-400">אין פעולות עדיין</div>'}</div>`;
+          slot.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100">${this.audit.map(a => `
+            <div class="p-3 flex justify-between items-center text-xs sm:text-sm">
+              <span>${a.actorAvatar} <strong>${esc(a.actorName)}</strong> ${esc(a.action)} ${a.taskTitle ? `<span class="text-indigo-600 font-bold">"${esc(a.taskTitle)}"</span>` : ''}</span>
+              <span class="font-mono text-xs text-slate-400">${esc(a.time)}</span>
+            </div>`).join('') || '<div class="p-8 text-center text-xs text-slate-400">אין פעולות ביומן עדיין</div>'}</div>`;
+          return;
+        }
+
+        if (this.view === 'kanban') {
+          const cols = [
+            { id: 'todo', title: '⭕ לביצוע', items: list.filter(t => !t.done && t.status !== 'in_progress') },
+            { id: 'in_progress', title: '⏳ בתהליך', items: list.filter(t => !t.done && t.status === 'in_progress') },
+            { id: 'done', title: '✅ בוצע', items: list.filter(t => t.done) }
+          ];
+          slot.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-4">${cols.map(c => `
+            <div class="bg-slate-200/60 rounded-2xl p-3 border border-slate-200 space-y-2.5">
+              <div class="font-extrabold text-sm flex justify-between items-center px-1">
+                <span>${c.title}</span>
+                <span class="px-2 py-0.5 rounded-full bg-white text-xs">${c.items.length}</span>
+              </div>
+              <div class="space-y-2">${c.items.map(t => `
+                <div class="bg-white rounded-xl p-3 border border-slate-200 shadow-2xs space-y-2">
+                  <div class="flex justify-between items-center text-[11px]">
+                    <span class="font-bold text-slate-500">${USERS[t.assignee]?.avatar} ${USERS[t.assignee]?.name}</span>
+                    <button type="button" data-action="open-edit" data-id="${t.id}" class="text-indigo-600 font-bold cursor-pointer">✏️ ערוך</button>
+                  </div>
+                  <div class="font-bold text-sm ${t.done ? 'line-through text-slate-400' : ''}">${esc(t.title)}</div>
+                  <div class="flex gap-1 pt-1 border-t border-slate-100">
+                    ${c.id !== 'todo' ? `<button type="button" data-action="set-status" data-id="${t.id}" data-status="todo" class="px-2 py-1 rounded bg-slate-100 text-[11px] font-bold cursor-pointer">לביצוע</button>` : ''}
+                    ${c.id !== 'in_progress' ? `<button type="button" data-action="set-status" data-id="${t.id}" data-status="in_progress" class="px-2 py-1 rounded bg-amber-100 text-amber-900 text-[11px] font-bold cursor-pointer">⏳ בתהליך</button>` : ''}
+                    ${c.id !== 'done' ? `<button type="button" data-action="set-status" data-id="${t.id}" data-status="done" class="px-2 py-1 rounded bg-emerald-600 text-white text-[11px] font-bold cursor-pointer">✅ בוצע</button>` : ''}
+                  </div>
+                </div>`).join('') || '<div class="text-center text-xs text-slate-400 py-6">ריק</div>'}
+              </div>
+            </div>`).join('')}</div>`;
           return;
         }
 
         if (this.view === 'table') {
           const totalEst = list.reduce((s, t) => s + (Number(t.estimatedBudget) || 0), 0);
+          const totalAct = list.reduce((s, t) => s + (Number(t.actualCost) || 0), 0);
           slot.innerHTML = `
-            <div class="bg-white rounded-2xl border overflow-x-auto">
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-xs">
               <table class="w-full text-right text-xs">
-                <thead class="bg-slate-100 font-bold border-b">
-                  <tr><th class="p-2.5 text-center">בוצע</th><th class="p-2.5">משימה</th><th class="p-2.5">אחראי</th><th class="p-2.5">קטגוריה</th><th class="p-2.5">תקציב (₪)</th><th class="p-2.5 text-center">מחק</th></tr>
+                <thead class="bg-slate-100 font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="p-2.5 text-center">בוצע</th>
+                    <th class="p-2.5">משימה והערות</th>
+                    <th class="p-2.5">אחראי</th>
+                    <th class="p-2.5">קטגוריה</th>
+                    <th class="p-2.5">שלבים</th>
+                    <th class="p-2.5">מתוכנן (₪)</th>
+                    <th class="p-2.5">בפועל (₪)</th>
+                    <th class="p-2.5 text-center">פעולות</th>
+                  </tr>
                 </thead>
-                <tbody class="divide-y">${list.map(t => `
-                  <tr class="${t.done ? 'bg-emerald-50/40 text-slate-400 line-through' : ''}">
+                <tbody class="divide-y divide-slate-200">${list.map(t => {
+                  const prog = calcSubProgress(t);
+                  return `
+                  <tr class="hover:bg-slate-50 ${t.done ? 'bg-emerald-50/30 text-slate-400' : ''}">
                     <td class="p-2.5 text-center"><input type="checkbox" data-action="toggle" data-id="${t.id}" ${t.done ? 'checked' : ''} class="w-4 h-4 cursor-pointer" /></td>
-                    <td class="p-2.5 font-bold">${esc(t.title)}</td>
+                    <td class="p-2.5">
+                      <div class="font-bold text-sm ${t.done ? 'line-through' : ''}">${esc(t.title)}</div>
+                      ${t.notes ? `<div class="text-[11px] text-slate-500">${esc(t.notes)}</div>` : ''}
+                    </td>
                     <td class="p-2.5">${USERS[t.assignee]?.avatar} ${USERS[t.assignee]?.name}</td>
                     <td class="p-2.5">${CATEGORIES[t.category]?.icon} ${CATEGORIES[t.category]?.label}</td>
+                    <td class="p-2.5 font-mono">${prog.has ? `${prog.done}/${prog.total}` : '-'}</td>
                     <td class="p-2.5 font-mono">₪${Number(t.estimatedBudget || 0).toLocaleString()}</td>
-                    <td class="p-2.5 text-center"><button type="button" data-action="del" data-id="${t.id}" class="cursor-pointer">🗑️</button></td>
-                  </tr>`).join('')}</tbody>
+                    <td class="p-2.5 font-mono">₪${Number(t.actualCost || 0).toLocaleString()}</td>
+                    <td class="p-2.5 text-center space-x-1 space-x-reverse">
+                      <button type="button" data-action="open-edit" data-id="${t.id}" class="px-2 py-1 rounded bg-indigo-50 text-indigo-700 font-bold cursor-pointer">✏️ ערוך</button>
+                      <button type="button" data-action="del" data-id="${t.id}" class="px-2 py-1 rounded hover:bg-red-50 text-red-600 cursor-pointer">🗑️</button>
+                    </td>
+                  </tr>`;
+                }).join('')}</tbody>
                 <tfoot class="bg-slate-900 text-white font-bold">
-                  <tr><td colspan="4" class="p-2.5">סה"כ:</td><td colspan="2" class="p-2.5 font-mono">₪${totalEst.toLocaleString()}</td></tr>
+                  <tr>
+                    <td colspan="5" class="p-3">סה"כ לתצוגה הנוכחית (${list.length} משימות):</td>
+                    <td class="p-3 font-mono">₪${totalEst.toLocaleString()}</td>
+                    <td colspan="2" class="p-3 font-mono">בפועל: ₪${totalAct.toLocaleString()} (הפרש: ₪${(totalEst - totalAct).toLocaleString()})</td>
+                  </tr>
                 </tfoot>
               </table>
             </div>`;
           return;
         }
 
-        slot.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">${list.map(t => {
+        // תצוגת כרטיסיות משודרגת (Cards View)
+        if (!list.length) {
+          slot.innerHTML = `<div class="bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">אין משימות שתואמות לסינון הנוכחי.</div>`;
+          return;
+        }
+
+        slot.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${list.map(t => {
           const cat = CATEGORIES[t.category] || CATEGORIES.wedding;
           const own = USERS[t.assignee] || USERS.both;
           const prio = PRIORITIES[t.priority] || PRIORITIES.medium;
+          const prog = calcSubProgress(t);
           const subs = t.subtasks || [];
+
           return `
-            <article class="bg-white rounded-2xl border ${t.done ? 'border-emerald-200 bg-emerald-50/20 opacity-80' : 'border-slate-200'} p-4 flex flex-col justify-between shadow-2xs">
+            <article class="bg-white rounded-2xl border ${
+              t.done ? 'border-emerald-200 bg-emerald-50/10 opacity-85' : t.pinned ? 'border-indigo-400 ring-2 ring-indigo-100 shadow-md' : 'border-slate-200 shadow-xs'
+            } p-4 flex flex-col justify-between transition-all">
               <div>
-                <div class="flex justify-between items-center gap-1 flex-wrap mb-2">
-                  <div class="flex gap-1 flex-wrap">
-                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold border ${cat.badge}">${cat.icon} ${cat.label}</span>
-                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold border ${own.badge}">${own.avatar} ${own.name}</span>
+                <!-- תגיות וכפתורי עריכה/נעיצה/שיתוף -->
+                <div class="flex justify-between items-center gap-1 flex-wrap mb-2.5">
+                  <div class="flex gap-1.5 flex-wrap items-center">
+                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${cat.badge}">${cat.icon} ${cat.label}</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${own.badge}">${own.avatar} ${own.name}</span>
                     <span class="px-2 py-0.5 rounded-full text-[11px] border ${prio.badge}">${prio.icon} ${prio.label}</span>
                   </div>
-                  <button type="button" data-action="del" data-id="${t.id}" class="text-slate-300 hover:text-red-600 text-xs cursor-pointer">🗑️</button>
-                </div>
-                <div class="flex items-start gap-2.5 my-1.5">
-                  <button type="button" data-action="toggle" data-id="${t.id}" class="mt-0.5 w-6 h-6 rounded-lg border-2 flex items-center justify-center cursor-pointer shrink-0 ${t.done ? 'bg-emerald-500 border-emerald-500 text-white font-bold' : 'border-slate-300 bg-white text-transparent'}">✓</button>
-                  <div>
-                    <h3 class="font-bold text-sm sm:text-base ${t.done ? 'line-through text-slate-400' : ''}">${esc(t.title)}</h3>
-                    ${t.notes ? `<p class="text-xs text-slate-500 mt-1">📝 ${esc(t.notes)}</p>` : ''}
+
+                  <div class="flex items-center gap-1">
+                    <button type="button" data-action="pin" data-id="${t.id}" class="p-1.5 rounded-lg text-xs ${t.pinned ? 'bg-amber-100 text-amber-800' : 'text-slate-400 hover:bg-slate-100'} cursor-pointer" title="נעץ בראש הרשימה">📌</button>
+                    <button type="button" data-action="open-edit" data-id="${t.id}" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 cursor-pointer" title="ערוך משימה ותתי-משימות">✏️ ערוך</button>
+                    <button type="button" data-action="wa-single" data-id="${t.id}" class="p-1.5 rounded-lg text-xs text-emerald-600 hover:bg-emerald-50 cursor-pointer" title="שלח משימה זו לעדי בוואטסאפ">📲</button>
+                    <button type="button" data-action="del" data-id="${t.id}" class="p-1.5 rounded-lg text-xs text-slate-300 hover:text-red-600 cursor-pointer" title="מחק משימה">🗑️</button>
                   </div>
                 </div>
-                <div class="mt-2.5 pt-2 border-t border-slate-100 space-y-1.5">
-                  ${subs.map(s => `
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" data-action="toggle-sub" data-id="${t.id}" data-sub="${s.id}" ${s.done ? 'checked' : ''} class="rounded text-indigo-600" />
-                      <span class="${s.done ? 'line-through text-slate-400' : 'font-medium'}">${esc(s.title)}</span>
-                    </label>`).join('')}
-                  <div class="flex gap-1 pt-1">
-                    <input type="text" id="sub-in-${t.id}" placeholder="הוסף תת-משימה..." class="flex-1 border rounded-lg px-2 py-1 text-xs" />
-                    <button type="button" data-action="add-sub" data-id="${t.id}" class="px-2.5 py-1 bg-slate-800 text-white rounded-lg text-xs font-bold cursor-pointer">+</button>
+
+                <!-- כותרת וכפתור סימון בוצע -->
+                <div class="flex items-start gap-3 my-2">
+                  <button type="button" data-action="toggle" data-id="${t.id}" class="mt-0.5 w-7 h-7 rounded-xl border-2 flex items-center justify-center cursor-pointer shrink-0 transition-all ${
+                    t.done ? 'bg-emerald-500 border-emerald-500 text-white font-bold shadow-xs' : 'border-slate-300 hover:border-indigo-500 bg-white text-transparent'
+                  }">✓</button>
+                  <div class="flex-1">
+                    <h3 class="font-extrabold text-base leading-snug ${t.done ? 'line-through text-slate-400' : 'text-slate-900'}">${esc(t.title)}</h3>
+                    ${t.notes ? `<p class="text-xs text-slate-600 mt-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100">📝 ${esc(t.notes)}</p>` : ''}
+                    ${t.link ? `<a href="${esc(t.link)}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 mt-1.5 text-xs font-bold text-indigo-600 hover:underline">🔗 פתח קישור מצורף ↗</a>` : ''}
+                  </div>
+                </div>
+
+                <!-- אזור תתי-משימות עם פס התקדמות -->
+                <div class="mt-3 pt-2.5 border-t border-slate-100 space-y-2">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-600">שלבים ותתי-משימות (${prog.done}/${prog.total})</span>
+                    <span class="font-mono font-bold text-indigo-600">${prog.pct}%</span>
+                  </div>
+                  ${prog.has ? `
+                    <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div class="h-full bg-indigo-600 transition-all duration-300" style="width:${prog.pct}%"></div>
+                    </div>
+                    <ul class="divide-y divide-slate-100 bg-slate-50/70 rounded-xl p-1.5 border border-slate-200/60">
+                      ${subs.map(s => `
+                        <li class="flex items-center justify-between gap-2 py-1 px-2 rounded-lg hover:bg-white">
+                          <label class="flex items-center gap-2 text-xs sm:text-sm cursor-pointer flex-1">
+                            <input type="checkbox" data-action="toggle-sub" data-id="${t.id}" data-sub="${s.id}" ${s.done ? 'checked' : ''} class="w-4 h-4 rounded text-indigo-600 cursor-pointer" />
+                            <span class="${s.done ? 'line-through text-slate-400' : 'font-medium text-slate-800'}">${esc(s.title)}</span>
+                          </label>
+                          <button type="button" data-action="del-sub" data-id="${t.id}" data-sub="${s.id}" class="text-slate-300 hover:text-red-500 text-xs px-1 cursor-pointer">✕</button>
+                        </li>`).join('')}
+                    </ul>
+                  ` : ''}
+
+                  <div class="flex gap-1.5 pt-1">
+                    <input type="text" id="sub-in-${t.id}" placeholder="הוסף תת-משימה / שלב ביצוע..." class="flex-1 border border-slate-300 rounded-xl px-3 py-1.5 text-xs outline-none focus:border-indigo-500" />
+                    <button type="button" data-action="add-sub" data-id="${t.id}" class="px-3 py-1.5 bg-slate-800 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold cursor-pointer">+ שלב</button>
                   </div>
                 </div>
               </div>
-              <div class="mt-3 pt-2 border-t border-slate-100 flex justify-between text-[11px] text-slate-400">
-                <span>${t.estimatedBudget > 0 ? `💰 ₪${Number(t.estimatedBudget).toLocaleString()}` : ''}</span>
+
+              <!-- תחתית הכרטיסייה -->
+              <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                  ${t.dueDate ? `<span>📅 ${esc(t.dueDate)}</span>` : '<span>ללא תאריך יעד</span>'}
+                  ${t.estimatedBudget > 0 ? `<span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">💰 ₪${Number(t.estimatedBudget).toLocaleString()}</span>` : ''}
+                </div>
                 <span>${t.done ? `✅ בוצע ע"י ${USERS[t.completedBy]?.name || 'משותף'}` : ''}</span>
               </div>
             </article>`;
         }).join('')}</div>`;
       }
 
+      // ----------------------------------------------------------------------
+      // 4. חלונות מודאליים: עריכת משימה, חילוץ מ-WhatsApp, גשר Gemini, ענן
+      // ----------------------------------------------------------------------
       renderModal() {
         const slot = document.getElementById('modal-slot');
         if (!this.modal) { slot.innerHTML = ''; return; }
 
-        if (this.modal === 'cloud') {
+        // א. מודאל עריכת משימה מלאה (Edit Task & Subtasks Modal)
+        if (this.modal === 'edit' && this.editingTask) {
+          const t = this.editingTask;
+          const catOpts = Object.values(CATEGORIES).map(c => `<option value="${c.id}" ${t.category === c.id ? 'selected' : ''}>${c.icon} ${c.label}</option>`).join('');
+          const prioOpts = Object.values(PRIORITIES).map(p => `<option value="${p.id}" ${t.priority === p.id ? 'selected' : ''}>${p.icon} ${p.label}</option>`).join('');
+
+          const subsEditorHtml = (t.subtasks || []).map((s, idx) => `
+            <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+              <input type="checkbox" class="edit-sub-done w-4 h-4 rounded" data-idx="${idx}" ${s.done ? 'checked' : ''} />
+              <input type="text" class="edit-sub-title flex-1 border rounded-lg px-2.5 py-1 text-xs font-medium" data-idx="${idx}" value="${esc(s.title)}" />
+              <button type="button" data-action="edit-modal-del-sub" data-idx="${idx}" class="text-red-500 hover:bg-red-50 px-2 py-1 rounded text-xs font-bold cursor-pointer">מחק</button>
+            </div>
+          `).join('');
+
           slot.innerHTML = `
-            <div class="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
-              <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl">
+            <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+              <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden my-8">
+                <div class="px-5 py-3.5 bg-indigo-600 text-white flex justify-between items-center">
+                  <h2 class="font-extrabold text-base">✏️ עריכת משימה ותתי-משימות</h2>
+                  <button type="button" data-action="close-modal" class="text-white font-bold text-lg cursor-pointer">✕</button>
+                </div>
+
+                <form id="edit-task-form" class="p-5 space-y-3.5 max-h-[82vh] overflow-y-auto text-xs sm:text-sm">
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">כותרת המשימה</label>
+                    <input type="text" id="ed-title" required value="${esc(t.title)}" class="w-full border rounded-xl px-3 py-2 font-bold" />
+                  </div>
+
+                  <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">אחראי</label>
+                      <select id="ed-assignee" class="w-full border rounded-xl px-2.5 py-2 font-bold">
+                        <option value="both" ${t.assignee === 'both' ? 'selected' : ''}>💑 משותף</option>
+                        <option value="ronen" ${t.assignee === 'ronen' ? 'selected' : ''}>👨🏻‍💻 רונן</option>
+                        <option value="adi" ${t.assignee === 'adi' ? 'selected' : ''}>👩🏻 עדי</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">קטגוריה</label>
+                      <select id="ed-category" class="w-full border rounded-xl px-2.5 py-2 font-bold">${catOpts}</select>
+                    </div>
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">דחיפות</label>
+                      <select id="ed-priority" class="w-full border rounded-xl px-2.5 py-2 font-bold">${prioOpts}</select>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">תאריך יעד</label>
+                      <input type="date" id="ed-duedate" value="${esc(t.dueDate)}" class="w-full border rounded-xl px-2.5 py-2" />
+                    </div>
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">תקציב משוער (₪)</label>
+                      <input type="number" id="ed-est-budget" value="${Number(t.estimatedBudget) || 0}" class="w-full border rounded-xl px-2.5 py-2 font-mono" />
+                    </div>
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">עלות בפועל (₪)</label>
+                      <input type="number" id="ed-act-cost" value="${Number(t.actualCost) || 0}" class="w-full border rounded-xl px-2.5 py-2 font-mono" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">קישור חיצוני (Waze / אתר צימר / אליאקספרס / מסעדה)</label>
+                    <input type="url" id="ed-link" value="${esc(t.link || '')}" placeholder="https://..." class="w-full border rounded-xl px-3 py-2 font-mono text-xs" />
+                  </div>
+
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">הערות ודגשים</label>
+                    <textarea id="ed-notes" rows="2" class="w-full border rounded-xl p-2.5">${esc(t.notes)}</textarea>
+                  </div>
+
+                  <!-- ניהול ועריכת תתי-משימות -->
+                  <div class="pt-2 border-t border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                      <label class="font-extrabold text-slate-800">שלבים ותתי-משימות (${(t.subtasks || []).length})</label>
+                      <button type="button" data-action="edit-modal-add-sub" class="px-2.5 py-1 rounded-lg bg-slate-800 text-white text-xs font-bold cursor-pointer">+ הוסף שלב</button>
+                    </div>
+                    <div class="space-y-1.5 max-h-44 overflow-y-auto">
+                      ${subsEditorHtml || '<p class="text-xs text-slate-400">אין תתי-משימות כרגע.</p>'}
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between pt-3 border-t border-slate-200">
+                    <button type="button" data-action="close-modal" class="px-4 py-2 rounded-xl border border-slate-300 font-bold cursor-pointer">ביטול</button>
+                    <button type="submit" class="px-6 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold shadow-md cursor-pointer">💾 שמור שינויים</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        // ב. מודאל ייבוא וחילוץ משימות מהודעות WhatsApp
+        if (this.modal === 'whatsapp-import') {
+          const parentOptions = this.tasks.map(t => `<option value="${t.id}">↳ תת-משימה של: ${esc(t.title.slice(0, 38))}</option>`).join('');
+
+          const previewRows = this.waExtractedDrafts.map((d, idx) => `
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
+              <div class="flex flex-col sm:flex-row gap-2">
+                <input type="text" data-wa-idx="${idx}" data-wa-field="title" value="${esc(d.title)}" class="flex-1 border rounded-lg px-2.5 py-1.5 font-bold" />
+                <select data-wa-idx="${idx}" data-wa-field="mode" class="border rounded-lg px-2 py-1.5 font-bold ${d.targetType === 'subtask' ? 'bg-indigo-50 text-indigo-800 border-indigo-300' : 'bg-emerald-50 text-emerald-800 border-emerald-300'}">
+                  <option value="NEW" ${d.targetType === 'new_task' ? 'selected' : ''}>🆕 משימה חדשה</option>
+                  ${this.tasks.map(t => `<option value="${t.id}" ${d.targetType === 'subtask' && d.parentTaskId === t.id ? 'selected' : ''}>↳ תת-משימה תחת: ${esc(t.title.slice(0, 35))}</option>`).join('')}
+                </select>
+              </div>
+              <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+                <span>אחראי שזוהה: <strong>${USERS[d.assignee]?.avatar} ${USERS[d.assignee]?.name}</strong> | קטגוריה: <strong>${CATEGORIES[d.category]?.label}</strong> ${d.estimatedBudget ? `| תקציב: ₪${d.estimatedBudget}` : ''}</span>
+                ${d.matchReason ? `<span class="text-indigo-600 font-bold">🧠 זוהה קשר אוטומטי: ${esc(d.matchReason)}</span>` : ''}
+              </div>
+            </div>
+          `).join('');
+
+          slot.innerHTML = `
+            <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+              <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden my-8">
+                <div class="px-5 py-3.5 bg-teal-600 text-white flex justify-between items-center">
+                  <div>
+                    <h2 class="font-extrabold text-base">📥 חילוץ חכם של משימות ותתי-משימות מ-WhatsApp</h2>
+                    <p class="text-xs text-teal-100">הדבק הודעות מוואטסאפ — המערכת תנקה תאריכים ותזהה אוטומטית מה משימה חדשה ומה תת-משימה!</p>
+                  </div>
+                  <button type="button" data-action="close-modal" class="text-white font-bold text-lg cursor-pointer">✕</button>
+                </div>
+
+                <div class="p-5 space-y-4 max-h-[82vh] overflow-y-auto">
+                  <textarea
+                    id="wa-raw-input"
+                    rows="4"
+                    placeholder="הדבק כאן הודעה או שיחה מוואטסאפ, למשל:&#10;[06/11/2026, 11:20] עדי: צריך לבדוק רב מצהר ולשאול על תאריך&#10;[06/11/2026, 11:21] רונן: להזמין שקיות אבק ומטליות לשואב MOVA תקציב 120 ש״ח&#10;לסגור צימר בכינרת 1600 ש״ח"
+                    class="w-full border rounded-xl p-3 text-xs sm:text-sm outline-none focus:border-teal-600"
+                  ></textarea>
+
+                  <div class="flex justify-end">
+                    <button type="button" data-action="analyze-wa-text" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-teal-600 text-white text-xs font-extrabold cursor-pointer">
+                      🔍 נתח הודעות וואטסאפ וזהה קשרים
+                    </button>
+                  </div>
+
+                  ${this.waExtractedDrafts.length > 0 ? `
+                    <div class="space-y-2.5 pt-3 border-t border-slate-200">
+                      <h3 class="text-xs sm:text-sm font-extrabold text-slate-800">תצוגה מקדימה לאישור (${this.waExtractedDrafts.length} פריטים זוהו):</h3>
+                      <div class="space-y-2 max-h-60 overflow-y-auto">${previewRows}</div>
+                      <div class="flex justify-end pt-2">
+                        <button type="button" data-action="commit-wa-import" class="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-extrabold shadow-md cursor-pointer">
+                          ✅ אשר והוסף הכל ללוח המשותף
+                        </button>
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        // ג. מודאל שליחה מעוצבת לעדי בוואטסאפ
+        if (this.modal === 'wa-share') {
+          const base = window.location.href.split('?')[0];
+          const link = this.cloudUrl ? `${base}?cloud=${encodeURIComponent(this.cloudUrl)}` : base;
+          const openTasks = this.tasks.filter(t => !t.done);
+          const filteredForWa = this.waShareMode === 'adi_focus'
+            ? openTasks.filter(t => t.assignee === 'adi' || t.assignee === 'both')
+            : openTasks;
+
+          const lines = filteredForWa.map((t, i) => {
+            const subProg = calcSubProgress(t);
+            const subStr = subProg.has ? ` [${subProg.done}/${subProg.total}]` : '';
+            const subLines = (t.subtasks || []).filter(s => !s.done).map(s => `   ▫️ ${s.title}`).join('\n');
+            return `${i + 1}. *${t.title}* (${USERS[t.assignee].name})${subStr}${subLines ? '\n' + subLines : ''}`;
+          }).join('\n');
+
+          const waMsg = `היי עדי ❤️, הנה עדכון מהלוח המשותף שלנו:\n\n${lines || '🎉 כל המשימות הושלמו!'}\n\n🔗 *לפתיחה וסימון בזמן אמת:*\n${link}`;
+
+          slot.innerHTML = `
+            <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div class="bg-white rounded-2xl max-w-lg w-full p-5 space-y-3.5 shadow-2xl">
                 <div class="flex justify-between items-center">
-                  <h2 class="font-extrabold text-base">☁️ הגדרת סנכרון ענן חי (Firebase)</h2>
+                  <h2 class="font-extrabold text-base">📲 שליחת עדכון לעדי ב-WhatsApp</h2>
                   <button type="button" data-action="close-modal" class="font-bold cursor-pointer">✕</button>
                 </div>
-                <p class="text-xs text-slate-600">הדבק כאן את כתובת ה-Realtime Database מ-Firebase. כשתשלח לעדי קישור בוואטסאפ, הענן יתחבר אצלה אוטומטית!</p>
-                <input type="url" id="cloud-url-input" value="${esc(this.cloudUrl)}" placeholder="https://your-project-default-rtdb.firebaseio.com" class="w-full border rounded-xl p-2.5 text-xs font-mono" />
+                <div class="flex gap-2">
+                  <button type="button" data-action="wa-share-mode" data-mode="adi_focus" class="px-3 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.waShareMode === 'adi_focus' ? 'bg-emerald-600 text-white' : 'bg-slate-100'}">👩🏻 משימות עדי + משותפות</button>
+                  <button type="button" data-action="wa-share-mode" data-mode="all" class="px-3 py-1 rounded-lg text-xs font-bold cursor-pointer ${this.waShareMode === 'all' ? 'bg-emerald-600 text-white' : 'bg-slate-100'}">📋 כל המשימות הפתוחות</button>
+                </div>
+                <textarea id="wa-out-box" rows="7" class="w-full border rounded-xl p-3 text-xs bg-slate-50">${esc(waMsg)}</textarea>
                 <div class="flex justify-end gap-2">
-                  <button type="button" data-action="save-cloud" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold cursor-pointer">💾 שמור והתחבר לענן</button>
+                  <button type="button" data-action="copy-wa-out" class="px-4 py-2 border rounded-xl text-xs font-bold cursor-pointer">📋 העתק</button>
+                  <button type="button" data-action="send-wa-out" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-extrabold cursor-pointer">🚀 שלח ב-WhatsApp</button>
                 </div>
               </div>
             </div>`;
-        } else if (this.modal === 'gemini') {
-          const jsonExport = JSON.stringify({ tasks: this.tasks }, null, 2);
+          return;
+        }
+
+        // ד. מודאל חיבור ענן Firebase
+        if (this.modal === 'cloud') {
           slot.innerHTML = `
-            <div class="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
-              <div class="bg-white rounded-2xl max-w-lg w-full p-5 space-y-3 shadow-2xl">
+            <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl">
                 <div class="flex justify-between items-center">
-                  <h2 class="font-extrabold text-base">✨ סנכרון מול הצ'אט של Gemini</h2>
+                  <h2 class="font-extrabold text-base">☁️ חיבור ענן בזמן אמת (Firebase)</h2>
                   <button type="button" data-action="close-modal" class="font-bold cursor-pointer">✕</button>
                 </div>
-                <p class="text-xs text-slate-600">העתק להדבקה אצל Gemini, או הדבק כאן JSON ש-Gemini יצר עבורך:</p>
+                <p class="text-xs text-slate-600">כתובת ה-Realtime Database שלך שמורה ומסנכרנת כל שינוי בינך לבין עדי תוך שניות:</p>
+                <input type="url" id="cloud-url-input" value="${esc(this.cloudUrl)}" placeholder="https://your-project-default-rtdb.firebaseio.com" class="w-full border rounded-xl p-2.5 text-xs font-mono" />
+                <div class="flex justify-end gap-2">
+                  <button type="button" data-action="save-cloud" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold cursor-pointer">💾 שמור והתחבר</button>
+                </div>
+              </div>
+            </div>`;
+          return;
+        }
+
+        // ה. מודאל גשר סנכרון מול Gemini
+        if (this.modal === 'gemini') {
+          const jsonExport = JSON.stringify({ tasks: this.tasks }, null, 2);
+          slot.innerHTML = `
+            <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div class="bg-white rounded-2xl max-w-lg w-full p-5 space-y-3 shadow-2xl">
+                <div class="flex justify-between items-center">
+                  <h2 class="font-extrabold text-base">✨ סנכרון דו-כיווני מול הצ'אט של Gemini</h2>
+                  <button type="button" data-action="close-modal" class="font-bold cursor-pointer">✕</button>
+                </div>
+                <p class="text-xs text-slate-600">העתק להדבקה בצ'אט עם Gemini, או הדבק כאן JSON ש-Gemini בנה עבורך:</p>
                 <textarea id="gem-box" rows="6" class="w-full border rounded-xl p-2.5 text-xs font-mono">${esc(jsonExport)}</textarea>
                 <div class="flex justify-between">
-                  <button type="button" data-action="copy-gem" class="px-3 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold cursor-pointer">📋 העתק מצב נוכחי</button>
-                  <button type="button" data-action="import-gem" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold cursor-pointer">📥 טען JSON מ-Gemini</button>
+                  <button type="button" data-action="copy-gem" class="px-3.5 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold cursor-pointer">📋 העתק מצב נוכחי</button>
+                  <button type="button" data-action="import-gem" class="px-3.5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold cursor-pointer">📥 מזג JSON מ-Gemini</button>
                 </div>
               </div>
             </div>`;
         }
       }
 
+      // ----------------------------------------------------------------------
+      // 5. ניהול אירועים (Event Delegation)
+      // ----------------------------------------------------------------------
       bindEvents() {
+        // זיהוי תתי-משימות בזמן הקלדה בשדה הראשי
+        document.addEventListener('input', e => {
+          if (e.target.id === 't-title') {
+            this.updateLiveSubtaskBanner(e.target.value);
+          } else if (e.target.id === 'q-input') {
+            this.filters.q = e.target.value;
+            this.renderView();
+          }
+        });
+
+        document.addEventListener('change', e => {
+          if (e.target.id === 'f-status') {
+            this.filters.status = e.target.value;
+            this.renderView();
+          } else if (e.target.dataset.waIdx !== undefined) {
+            const idx = Number(e.target.dataset.waIdx);
+            const field = e.target.dataset.waField;
+            if (!this.waExtractedDrafts[idx]) return;
+            if (field === 'title') {
+              this.waExtractedDrafts[idx].title = e.target.value;
+            } else if (field === 'mode') {
+              if (e.target.value === 'NEW') {
+                this.waExtractedDrafts[idx].targetType = 'new_task';
+              } else {
+                this.waExtractedDrafts[idx].targetType = 'subtask';
+                this.waExtractedDrafts[idx].parentTaskId = e.target.value;
+              }
+            }
+          }
+        });
+
+        // שליחת טפסים (הוספת משימה/תת-משימה + שמירת חלון עריכה)
         document.addEventListener('submit', e => {
           if (e.target.id === 'add-form') {
             e.preventDefault();
-            const title = document.getElementById('t-title').value.trim();
-            if (!title) return;
+            const titleIn = document.getElementById('t-title');
+            const rawTitle = titleIn?.value.trim();
+            if (!rawTitle) return;
+
+            const targetParentId = document.getElementById('t-target-parent')?.value || 'NEW_TASK';
+
+            if (targetParentId !== 'NEW_TASK') {
+              const cleanSub = rawTitle.replace(/^(>|תת:|\+)\s*/, '').trim();
+              let parentName = '';
+              this.tasks = this.tasks.map(t => {
+                if (t.id !== targetParentId) return t;
+                parentName = t.title;
+                return {
+                  ...t,
+                  subtasks: [...(t.subtasks || []), { id: uid('s'), title: cleanSub, done: false }]
+                };
+              });
+              this.toast(`נוסף כתת-משימה תחת "${parentName}"! 🔗`, 'indigo');
+              this.syncMutation(`הוסיף/ה תת-משימה ("${cleanSub}") תחת:`, parentName);
+              return;
+            }
+
             const t = normTask({
-              title,
+              title: rawTitle,
               assignee: document.getElementById('t-assignee').value,
               category: document.getElementById('t-category').value,
               priority: document.getElementById('t-priority').value,
               estimatedBudget: document.getElementById('t-budget').value
             }, this.user);
+
             this.tasks.unshift(t);
+            this.toast(`המשימה "${t.title}" נוספה ללוח!`, 'emerald');
             this.syncMutation('הוסיף/ה משימה:', t.title);
+          } else if (e.target.id === 'edit-task-form' && this.editingTask) {
+            e.preventDefault();
+            this.syncSubtaskInputsFromEditDom();
+
+            const updated = normTask({
+              ...this.editingTask,
+              title: document.getElementById('ed-title').value.trim(),
+              assignee: document.getElementById('ed-assignee').value,
+              category: document.getElementById('ed-category').value,
+              priority: document.getElementById('ed-priority').value,
+              dueDate: document.getElementById('ed-duedate').value,
+              estimatedBudget: document.getElementById('ed-est-budget').value,
+              actualCost: document.getElementById('ed-act-cost').value,
+              link: document.getElementById('ed-link').value.trim(),
+              notes: document.getElementById('ed-notes').value.trim(),
+              subtasks: this.editingTask.subtasks,
+              updatedAt: new Date().toISOString()
+            }, this.user);
+
+            this.tasks = this.tasks.map(item => item.id === updated.id ? updated : item);
+            this.modal = null;
+            this.editingTask = null;
+            this.toast('המשימה עודכנה בהצלחה! ✏️', 'emerald');
+            this.syncMutation('ערך/ה משימה:', updated.title);
           }
         });
 
+        // לחיצות על כפתורי פעולה
         document.addEventListener('click', e => {
           const btn = e.target.closest('[data-action]');
           if (!btn) return;
@@ -476,7 +1341,30 @@
           if (act === 'user') {
             this.user = btn.dataset.user;
             localStorage.setItem(KEYS.USER, this.user);
+            this.toast(`משתמש פעיל: ${USERS[this.user].name} ${USERS[this.user].avatar}`);
             this.renderHeader();
+          } else if (act === 'toggle-theme') {
+            this.darkMode = !this.darkMode;
+            document.body.classList.toggle('dark-mode', this.darkMode);
+            localStorage.setItem(KEYS.THEME, this.darkMode ? 'dark' : 'light');
+            this.renderHeader();
+          } else if (act === 'quick-attach-subtask') {
+            const parentId = btn.dataset.parentId;
+            const titleIn = document.getElementById('t-title');
+            const cleanSub = (titleIn?.value || '').replace(/^(>|תת:|\+)\s*/, '').trim();
+            if (!cleanSub) return;
+
+            let parentTitle = '';
+            this.tasks = this.tasks.map(t => {
+              if (t.id !== parentId) return t;
+              parentTitle = t.title;
+              return {
+                ...t,
+                subtasks: [...(t.subtasks || []), { id: uid('s'), title: cleanSub, done: false }]
+              };
+            });
+            this.toast(`שויך חכם כתת-משימה תחת "${parentTitle}"! 🧠`, 'indigo');
+            this.syncMutation(`הוסיף/ה תת-משימה חכמה ("${cleanSub}") תחת:`, parentTitle);
           } else if (act === 'view') {
             this.view = btn.dataset.view;
             this.renderToolbar();
@@ -485,15 +1373,26 @@
             this.filters.assignee = btn.dataset.val;
             this.renderToolbar();
             this.renderView();
+          } else if (act === 'f-cat') {
+            this.filters.category = btn.dataset.val;
+            this.renderToolbar();
+            this.renderView();
           } else if (act === 'toggle') {
             let title = '';
             this.tasks = this.tasks.map(t => {
               if (t.id !== btn.dataset.id) return t;
               title = t.title;
               const next = !t.done;
-              return { ...t, done: next, completedBy: next ? this.user : null };
+              return { ...t, done: next, status: next ? 'done' : 'todo', completedBy: next ? this.user : null };
             });
-            this.syncMutation('שינה/תה סטטוס משימה:', title);
+            this.syncMutation('סימן/ה משימה:', title);
+          } else if (act === 'pin') {
+            this.tasks = this.tasks.map(t => t.id === btn.dataset.id ? { ...t, pinned: !t.pinned } : t);
+            this.syncMutation('נעץ/שחרר משימה');
+          } else if (act === 'set-status') {
+            const { id, status } = btn.dataset;
+            this.tasks = this.tasks.map(t => t.id === id ? { ...t, status, done: status === 'done', completedBy: status === 'done' ? this.user : null } : t);
+            this.syncMutation('שינה/תה סטטוס בקנבן');
           } else if (act === 'add-sub') {
             const id = btn.dataset.id;
             const val = document.getElementById(`sub-in-${id}`)?.value.trim();
@@ -506,15 +1405,93 @@
               ...t, subtasks: (t.subtasks || []).map(s => s.id === sub ? { ...s, done: !s.done } : s)
             } : t);
             this.syncMutation('סימן/ה שלב בתת-משימה');
+          } else if (act === 'del-sub') {
+            const { id, sub } = btn.dataset;
+            this.tasks = this.tasks.map(t => t.id === id ? {
+              ...t, subtasks: (t.subtasks || []).filter(s => s.id !== sub)
+            } : t);
+            this.syncMutation('מחק/ה תת-משימה');
           } else if (act === 'del') {
             this.tasks = this.tasks.filter(t => t.id !== btn.dataset.id);
             this.syncMutation('מחק/ה משימה');
+          } else if (act === 'open-edit') {
+            const found = this.tasks.find(t => t.id === btn.dataset.id);
+            if (found) {
+              this.editingTask = JSON.parse(JSON.stringify(found));
+              this.modal = 'edit';
+              this.renderModal();
+            }
+          } else if (act === 'edit-modal-add-sub') {
+            if (!this.editingTask) return;
+            this.syncSubtaskInputsFromEditDom();
+            this.editingTask.subtasks.push({ id: uid('s'), title: 'שלב חדש', done: false });
+            this.renderModal();
+          } else if (act === 'edit-modal-del-sub') {
+            if (!this.editingTask) return;
+            this.syncSubtaskInputsFromEditDom();
+            const idx = Number(btn.dataset.idx);
+            this.editingTask.subtasks.splice(idx, 1);
+            this.renderModal();
           } else if (act === 'modal') {
             this.modal = btn.dataset.modal;
+            if (this.modal === 'whatsapp-import') this.waExtractedDrafts = [];
             this.renderModal();
           } else if (act === 'close-modal') {
             this.modal = null;
+            this.editingTask = null;
             this.renderModal();
+          } else if (act === 'analyze-wa-text') {
+            const raw = document.getElementById('wa-raw-input')?.value || '';
+            this.waExtractedDrafts = SmartSubtaskAndWhatsAppEngine.parseWhatsAppChat(raw, this.tasks);
+            if (!this.waExtractedDrafts.length) {
+              this.toast('לא זוהו שורות טקסט תקינות', 'red');
+            }
+            this.renderModal();
+          } else if (act === 'commit-wa-import') {
+            let newCount = 0;
+            let subCount = 0;
+            this.waExtractedDrafts.forEach(d => {
+              if (!d.title.trim()) return;
+              if (d.targetType === 'subtask' && d.parentTaskId) {
+                this.tasks = this.tasks.map(t => {
+                  if (t.id !== d.parentTaskId) return t;
+                  subCount += 1;
+                  return {
+                    ...t,
+                    subtasks: [...(t.subtasks || []), { id: uid('s'), title: d.title.trim(), done: false }]
+                  };
+                });
+              } else {
+                newCount += 1;
+                this.tasks.unshift(normTask({
+                  title: d.title.trim(),
+                  assignee: d.assignee,
+                  category: d.category,
+                  priority: d.priority,
+                  estimatedBudget: d.estimatedBudget,
+                  subtasks: d.subtasks || []
+                }, this.user));
+              }
+            });
+            this.waExtractedDrafts = [];
+            this.modal = null;
+            this.toast(`יובאו מוואטסאפ: ${newCount} משימות ו-${subCount} תתי-משימות! 📥`, 'emerald');
+            this.syncMutation(`ייבא/ה מ-WhatsApp (${newCount} משימות, ${subCount} תתי-משימות)`);
+          } else if (act === 'wa-share-mode') {
+            this.waShareMode = btn.dataset.mode;
+            this.renderModal();
+          } else if (act === 'copy-wa-out') {
+            navigator.clipboard.writeText(document.getElementById('wa-out-box')?.value || '');
+            this.toast('ההודעה הועתקה ללוח!', 'emerald');
+          } else if (act === 'send-wa-out') {
+            const txt = document.getElementById('wa-out-box')?.value || '';
+            window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
+          } else if (act === 'wa-single') {
+            const t = this.tasks.find(x => x.id === btn.dataset.id);
+            if (!t) return;
+            const subs = (t.subtasks || []).map(s => `${s.done ? '✅' : '▫️'} ${s.title}`).join('\n');
+            const msg = `*משימה מהלוח שלנו:* ${t.title}\nאחראי: ${USERS[t.assignee].name}${t.notes ? '\n📝 ' + t.notes : ''}${subs ? '\n\n*שלבים:*\n' + subs : ''}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
           } else if (act === 'save-cloud') {
             const val = document.getElementById('cloud-url-input')?.value.trim().replace(/\/$/, '');
             this.cloudUrl = val;
@@ -536,26 +1513,41 @@
               const arr = Array.isArray(parsed) ? parsed : (parsed.tasks || []);
               this.tasks = arr.map(t => normTask(t, this.user));
               this.modal = null;
-              this.syncMutation('עדכן/ה משימות מ-Gemini');
+              this.syncMutation('מזג/ה משימות מ-Gemini');
               this.toast('המשימות עודכנו מ-Gemini!', 'emerald');
             } catch {
               this.toast('שגיאה בפענוח ה-JSON', 'red');
             }
-          } else if (act === 'share-wa') {
-            const base = window.location.href.split('?')[0];
-            const link = this.cloudUrl ? `${base}?cloud=${encodeURIComponent(this.cloudUrl)}` : base;
-            const openList = this.tasks.filter(t => !t.done).map((t, i) => `${i + 1}. *${t.title}* (${USERS[t.assignee].name})`).join('\n');
-            const msg = `היי עדי ❤️, הנה הלוח המשותף שלנו:\n\n${openList || 'הכל בוצע!'}\n\n🔗 *לפתיחה וסימון בזמן אמת:*\n${link}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+          } else if (act === 'export-backup') {
+            const blob = new Blob([JSON.stringify(this.tasks, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `ronen-adi-backup-${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+          } else if (act === 'force-cloud-pull') {
+            this.pullFromCloud(true);
+            this.toast('מסנכרן מול הענן...', 'indigo');
           }
         });
+      }
 
-        document.addEventListener('input', e => {
-          if (e.target.id === 'q-input') {
-            this.filters.q = e.target.value;
-            this.renderView();
+      syncSubtaskInputsFromEditDom() {
+        if (!this.editingTask) return;
+        const titleEls = document.querySelectorAll('.edit-sub-title');
+        const doneEls = document.querySelectorAll('.edit-sub-done');
+        titleEls.forEach(el => {
+          const i = Number(el.dataset.idx);
+          if (this.editingTask.subtasks[i]) {
+            this.editingTask.subtasks[i].title = el.value.trim();
           }
         });
+        doneEls.forEach(el => {
+          const i = Number(el.dataset.idx);
+          if (this.editingTask.subtasks[i]) {
+            this.editingTask.subtasks[i].done = el.checked;
+          }
+        });
+        this.editingTask.subtasks = this.editingTask.subtasks.filter(s => s.title.length > 0);
       }
     }
 
