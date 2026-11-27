@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#f4f6fb" />
+  <meta name="theme-color" content="#f3f5fa" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="רונן & עדי" />
-  <title>Pulse Duo ⚡ רונן ועדי v4.1 Turbo</title>
+  <title>Pulse Duo ⚡ רונן ועדי v5.0</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,7 +17,7 @@
     :root {
       --bg-app: #f3f5fa;
       --bg-card: #ffffff;
-      --bg-elev: #f1f5f9;
+      --bg-elev: #eef2f7;
       --bg-input: #f8fafc;
       --bg-bar: #ffffff;
       --text-1: #0f172a;
@@ -26,23 +26,22 @@
       --border: #e2e8f0;
       --border-2: #cbd5e1;
       --indigo: #4f46e5;
-      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --indigo-soft: rgba(79, 70, 229, 0.11);
       --emerald: #059669;
-      --emerald-soft: rgba(5, 150, 105, 0.12);
+      --emerald-soft: rgba(5, 150, 105, 0.11);
       --rose: #e11d48;
-      --rose-soft: rgba(225, 29, 72, 0.12);
+      --rose-soft: rgba(225, 29, 72, 0.11);
       --amber: #d97706;
       --amber-soft: rgba(217, 119, 6, 0.13);
       --blue: #2563eb;
-      --blue-soft: rgba(37, 99, 235, 0.12);
+      --blue-soft: rgba(37, 99, 235, 0.11);
       --pink: #db2777;
-      --pink-soft: rgba(219, 39, 119, 0.12);
+      --pink-soft: rgba(219, 39, 119, 0.11);
       --teal: #0d9488;
       --shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.05);
-      --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.12);
+      --shadow-md: 0 10px 28px rgba(15, 23, 42, 0.13);
       --radius-lg: 18px;
       --radius-md: 12px;
-      --radius-sm: 9px;
     }
 
     html.dark {
@@ -70,7 +69,7 @@
       --pink-soft: rgba(236, 72, 153, 0.22);
       --teal: #14b8a6;
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.28);
-      --shadow-md: 0 14px 36px rgba(0, 0, 0, 0.55);
+      --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.55);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -88,7 +87,7 @@
 
     body {
       min-height: 100vh;
-      padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px));
+      padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
     }
 
     button, input, select, textarea, a, label {
@@ -105,8 +104,7 @@
       user-select: none;
       -webkit-user-select: none;
     }
-
-    button:active { opacity: 0.82; }
+    button:active { opacity: 0.8; }
 
     .mono {
       font-family: 'JetBrains Mono', ui-monospace, monospace;
@@ -118,7 +116,7 @@
     .no-scroll::-webkit-scrollbar { display: none; }
     .no-scroll { scrollbar-width: none; -ms-overflow-style: none; }
 
-    /* Layout & Header */
+    /* Header */
     .top-header {
       position: sticky;
       top: 0;
@@ -128,7 +126,7 @@
     }
 
     .container {
-      max-width: 780px;
+      max-width: 760px;
       margin: 0 auto;
       padding: 0 14px;
     }
@@ -144,7 +142,7 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 8px;
       min-width: 0;
     }
 
@@ -168,10 +166,9 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      flex-wrap: nowrap;
     }
 
-    .cloud-pill {
+    .cloud-dot-btn {
       display: inline-flex;
       align-items: center;
       gap: 5px;
@@ -184,25 +181,13 @@
       color: var(--text-2);
     }
 
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .dot-online { background: #10b981; }
     .dot-connecting { background: #f59e0b; }
     .dot-error { background: #f43f5e; }
     .dot-offline { background: #94a3b8; }
 
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .desk-nav {
+    .desk-tabs {
       display: none;
       background: var(--bg-elev);
       border: 1px solid var(--border);
@@ -210,28 +195,23 @@
       border-radius: 12px;
       gap: 3px;
     }
-
-    .desk-nav button {
-      padding: 5px 12px;
+    .desk-tabs button {
+      padding: 6px 14px;
       border-radius: 9px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 800;
       color: var(--text-2);
     }
-
-    .desk-nav button.active {
+    .desk-tabs button.active {
       background: var(--indigo);
       color: #fff;
     }
 
-    .desk-new-btn {
-      display: none;
-      padding: 7px 13px;
-      border-radius: 11px;
-      background: var(--indigo);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 800;
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
     }
 
     .user-pill {
@@ -243,8 +223,8 @@
       font-size: 12px;
       font-weight: 800;
     }
-    .user-ronen { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(37, 99, 235, 0.25); }
-    .user-adi { background: var(--pink-soft); color: var(--pink); border: 1px solid rgba(219, 39, 119, 0.25); }
+    .user-ronen { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(37, 99, 235, 0.24); }
+    .user-adi { background: var(--pink-soft); color: var(--pink); border: 1px solid rgba(219, 39, 119, 0.24); }
 
     .icon-btn {
       width: 34px;
@@ -258,14 +238,24 @@
       font-size: 15px;
     }
 
+    .desk-new-btn {
+      display: none;
+      padding: 7px 14px;
+      border-radius: 11px;
+      background: var(--indigo);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
     main.container {
       padding-top: 14px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 13px;
     }
 
-    /* Cards & Surfaces */
+    /* Core Cards & Buttons */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -300,24 +290,10 @@
       font-weight: 700;
       color: var(--text-2);
     }
+    .bento-val { font-size: 15px; font-weight: 900; color: var(--text-1); }
+    .bento-sub { font-size: 11px; color: var(--text-2); }
 
-    .bento-val {
-      font-size: 15px;
-      font-weight: 900;
-      color: var(--text-1);
-    }
-
-    .bento-sub {
-      font-size: 11px;
-      color: var(--text-2);
-    }
-
-    /* Quick launch bar */
-    .launch-row {
-      display: flex;
-      gap: 8px;
-    }
-
+    .launch-row { display: flex; gap: 8px; }
     .launch-main {
       flex: 1;
       min-width: 0;
@@ -330,71 +306,12 @@
       font-size: 13px;
       color: var(--text-2);
     }
-
-    .btn-primary {
-      background: var(--indigo);
-      color: #fff;
-      font-weight: 800;
-      border-radius: var(--radius-md);
-      padding: 10px 14px;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn-emerald {
-      background: var(--emerald);
-      color: #fff;
-      font-weight: 800;
-      border-radius: var(--radius-md);
-      padding: 10px 14px;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn-teal {
-      background: var(--teal);
-      color: #fff;
-      font-weight: 800;
-      border-radius: var(--radius-md);
-      padding: 10px 14px;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn-dark {
-      background: var(--text-1);
-      color: var(--bg-card);
-      font-weight: 800;
-      border-radius: var(--radius-md);
-      padding: 10px 14px;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn-soft {
-      background: var(--bg-elev);
-      color: var(--text-1);
-      border: 1px solid var(--border);
-      font-weight: 700;
-      border-radius: var(--radius-md);
-      padding: 9px 12px;
+    .launch-exp {
+      padding: 10px 13px;
       font-size: 12px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
+      font-weight: 900;
+      color: var(--emerald);
+      flex-shrink: 0;
     }
 
     .pill-mini {
@@ -407,21 +324,70 @@
       flex-shrink: 0;
     }
 
-    .launch-exp {
-      padding: 10px 13px;
-      font-size: 12px;
-      font-weight: 900;
-      color: var(--emerald);
-      flex-shrink: 0;
+    .btn-primary, .btn-emerald, .btn-teal, .btn-dark, .btn-soft {
+      font-weight: 800;
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
+    .btn-primary { background: var(--indigo); color: #fff; }
+    .btn-emerald { background: var(--emerald); color: #fff; }
+    .btn-teal { background: var(--teal); color: #fff; }
+    .btn-dark { background: var(--text-1); color: var(--bg-card); }
+    .btn-soft { background: var(--bg-elev); color: var(--text-1); border: 1px solid var(--border); font-weight: 700; font-size: 12px; padding: 9px 12px; }
 
-    /* Filter bar */
-    .filter-wrap {
+    /* Compact Filter Bar */
+    .compact-filter {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
       gap: 8px;
+      flex-wrap: nowrap;
     }
 
+    .seg-bar {
+      display: inline-flex;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      padding: 3px;
+      border-radius: 12px;
+      gap: 2px;
+    }
+    .seg-bar button {
+      padding: 6px 10px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-2);
+      white-space: nowrap;
+    }
+    .seg-bar button.active {
+      background: var(--bg-card);
+      color: var(--text-1);
+      box-shadow: var(--shadow-sm);
+    }
+    .seg-bar button.active-indigo {
+      background: var(--indigo);
+      color: #fff;
+    }
+
+    .cat-select {
+      background: var(--bg-card);
+      color: var(--text-1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      outline: none;
+      max-width: 130px;
+    }
+
+    /* Chips & Inputs */
     .chip-strip {
       display: flex;
       align-items: center;
@@ -429,7 +395,6 @@
       overflow-x: auto;
       padding-bottom: 2px;
     }
-
     .chip {
       padding: 6px 11px;
       border-radius: 11px;
@@ -437,63 +402,17 @@
       font-weight: 700;
       white-space: nowrap;
       flex-shrink: 0;
-      background: var(--bg-card);
+      background: var(--bg-elev);
       border: 1px solid var(--border);
       color: var(--text-2);
     }
+    .chip.active { background: var(--text-1); color: var(--bg-card); border-color: var(--text-1); }
+    .chip.active-indigo { background: var(--indigo); color: #fff; border-color: var(--indigo); }
+    .chip.active-emerald { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .chip.active-rose { background: var(--rose); color: #fff; border-color: var(--rose); }
+    .chip.active-blue { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .chip.active-pink { background: var(--pink); color: #fff; border-color: var(--pink); }
 
-    .chip.active {
-      background: var(--text-1);
-      color: var(--bg-card);
-      border-color: var(--text-1);
-    }
-
-    .chip.active-indigo {
-      background: var(--indigo);
-      color: #fff;
-      border-color: var(--indigo);
-    }
-
-    .chip.active-emerald {
-      background: var(--emerald);
-      color: #fff;
-      border-color: var(--emerald);
-    }
-
-    .chip.active-rose {
-      background: var(--rose);
-      color: #fff;
-      border-color: var(--rose);
-    }
-
-    .chip.active-blue {
-      background: var(--blue);
-      color: #fff;
-      border-color: var(--blue);
-    }
-
-    .chip.active-pink {
-      background: var(--pink);
-      color: #fff;
-      border-color: var(--pink);
-    }
-
-    .chip-ghost {
-      padding: 6px 9px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-      flex-shrink: 0;
-      color: var(--text-2);
-    }
-
-    .chip-ghost.active {
-      background: var(--indigo-soft);
-      color: var(--indigo);
-    }
-
-    /* Inputs */
     .field {
       width: 100%;
       background: var(--bg-input);
@@ -508,13 +427,9 @@
       border-color: var(--indigo);
       box-shadow: 0 0 0 3px var(--indigo-soft);
     }
-    .field-sm {
-      padding: 7px 10px;
-      font-size: 13px;
-      border-radius: 10px;
-    }
+    .field-sm { padding: 7px 10px; font-size: 13px; border-radius: 10px; }
 
-    /* Task Groups & Rows */
+    /* Tasks */
     .group-head {
       display: flex;
       justify-content: space-between;
@@ -527,10 +442,7 @@
     .stack-sm { display: flex; flex-direction: column; gap: 8px; }
     .stack-md { display: flex; flex-direction: column; gap: 12px; }
 
-    .task-card {
-      overflow: hidden;
-      touch-action: pan-y;
-    }
+    .task-card { overflow: hidden; touch-action: pan-y; }
     .task-card.is-done { opacity: 0.65; }
     .task-card.is-pinned { border-color: var(--indigo); }
 
@@ -555,18 +467,9 @@
       color: transparent;
     }
     .check-circle.urgent { border-color: var(--rose); }
-    .check-circle.checked {
-      background: var(--emerald);
-      border-color: var(--emerald);
-      color: #fff;
-    }
+    .check-circle.checked { background: var(--emerald); border-color: var(--emerald); color: #fff; }
 
-    .task-body {
-      flex: 1;
-      min-width: 0;
-      cursor: pointer;
-    }
-
+    .task-body { flex: 1; min-width: 0; cursor: pointer; }
     .task-title {
       font-size: 14px;
       font-weight: 800;
@@ -575,10 +478,7 @@
       align-items: center;
       gap: 5px;
     }
-    .task-title.done-text {
-      text-decoration: line-through;
-      color: var(--text-3);
-    }
+    .task-title.done-text { text-decoration: line-through; color: var(--text-3); }
 
     .task-meta {
       display: flex;
@@ -639,18 +539,8 @@
       border: 1px solid var(--border);
       font-size: 12px;
     }
-    .sub-row label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 1;
-      cursor: pointer;
-    }
-    .sub-row input[type="checkbox"] {
-      width: 17px;
-      height: 17px;
-      accent-color: var(--indigo);
-    }
+    .sub-row label { display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; }
+    .sub-row input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--indigo); }
 
     .action-bar {
       display: flex;
@@ -661,7 +551,6 @@
       padding-top: 8px;
       border-top: 1px solid var(--border);
     }
-
     .mini-act {
       padding: 5px 9px;
       border-radius: 9px;
@@ -678,7 +567,7 @@
     .mini-act.emerald { color: var(--emerald); }
     .mini-act.rose { color: var(--rose); }
 
-    /* Wallet Hero */
+    /* Wallet Hero & Friendly Split Cards */
     .hero-wallet {
       border-radius: 22px;
       padding: 18px;
@@ -697,55 +586,59 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       padding-top: 10px;
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
     }
-
     .hero-stat-box {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.13);
       border-radius: 12px;
       padding: 8px;
       font-size: 11px;
     }
-    .hero-stat-box strong {
-      display: block;
-      font-size: 13px;
-      margin-top: 2px;
+    .hero-stat-box strong { display: block; font-size: 13px; margin-top: 2px; }
+
+    .split-card {
+      padding: 10px 8px;
+      border-radius: 13px;
+      background: var(--bg-elev);
+      border: 1.5px solid var(--border);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
     }
+    .split-card.active {
+      background: var(--emerald-soft);
+      border-color: var(--emerald);
+      color: var(--text-1);
+    }
+    .split-card .sc-title { font-size: 12px; font-weight: 900; }
+    .split-card .sc-sub { font-size: 11px; font-weight: 700; color: var(--emerald); }
+    .split-card:not(.active) .sc-sub { color: var(--text-2); }
+
+    .payer-card {
+      padding: 10px 6px;
+      border-radius: 13px;
+      background: var(--bg-elev);
+      border: 1.5px solid var(--border);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-2);
+    }
+    .payer-card.active-ronen { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+    .payer-card.active-adi { background: var(--pink-soft); border-color: var(--pink); color: var(--pink); }
+    .payer-card.active-joint { background: var(--text-1); border-color: var(--text-1); color: var(--bg-card); }
 
     .cat-bar {
       width: 100%;
-      height: 10px;
+      height: 9px;
       border-radius: 999px;
       overflow: hidden;
       display: flex;
       background: var(--bg-elev);
     }
 
-    .seg-bar {
-      display: inline-flex;
-      background: var(--bg-elev);
-      border: 1px solid var(--border);
-      padding: 3px;
-      border-radius: 12px;
-      gap: 3px;
-    }
-    .seg-bar button {
-      padding: 6px 11px;
-      border-radius: 9px;
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--text-2);
-    }
-    .seg-bar button.active {
-      background: var(--indigo);
-      color: #fff;
-    }
-    .seg-bar button.active-dark {
-      background: var(--text-1);
-      color: var(--bg-card);
-    }
-
-    /* Expense Row */
     .exp-row {
       padding: 12px 13px;
       display: flex;
@@ -753,7 +646,6 @@
       justify-content: space-between;
       gap: 10px;
     }
-
     .exp-icon {
       width: 40px;
       height: 40px;
@@ -766,22 +658,7 @@
       flex-shrink: 0;
     }
 
-    /* Hub Grid */
-    .hub-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .hub-tile {
-      padding: 14px;
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    /* Bottom Mobile Nav */
+    /* Ultra-clean 3-item Mobile Bottom Dock */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -792,17 +669,15 @@
       border-top: 1px solid var(--border);
       padding-bottom: env(safe-area-inset-bottom, 0px);
     }
-
     .bottom-nav-inner {
-      max-width: 520px;
+      max-width: 440px;
       margin: 0 auto;
       height: 62px;
-      padding: 0 12px;
+      padding: 0 20px;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
     }
-
     .nav-btn {
       display: flex;
       flex-direction: column;
@@ -810,32 +685,29 @@
       justify-content: center;
       gap: 2px;
       color: var(--text-3);
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
       height: 100%;
     }
-    .nav-btn.active {
-      color: var(--indigo);
-      font-weight: 900;
-    }
+    .nav-btn.active { color: var(--indigo); font-weight: 900; }
     .nav-btn .ico { font-size: 20px; line-height: 1; }
 
     .fab-btn {
-      width: 50px;
-      height: 50px;
-      margin: -22px auto 0;
-      border-radius: 16px;
+      width: 54px;
+      height: 54px;
+      margin-top: -22px;
+      border-radius: 18px;
       background: linear-gradient(135deg, #4f46e5, #7c3aed);
       color: #fff;
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 900;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.38);
+      box-shadow: 0 8px 22px rgba(79, 70, 229, 0.38);
     }
 
-    /* Sheets & Modals (Fast, zero-blur lag) */
+    /* Sheets & Modals */
     .sheet-backdrop {
       position: fixed;
       inset: 0;
@@ -845,7 +717,6 @@
       align-items: flex-end;
       justify-content: center;
     }
-
     .sheet-panel {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -854,26 +725,18 @@
       border-radius: 24px 24px 0 0;
       max-height: 92vh;
       overflow-y: auto;
-      padding: 18px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+      padding: 18px 16px calc(22px + env(safe-area-inset-bottom, 0px));
       box-shadow: var(--shadow-md);
       display: flex;
       flex-direction: column;
       gap: 14px;
-      animation: slideUp 0.16s ease-out;
+      animation: slideUp 0.15s ease-out;
     }
-
     @keyframes slideUp {
-      from { transform: translateY(18px); opacity: 0.5; }
+      from { transform: translateY(16px); opacity: 0.6; }
       to { transform: translateY(0); opacity: 1; }
     }
-
-    .sheet-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
+    .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     .close-btn {
       width: 34px;
       height: 34px;
@@ -889,17 +752,10 @@
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-
-    .lbl {
-      display: block;
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--text-2);
-      margin-bottom: 4px;
-    }
+    .lbl { display: block; font-size: 11px; font-weight: 800; color: var(--text-2); margin-bottom: 4px; }
 
     .impact-box {
-      padding: 11px;
+      padding: 11px 12px;
       border-radius: 13px;
       background: var(--bg-elev);
       border: 1px solid var(--border);
@@ -910,10 +766,26 @@
     }
 
     .amount-input {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 900;
       text-align: center;
       padding: 10px 14px;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .tool-tile {
+      padding: 12px;
+      border-radius: 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
 
     /* Toasts */
@@ -930,7 +802,6 @@
       gap: 8px;
       pointer-events: none;
     }
-
     .toast-item {
       pointer-events: auto;
       padding: 10px 14px;
@@ -950,7 +821,6 @@
     .toast-indigo { background: #4f46e5; }
     .toast-amber { background: #d97706; }
     .toast-rose { background: #e11d48; }
-
     .toast-action {
       background: rgba(255, 255, 255, 0.22);
       color: #fff;
@@ -962,7 +832,7 @@
     }
 
     .empty-box {
-      padding: 34px 18px;
+      padding: 32px 18px;
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -972,14 +842,11 @@
 
     @media (min-width: 768px) {
       body { padding-bottom: 36px; }
-      .desk-nav { display: flex; }
+      .desk-tabs { display: flex; }
       .desk-new-btn { display: inline-flex; }
       .bottom-nav { display: none; }
-      .hub-grid { grid-template-columns: repeat(4, 1fr); }
       .sheet-backdrop { align-items: center; padding: 16px; }
       .sheet-panel { border-radius: 22px; padding: 20px; }
-      .filter-wrap { flex-direction: row; align-items: center; justify-content: space-between; }
-      #home-search-input { width: 190px; flex-shrink: 0; }
     }
   </style>
 </head>
@@ -994,14 +861,13 @@
 
   <script type="module">
     // =========================================================================
-    // 1. קבועים, עזרים ומודל נתונים (תואם 100% לענן מ-v3.0 ו-v4.0)
+    // 1. קבועים, מודל נתונים ותאימות מלאה לגרסאות קודמות (v3.0 / v4.x)
     // =========================================================================
     const KEYS = {
       USER: 'ra_user_v2',
       CLOUD: 'ra_cloud_url_v2',
       THEME: 'ra_theme_v2',
       LEGACY_TASKS: 'ra_tasks_v2',
-      LEGACY_AUDIT: 'ra_audit_v2',
       TASKS: 'ra_v4_tasks',
       EXPENSES: 'ra_v4_expenses',
       AUDIT: 'ra_v4_audit',
@@ -1018,13 +884,22 @@
     };
 
     const CATEGORIES = {
-      wedding:  { id: 'wedding',  label: 'חתונה',  icon: '💍', color: '#ec4899' },
       home:     { id: 'home',     label: 'בית',    icon: '🏠', color: '#3b82f6' },
       shopping: { id: 'shopping', label: 'קניות',  icon: '🛒', color: '#f59e0b' },
+      wedding:  { id: 'wedding',  label: 'חתונה',  icon: '💍', color: '#ec4899' },
       trip:     { id: 'trip',     label: 'טיול',   icon: '✈️', color: '#10b981' },
       bills:    { id: 'bills',    label: 'חשבונות', icon: '🧾', color: '#8b5cf6' },
       other:    { id: 'other',    label: 'כללי',   icon: '✨', color: '#64748b' }
     };
+
+    const EXPENSE_PRESETS = [
+      { label: '🛒 סופר', title: 'קניות בסופר', category: 'shopping' },
+      { label: '🥩 קצביה', title: 'בשר מהקצביה', category: 'shopping' },
+      { label: '🍽️ מסעדה', title: 'מסעדה / אוכל בחוץ', category: 'other' },
+      { label: '⛽ דלק', title: 'דלק', category: 'bills' },
+      { label: '🏠 בית', title: 'קנייה לבית', category: 'home' },
+      { label: '💍 חתונה', title: 'תשלום לחתונה', category: 'wedding' }
+    ];
 
     const PRIORITIES = {
       urgent: { id: 'urgent', label: 'דחוף',  icon: '🔥', weight: 4 },
@@ -1155,7 +1030,7 @@
       };
     }
 
-    // PWA Manifest דינמי
+    // PWA Manifest
     try {
       const m = { name: 'Pulse Duo — רונן ועדי', short_name: 'רונן & עדי', start_url: '.', display: 'standalone', background_color: '#0b1120', theme_color: '#4f46e5', dir: 'rtl', lang: 'he' };
       const l = document.createElement('link');
@@ -1165,15 +1040,12 @@
     } catch {}
 
     // =========================================================================
-    // 2. משוב טקטילי וקולי א-סינכרוני (לעולם לא חוסם רינדור!)
+    // 2. משוב טקטילי, צליל עדין וקונפטי (א-סינכרוני)
     // =========================================================================
     class FeedbackEngine {
       static ctx = null;
-
       static play(type = 'pop', enabled = true) {
-        if (navigator.vibrate) {
-          try { navigator.vibrate(type === 'complete' ? [10, 24, 14] : 8); } catch {}
-        }
+        if (navigator.vibrate) try { navigator.vibrate(type === 'complete' ? [10, 22, 14] : 7); } catch {}
         if (!enabled) return;
         setTimeout(() => {
           try {
@@ -1186,9 +1058,7 @@
             const now = this.ctx.currentTime;
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-
+            osc.connect(gain); gain.connect(this.ctx.destination);
             if (type === 'complete') {
               osc.type = 'sine';
               osc.frequency.setValueAtTime(523.25, now);
@@ -1219,19 +1089,13 @@
         const canvas = document.getElementById('confetti-canvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         const colors = ['#4f46e5', '#10b981', '#ec4899', '#f59e0b', '#38bdf8'];
         const pts = Array.from({ length: 42 }, () => ({
-          x: canvas.width * (0.25 + Math.random() * 0.5),
-          y: canvas.height * 0.36,
-          vx: (Math.random() - 0.5) * 10,
-          vy: -(4 + Math.random() * 8),
-          s: 5 + Math.random() * 4,
-          c: colors[Math.floor(Math.random() * colors.length)],
-          r: Math.random() * 6,
-          vr: (Math.random() - 0.5) * 0.24,
-          life: 1
+          x: canvas.width * (0.25 + Math.random() * 0.5), y: canvas.height * 0.35,
+          vx: (Math.random() - 0.5) * 10, vy: -(4 + Math.random() * 8),
+          s: 5 + Math.random() * 4, c: colors[Math.floor(Math.random() * colors.length)],
+          r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.24, life: 1
         }));
         let f = 0;
         const tick = () => {
@@ -1242,13 +1106,8 @@
             p.x += p.vx; p.y += p.vy; p.vy += 0.36; p.r += p.vr; p.life -= 0.02;
             if (p.life > 0) {
               alive = true;
-              ctx.save();
-              ctx.globalAlpha = p.life;
-              ctx.translate(p.x, p.y);
-              ctx.rotate(p.r);
-              ctx.fillStyle = p.c;
-              ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 0.65);
-              ctx.restore();
+              ctx.save(); ctx.globalAlpha = p.life; ctx.translate(p.x, p.y); ctx.rotate(p.r);
+              ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 0.65); ctx.restore();
             }
           }
           if (alive && f < 80) requestAnimationFrame(tick);
@@ -1259,7 +1118,7 @@
     }
 
     // =========================================================================
-    // 3. מנוע התחשבנות באגורות שלמות (FinanceEngine)
+    // 3. מנוע התחשבנות באגורות + הפרדה אוטומטית בין "פתוח" ל"נסגר"
     // =========================================================================
     class FinanceEngine {
       static expenseDelta(exp) {
@@ -1274,6 +1133,21 @@
         const byCategory = {};
         const monthPrefix = todayISO(0).slice(0, 7);
 
+        // מיון כרונולוגי מהישן לחדש לאיתור נקודת האיפוס האחרונה
+        const personalChrono = expenses
+          .filter(e => e.paymentMethod === 'personal' || e.splitType === 'settlement')
+          .sort((a, b) => (a.date + a.updatedAt).localeCompare(b.date + b.updatedAt));
+
+        let running = 0;
+        let lastZeroIdx = -1;
+        personalChrono.forEach((e, idx) => {
+          running += this.expenseDelta(e);
+          if (running === 0) lastZeroIdx = idx;
+        });
+
+        const openPersonal = personalChrono.slice(lastZeroIdx + 1).reverse();
+        const settledPersonal = personalChrono.slice(0, lastZeroIdx + 1).reverse();
+
         for (const e of expenses) {
           balanceAgorot += this.expenseDelta(e);
           if (e.splitType === 'settlement') continue;
@@ -1285,93 +1159,140 @@
         }
 
         const direction = balanceAgorot > 0
-          ? { debtor: 'adi', creditor: 'ronen', amountAgorot: balanceAgorot, shortText: `עדי ← רונן ${formatILS(balanceAgorot)}`, fullText: `עדי צריכה להחזיר לרונן ${formatILS(balanceAgorot)}` }
+          ? { debtor: 'adi', creditor: 'ronen', amountAgorot: balanceAgorot, shortText: `עדי ← רונן ${formatILS(balanceAgorot)}`, fullText: `עדי צריכה להחזיר לרונן ${formatILS(balanceAgorot)}`, headline: '👩🏻 עדי צריכה להחזיר לרונן 👨🏻‍💻' }
           : balanceAgorot < 0
-          ? { debtor: 'ronen', creditor: 'adi', amountAgorot: Math.abs(balanceAgorot), shortText: `רונן ← עדי ${formatILS(Math.abs(balanceAgorot))}`, fullText: `רונן צריך להחזיר לעדי ${formatILS(Math.abs(balanceAgorot))}` }
-          : { debtor: null, creditor: null, amountAgorot: 0, shortText: 'מאוזנים ✨', fullText: 'החשבון ביניכם מאוזן לגמרי ✨' };
+          ? { debtor: 'ronen', creditor: 'adi', amountAgorot: Math.abs(balanceAgorot), shortText: `רונן ← עדי ${formatILS(Math.abs(balanceAgorot))}`, fullText: `רונן צריך להחזיר לעדי ${formatILS(Math.abs(balanceAgorot))}`, headline: '👨🏻‍💻 רונן צריך להחזיר לעדי 👩🏻' }
+          : { debtor: null, creditor: null, amountAgorot: 0, shortText: 'מאוזנים ✨', fullText: 'החשבון ביניכם מאוזן לגמרי ✨', headline: 'החשבון מאוזן לגמרי ✨' };
 
-        return { balanceAgorot, direction, personalRonenAgorot, personalAdiAgorot, jointCardAgorot, thisMonthTotalAgorot, byCategory };
+        return {
+          balanceAgorot, direction, personalRonenAgorot, personalAdiAgorot,
+          jointCardAgorot, thisMonthTotalAgorot, byCategory,
+          openPersonal, settledPersonal
+        };
       }
     }
 
     // =========================================================================
-    // 4. מנוע NLP עברי, זיהוי תתי-משימות וייבוא WhatsApp
+    // 4. מנוע NLP עברי חכם (משמר שעות ומשפטים טבעיים, מסווג לפי כוונה)
     // =========================================================================
-    const CLUSTERS = [
-      { name: 'חתונה', category: 'wedding', keywords: ['רב', 'רבנות', 'צהר', 'חופה', 'אולם', 'דיגיי', 'צלם', 'שמלה', 'חליפה', 'הזמנות', 'מוזמנים', 'טבעות', 'חתונה', 'כתובה'] },
-      { name: 'טיולים', category: 'trip', keywords: ['טיסה', 'מלון', 'צימר', 'לרנקה', 'קפריסין', 'ניו יורק', 'קרוז', 'יקב', 'טיול', 'דרכון', 'ביטוח נסיעות', 'השכרת רכב'] },
-      { name: 'קניות', category: 'shopping', keywords: ['סופר', 'קניות', 'בשר', 'קצב', 'מנגל', 'על האש', 'טורטיות', 'ירקות', 'סלטים', 'חומוס', 'טחינה', 'אוכל'] },
-      { name: 'בית וציוד', category: 'home', keywords: ['שואב', 'mova', 'מובה', 'פילטר', 'שקיות', 'אליאקספרס', 'תמי 4', 'תמי4', 'חשמלאי', 'תיקון', 'רכב', 'קיה', 'סוזוקי', 'טסט'] },
-      { name: 'חשבונות', category: 'bills', keywords: ['ארנונה', 'מים', 'חשמל', 'מנוי', 'ביטול', 'אשראי', 'בנק', 'מקדמה', 'תשלום', 'ביט', 'פייבוקס'] }
+    const SEMANTIC_RULES = [
+      { category: 'wedding', name: 'חתונה', keywords: ['רב', 'רבנות', 'צהר', 'חופה', 'אולם', 'דיגיי', 'צלם', 'שמלה', 'חליפה', 'הזמנות', 'מוזמנים', 'טבעות', 'חתונה', 'כתובה'] },
+      { category: 'trip', name: 'טיולים', keywords: ['טיסה', 'מלון', 'צימר', 'לרנקה', 'קפריסין', 'ניו יורק', 'קרוז', 'יקב', 'טיול', 'דרכון', 'ביטוח נסיעות', 'השכרת רכב'] },
+      { category: 'bills', name: 'חשבונות', keywords: ['ארנונה', 'מים', 'חשמל', 'מנוי', 'ביטול מנוי', 'לשלם', 'תשלום', 'מקדמה', 'ביט', 'פייבוקס', 'אשראי', 'בנק', 'ביטוח'] },
+      { category: 'home', name: 'בית ומטבח', keywords: ['להכין', 'לבשל', 'לאפות', 'בישול', 'ארוחת', 'לנקות', 'ניקיון', 'לסדר', 'כביסה', 'כלים', 'שואב', 'mova', 'מובה', 'פילטר', 'שקיות אבק', 'תמי 4', 'תמי4', 'חשמלאי', 'לתקן', 'תיקון', 'רכב', 'קיה', 'סוזוקי', 'טסט', 'מנגל', 'על האש'] },
+      { category: 'shopping', name: 'קניות', keywords: ['לקנות', 'קניות', 'סופר', 'קצביה', 'קצב', 'להזמין', 'אליאקספרס', 'אמזון', 'שופרסל', 'רמי לוי', 'ירקות', 'פירות', 'מצרכים', 'טורטיות'] }
     ];
 
     class NLPEngine {
+      static classifyCategory(rawText = '') {
+        const lower = String(rawText || '').toLowerCase();
+
+        // 1. בדיקת כוונת פעולה מפורשת (מונע בלבול בין "להכין אוכל" ל"לקנות אוכל")
+        if (/(להכין|לבשל|לאפות|לחמם|להפשיר|לתבל|לנקות|לסדר|לשטוף|לתקן|כביסה|כלים)/.test(lower)) {
+          // אלא אם מדובר בהכנה לחתונה / טיול
+          if (SEMANTIC_RULES[0].keywords.some(k => lower.includes(k))) return 'wedding';
+          if (SEMANTIC_RULES[1].keywords.some(k => lower.includes(k))) return 'trip';
+          return 'home';
+        }
+        if (/(לקנות|קניות|בסופר|מהסופר|מהקצב|בקצביה|להביא מהסופר)/.test(lower)) {
+          return 'shopping';
+        }
+
+        // 2. סריקה לפי סדר עדיפויות מדויק
+        for (const rule of SEMANTIC_RULES) {
+          if (rule.keywords.some(k => lower.includes(k))) return rule.category;
+        }
+        return null;
+      }
+
       static parseQuickTaskInput(rawText = '') {
-        let text = String(rawText || '');
+        const original = String(rawText || '');
+        let title = original;
         const p = { cleanTitle: '', dueDate: '', dueTime: '', assignee: null, priority: null, category: null, estimatedBudget: 0 };
 
-        if (/@עדי\b/.test(text)) { p.assignee = 'adi'; text = text.replace(/@עדי\b/g, ''); }
-        else if (/@רונן\b/.test(text)) { p.assignee = 'ronen'; text = text.replace(/@רונן\b/g, ''); }
-        else if (/@משותף\b/.test(text)) { p.assignee = 'both'; text = text.replace(/@משותף\b/g, ''); }
+        // 1. הסרת תגיות שליטה מפורשות בלבד (@עדי / @רונן / !דחוף)
+        if (/@עדי(?=\s|$)/.test(title)) { p.assignee = 'adi'; title = title.replace(/@עדי(?=\s|$)/g, ''); }
+        else if (/@רונן(?=\s|$)/.test(title)) { p.assignee = 'ronen'; title = title.replace(/@רונן(?=\s|$)/g, ''); }
+        else if (/@משותף(?=\s|$)/.test(title)) { p.assignee = 'both'; title = title.replace(/@משותף(?=\s|$)/g, ''); }
 
-        if (/(!דחוף|!!|דחוף!)/i.test(text)) { p.priority = 'urgent'; text = text.replace(/(!דחוף|!!|דחוף!)/gi, ''); }
-        else if (/(!חשוב|!גבוה)/i.test(text)) { p.priority = 'high'; text = text.replace(/(!חשוב|!גבוה)/gi, ''); }
+        if (/(!דחוף|!!|דחוף!)/i.test(title)) { p.priority = 'urgent'; title = title.replace(/(!דחוף|!!|דחוף!)/gi, ''); }
+        else if (/(!חשוב|!גבוה)/i.test(title)) { p.priority = 'high'; title = title.replace(/(!חשוב|!גבוה)/gi, ''); }
 
-        const tm = text.match(/(?:ב-?|שעה\s+)?(\d{1,2}:\d{2})/);
+        // 2. חילוץ תקציב (₪150 / 150 ש"ח)
+        const bm = title.match(/(?:₪\s*(\d[\d,]*))|(?:(\d[\d,]*)\s*(?:₪|ש"ח|ש״ח|שח))/);
+        if (bm) {
+          p.estimatedBudget = Number((bm[1] || bm[2]).replace(/,/g, '')) || 0;
+          title = title.replace(bm[0], '');
+        }
+
+        // 3. חילוץ שעה (עד 19:00 / ב-19:00 / 19:00 / בשעה 19) — בלי למחוק אותה מהמשפט!
+        const tm = original.match(/(?:(?:עד|ב-?|בשעה|לשעה|שעה)\s*)?(\d{1,2}):(\d{2})/);
         if (tm) {
-          const [h, m] = tm[1].split(':').map(Number);
+          const h = Number(tm[1]), m = Number(tm[2]);
           if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
             p.dueTime = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-            text = text.replace(tm[0], '');
+          }
+        } else {
+          const hourOnly = original.match(/(?:עד|בשעה|לשעה)\s+(\d{1,2})(?=\s|$|[,.])/);
+          if (hourOnly) {
+            const h = Number(hourOnly[1]);
+            if (h >= 0 && h <= 23) p.dueTime = `${String(h).padStart(2, '0')}:00`;
           }
         }
 
-        if (/\bמחרתיים\b/.test(text)) { p.dueDate = todayISO(2); text = text.replace(/\bמחרתיים\b/, ''); }
-        else if (/\bמחר\b/.test(text)) { p.dueDate = todayISO(1); text = text.replace(/\bמחר\b/, ''); }
-        else if (/\bהיום\b/.test(text)) { p.dueDate = todayISO(0); text = text.replace(/\bהיום\b/, ''); }
-        else if (/\b(סופ"ש|סופ״ש|שישי הקרוב)\b/.test(text)) {
+        // 4. חילוץ תאריך עברי טבעי — מוחק רק מילת זמן בודדת בתחילת/סוף משפט (בלי להשאיר מילות יחס תלויות!)
+        if (/(?:^|\s)מחרתיים(?=\s|$|[,.])/.test(original)) {
+          p.dueDate = todayISO(2);
+          title = title.replace(/^מחרתיים\s+|\s+מחרתיים$/g, '');
+        } else if (/(?:^|\s)מחר(?=\s|$|[,.])/.test(original)) {
+          p.dueDate = todayISO(1);
+          title = title.replace(/^מחר\s+|\s+מחר$/g, '');
+        } else if (/(?:^|\s)היום(?=\s|$|[,.])/.test(original)) {
+          p.dueDate = todayISO(0);
+          title = title.replace(/^היום\s+|\s+היום$/g, '');
+        } else if (/(?:סופ"ש|סופ״ש|שישי הקרוב)/.test(original)) {
           const dFri = (5 - new Date().getDay() + 7) % 7 || 7;
           p.dueDate = todayISO(dFri);
-          text = text.replace(/\b(סופ"ש|סופ״ש|שישי הקרוב)\b/, '');
         } else {
-          const dm = text.match(/(?:ב?יום\s+)(ראשון|שני|שלישי|רביעי|חמישי|שישי|שבת)/);
+          const dm = original.match(/(?:ב?יום\s+)(ראשון|שני|שלישי|רביעי|חמישי|שישי|שבת)/);
           if (dm) {
             const map = { 'ראשון': 0, 'שני': 1, 'שלישי': 2, 'רביעי': 3, 'חמישי': 4, 'שישי': 5, 'שבת': 6 };
             let diff = (map[dm[1]] - new Date().getDay() + 7) % 7;
             if (diff === 0) diff = 7;
             p.dueDate = todayISO(diff);
-            text = text.replace(dm[0], '');
           } else {
-            const em = text.match(/\b(\d{1,2})[./](\d{1,2})(?:[./](\d{2,4}))?\b/);
+            const em = original.match(/(?:^|\s|עד\s+|ל-?|ב-?)(\d{1,2})[./](\d{1,2})(?:[./](\d{2,4}))?(?=\s|$|[,.])/);
             if (em) {
               const d = Number(em[1]), mo = Number(em[2]);
-              let y = em[3] ? Number(em[3]) : new Date().getFullYear();
+              const now = new Date();
+              let y = em[3] ? Number(em[3]) : now.getFullYear();
               if (y < 100) y += 2000;
               if (d >= 1 && d <= 31 && mo >= 1 && mo <= 12) {
+                const candidate = new Date(y, mo - 1, d);
+                if (!em[3] && (now - candidate) > 30 * 86400000) y += 1;
                 p.dueDate = `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                text = text.replace(em[0], '');
               }
             }
           }
         }
 
-        const bm = text.match(/(?:₪\s*(\d[\d,]*))|(?:(\d[\d,]*)\s*(?:₪|ש"ח|ש״ח|שח))/);
-        if (bm) {
-          p.estimatedBudget = Number((bm[1] || bm[2]).replace(/,/g, '')) || 0;
-          text = text.replace(bm[0], '');
+        // אם זוהתה שעה בלי תאריך מפורש -> ברירת מחדל להיום (או מחר אם השעה כבר חלפה)
+        if (p.dueTime && !p.dueDate) {
+          const now = new Date();
+          const [hh, mm] = p.dueTime.split(':').map(Number);
+          const todayAt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm);
+          p.dueDate = todayAt > now ? todayISO(0) : todayISO(1);
         }
 
-        const lower = rawText.toLowerCase();
-        for (const c of CLUSTERS) {
-          if (c.keywords.some(kw => lower.includes(kw))) { p.category = c.category; break; }
-        }
+        // 5. סיווג קטגוריה חכם לפי כוונה
+        p.category = this.classifyCategory(original);
 
-        p.cleanTitle = text.replace(/\s{2,}/g, ' ').trim();
+        p.cleanTitle = title.replace(/\s{2,}/g, ' ').trim();
         return p;
       }
 
       static tokenize(text = '') {
-        const stop = new Set(['את', 'של', 'על', 'עם', 'או', 'גם', 'כי', 'אם', 'לא', 'כן', 'זה', 'לי', 'לנו', 'צריך', 'לקנות', 'לעשות', 'לבדוק', 'להזמין', 'רונן', 'עדי', 'משותף']);
+        const stop = new Set(['את', 'של', 'על', 'עם', 'או', 'גם', 'כי', 'אם', 'לא', 'כן', 'זה', 'לי', 'לנו', 'צריך', 'לקנות', 'לעשות', 'לבדוק', 'להזמין', 'להכין', 'רונן', 'עדי', 'משותף', 'עד', 'מחר', 'היום']);
         return String(text || '').toLowerCase().replace(/[^\u0590-\u05FFa-z0-9\s]/g, ' ').trim().split(/\s+/).map(w => w.replace(/^[הובלמכש]/, '')).filter(w => w.length >= 2 && !stop.has(w));
       }
 
@@ -1395,14 +1316,14 @@
               score += 35; r = `קשר למילה "${tok}"`;
             }
           }
-          for (const cl of CLUSTERS) {
+          for (const cl of SEMANTIC_RULES) {
             if (cl.keywords.some(k => lower.includes(k)) && cl.keywords.some(k => tText.includes(k))) {
-              score += 45; r = `נושא "${cl.name}"`;
+              score += 40; r = `נושא "${cl.name}"`;
             }
           }
           if (score > bestScore) { bestScore = score; best = t; reason = r; }
         }
-        return best && bestScore >= 40 ? { parentTask: best, cleanSubtaskTitle: clean, reason } : null;
+        return best && bestScore >= 45 ? { parentTask: best, cleanSubtaskTitle: clean, reason } : null;
       }
 
       static parseWhatsApp(rawText = '', tasks = []) {
@@ -1428,12 +1349,8 @@
           out.push({
             tempId: uid('wa'),
             title: p.cleanTitle || content,
-            assignee,
-            category: p.category || 'other',
-            priority: p.priority || 'medium',
-            dueDate: p.dueDate,
-            dueTime: p.dueTime,
-            amount: p.estimatedBudget,
+            assignee, category: p.category || 'other', priority: p.priority || 'medium',
+            dueDate: p.dueDate, dueTime: p.dueTime, amount: p.estimatedBudget,
             paidBy: sender.includes('עדי') ? 'adi' : 'ronen',
             targetType: isExp ? 'expense' : (pm ? 'subtask' : 'new_task'),
             parentTaskId: pm ? pm.parentTask.id : (tasks.find(t => !t.done)?.id || ''),
@@ -1455,8 +1372,7 @@
         const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
         const due = parseLocalDate(task.dueDate, task.dueTime);
         if (!due) return 'later';
-        const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate(), 0, 0, 0, 0);
-        const diff = Math.round((dueDay - todayStart) / 86400000);
+        const diff = Math.round((new Date(due.getFullYear(), due.getMonth(), due.getDate()) - todayStart) / 86400000);
         if (diff < 0 || (diff === 0 && task.dueTime && due < now)) return 'overdue';
         if (diff === 0) return 'today';
         if (diff <= 7) return 'week';
@@ -1470,8 +1386,7 @@
           if (t.done || !t.dueDate) return false;
           const d = parseLocalDate(t.dueDate, t.dueTime);
           if (!d) return false;
-          const ds = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
-          return Math.round((ds - todayStart) / 86400000) <= 3;
+          return Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - todayStart) / 86400000) <= 3;
         }).sort((a, b) => (a.dueDate + (a.dueTime || '23:59')).localeCompare(b.dueDate + (b.dueTime || '23:59')));
       }
 
@@ -1492,7 +1407,7 @@
 
           let bucket = null, title = '';
           if (diff < 0) { bucket = 'overdue_' + todayISO(0); title = '🔥 משימה באיחור!'; }
-          else if (diff === 0) { bucket = 'today_' + todayISO(0); title = t.dueTime ? `⏰ היום ב-${t.dueTime}` : '⏰ דדליין היום!'; }
+          else if (diff === 0) { bucket = 'today_' + todayISO(0); title = t.dueTime ? `⏰ היום עד ${t.dueTime}` : '⏰ דדליין היום!'; }
           else if (diff <= lead) { bucket = `lead_${diff}_${todayISO(0)}`; title = diff === 1 ? '📅 מחר הדדליין' : `📅 עוד ${diff} ימים לדדליין`; }
 
           if (bucket) {
@@ -1531,7 +1446,7 @@
           'BEGIN:VEVENT', `UID:${task.id}@pulseduo.local`, `DTSTAMP:${stamp}`, ...dt,
           `SUMMARY:${this.escapeICS('⚡ ' + task.title)}`, `DESCRIPTION:${this.escapeICS(desc)}`,
           'BEGIN:VALARM', `TRIGGER:-P${leadDays}D`, 'ACTION:DISPLAY', `DESCRIPTION:${this.escapeICS('תזכורת דדליין: ' + task.title)}`, 'END:VALARM',
-          'BEGIN:VALARM', 'TRIGGER:-PT1H', 'ACTION:DISPLAY', `DESCRIPTION:${this.escapeICS('בקרוב דדליין: ' + task.title)}`, 'END:VALARM',
+          'BEGIN:VALARM', 'TRIGGER:-PT1H', 'ACTION:DISPLAY', `DESCRIPTION:${this.escapeICS('עוד שעה דדליין: ' + task.title)}`, 'END:VALARM',
           'END:VEVENT'
         ].join('\r\n');
       }
@@ -1558,7 +1473,7 @@
     }
 
     // =========================================================================
-    // 6. מנוע סנכרון ענן אטומי + סינון Echo + חיבור מחדש מהיר מהרקע
+    // 6. מנוע ענן אטומי + סינון Echo + סנכרון חי SSE (תואם v4.0/v4.1)
     // =========================================================================
     class CloudSyncEngine {
       constructor(app) {
@@ -1569,43 +1484,33 @@
         this.queue = JSON.parse(localStorage.getItem(KEYS.QUEUE) || '[]');
         window.addEventListener('online', () => this.flushQueue());
         document.addEventListener('visibilitychange', () => {
-          if (document.visibilityState === 'visible' && this.base) {
-            this.connect();
-          }
+          if (document.visibilityState === 'visible' && this.base) this.connect();
         });
       }
 
       get base() { return this.app.cloudUrl ? `${this.app.cloudUrl}/ronen_adi_v4` : ''; }
 
-      markLocalWrite(collection, id, stamp) {
-        this.recentWrites.set(`${collection}/${id}`, stamp || 'DEL');
-        if (this.recentWrites.size > 80) {
-          const firstKey = this.recentWrites.keys().next().value;
-          this.recentWrites.delete(firstKey);
-        }
+      markLocalWrite(col, id, stamp) {
+        this.recentWrites.set(`${col}/${id}`, stamp || 'DEL');
+        if (this.recentWrites.size > 80) this.recentWrites.delete(this.recentWrites.keys().next().value);
       }
 
-      isEcho(collection, id, data) {
-        const key = `${collection}/${id}`;
+      isEcho(col, id, data) {
+        const key = `${col}/${id}`;
         if (!this.recentWrites.has(key)) return false;
-        const expected = this.recentWrites.get(key);
-        const incoming = data === null ? 'DEL' : (data?.updatedAt || data?.ts || '');
-        if (expected === incoming) {
-          this.recentWrites.delete(key);
-          return true;
-        }
+        const exp = this.recentWrites.get(key);
+        const inc = data === null ? 'DEL' : (data?.updatedAt || data?.ts || '');
+        if (exp === inc) { this.recentWrites.delete(key); return true; }
         return false;
       }
 
       saveQueue() { localStorage.setItem(KEYS.QUEUE, JSON.stringify(this.queue)); }
 
-      async atomicWrite(collection, id, data) {
+      async atomicWrite(col, id, data) {
         if (!this.base) return;
-        const stamp = data === null ? 'DEL' : (data.updatedAt || data.ts || '');
-        this.markLocalWrite(collection, id, stamp);
-        const url = `${this.base}/${collection}/${encodeURIComponent(id)}.json`;
+        this.markLocalWrite(col, id, data === null ? 'DEL' : (data.updatedAt || data.ts || ''));
         try {
-          const res = await fetch(url, {
+          const res = await fetch(`${this.base}/${col}/${encodeURIComponent(id)}.json`, {
             method: data === null ? 'DELETE' : 'PUT',
             headers: data === null ? {} : { 'Content-Type': 'application/json' },
             body: data === null ? undefined : JSON.stringify(data)
@@ -1613,7 +1518,7 @@
           if (!res.ok) throw new Error(res.status);
           this.app.setCloudStatus('online');
         } catch {
-          this.queue.push({ collection, id, data });
+          this.queue.push({ col, id, data });
           this.saveQueue();
           this.app.setCloudStatus('error');
         }
@@ -1621,10 +1526,8 @@
 
       async flushQueue() {
         if (!this.base || !this.queue.length) return;
-        const list = [...this.queue];
-        this.queue = [];
-        this.saveQueue();
-        for (const it of list) await this.atomicWrite(it.collection, it.id, it.data);
+        const list = [...this.queue]; this.queue = []; this.saveQueue();
+        for (const it of list) await this.atomicWrite(it.col, it.id, it.data);
       }
 
       async connect() {
@@ -1635,7 +1538,6 @@
           const res = await fetch(`${this.base}.json`);
           if (!res.ok) throw new Error(res.status);
           let data = await res.json();
-
           if (!data || (!data.tasks && !data.expenses)) {
             const mig = await this.tryMigrateFromV3();
             if (mig) data = mig;
@@ -1645,7 +1547,6 @@
               data = seed;
             }
           }
-
           if (data) this.app.hydrateFromCloudRoot(data);
           await this.flushQueue();
           this.app.setCloudStatus('online');
@@ -1668,7 +1569,7 @@
           if (Array.isArray(legacy.audit)) legacy.audit.slice(0, 60).forEach((a, i) => { const id = a.id || uid('m' + i); audit[id] = { ...a, id }; });
           const payload = { tasks, expenses: this.app.expensesMap || {}, audit };
           await fetch(`${this.base}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-          this.app.toast(`יובאו אוטומטית ${Object.keys(tasks).length} משימות מגרסה 3.0! 🚀`, 'emerald');
+          this.app.toast(`יובאו ${Object.keys(tasks).length} משימות מגרסה קודמת! 🚀`, 'emerald');
           return payload;
         } catch { return null; }
       }
@@ -1703,7 +1604,7 @@
     }
 
     // =========================================================================
-    // 7. בקר האפליקציה המהיר (PulseDuoApp v4.1 Turbo)
+    // 7. בקר האפליקציה (PulseDuoApp v5.0 — 2 לשוניות, תגובה מיידית)
     // =========================================================================
     class PulseDuoApp {
       constructor() {
@@ -1715,13 +1616,17 @@
         this.settings = { ...DEFAULT_SETTINGS, ...JSON.parse(localStorage.getItem(KEYS.SETTINGS) || '{}') };
         if (!this.settings.rates) this.settings.rates = { ...DEFAULT_SETTINGS.rates };
 
-        this.tab = 'home';
+        this.tab = 'home'; // 2 לשוניות בלבד: 'home' | 'wallet'
         this.expandedTaskId = null;
         this.showDoneSection = false;
-        this.taskFilters = { q: '', who: 'all', category: 'all', radarOnly: false };
-        this.walletFilter = { method: 'personal', period: 'all' };
+        this.showSearchBar = false;
+        this.showSettledHistory = false;
+        this.showToolsAudit = false;
 
-        this.sheet = null;
+        this.taskFilters = { q: '', who: 'all', category: 'all', radarOnly: false };
+        this.walletTab = 'open'; // 'open' | 'joint' | 'all'
+
+        this.sheet = null; // null | 'quick-add' | 'edit-task' | 'edit-expense' | 'settle' | 'tools' | 'wa-import' | 'wa-share' | 'gemini' | 'cloud'
         this.quickMode = 'task';
         this.quickTaskDraft = this.freshTaskDraft();
         this.quickExpenseDraft = this.freshExpenseDraft();
@@ -1750,9 +1655,10 @@
 
       freshTaskDraft(over = {}) {
         return {
-          rawInput: '', assignee: 'both', category: 'other', priority: 'medium',
+          rawInput: '', assignee: 'both', category: 'home', priority: 'medium',
           dueDate: '', dueTime: '', remindLead: this.settings.alertLeadDays,
-          estimatedBudget: 0, touched: { date: false, assignee: false, category: false, priority: false },
+          estimatedBudget: 0,
+          touched: { date: false, time: false, assignee: false, category: false, priority: false },
           ...over
         };
       }
@@ -1761,7 +1667,7 @@
         return {
           title: '', amountStr: '', currency: 'ILS', paymentMethod: 'personal',
           paidBy: this.user === 'adi' ? 'adi' : 'ronen', splitType: 'equal',
-          customRonenStr: '', category: 'shopping', date: todayISO(0), linkedTaskId: '',
+          customRonenStr: '', customAdiStr: '', category: 'shopping', date: todayISO(0), linkedTaskId: '',
           ...over
         };
       }
@@ -1770,10 +1676,8 @@
         const st = JSON.parse(localStorage.getItem(KEYS.TASKS) || 'null');
         const se = JSON.parse(localStorage.getItem(KEYS.EXPENSES) || 'null');
         const sa = JSON.parse(localStorage.getItem(KEYS.AUDIT) || 'null');
-
-        if (st && typeof st === 'object') {
-          Object.values(st).forEach(t => { const nt = normTask(t, this.user); this.tasksMap[nt.id] = nt; });
-        } else if (!localStorage.getItem(KEYS.MIGRATED_LOCAL)) {
+        if (st && typeof st === 'object') Object.values(st).forEach(t => { const nt = normTask(t, this.user); this.tasksMap[nt.id] = nt; });
+        else if (!localStorage.getItem(KEYS.MIGRATED_LOCAL)) {
           const leg = JSON.parse(localStorage.getItem(KEYS.LEGACY_TASKS) || 'null');
           if (Array.isArray(leg) && leg.length) leg.forEach(t => { const nt = normTask(t, this.user); this.tasksMap[nt.id] = nt; });
           else this.seedTasks().forEach(t => { this.tasksMap[t.id] = t; });
@@ -1786,8 +1690,8 @@
 
       seedTasks() {
         return [
-          normTask({ id: 'welcome_rabbi', title: 'חיפוש ותיאום רב לחתונה', category: 'wedding', assignee: 'both', priority: 'high', dueDate: todayISO(3), notes: 'בדיקת צהר / רב מוסמך ותיאום פגישת היכרות', subtasks: [{ id: 's1', title: 'איסוף המלצות', done: false }, { id: 's2', title: 'שיחת היכרות', done: false }] }),
-          normTask({ id: 'welcome_tami4', title: 'תזכורת לביטול מנוי שנתי תמי 4 לפני חידוש', category: 'bills', assignee: 'ronen', priority: 'medium', dueDate: '2027-01-03', dueTime: '10:00', notes: 'המנוי השנתי מסתיים ב-8.1.2027' })
+          normTask({ id: 'welcome_rabbi', title: 'חיפוש ותיאום רב לחתונה', category: 'wedding', assignee: 'both', priority: 'high', dueDate: todayISO(3), notes: 'בדיקת צהר / רב מוסמך' }),
+          normTask({ id: 'welcome_tami4', title: 'תזכורת לביטול מנוי שנתי תמי 4', category: 'bills', assignee: 'ronen', priority: 'medium', dueDate: '2027-01-03', dueTime: '10:00', notes: 'המנוי השנתי מסתיים ב-8.1.2027' })
         ];
       }
 
@@ -1832,20 +1736,16 @@
         const txt = document.getElementById('hdr-cloud-txt');
         if (dot && txt) {
           dot.className = `dot dot-${s}`;
-          txt.textContent = s === 'online' ? 'ענן חי' : s === 'connecting' ? 'מתחבר...' : s === 'error' ? 'אופליין' : 'חבר ענן';
+          txt.textContent = s === 'online' ? 'ענן חי' : s === 'connecting' ? 'מתחבר' : s === 'error' ? 'אופליין' : 'חבר ענן';
         }
       }
 
       hydrateFromCloudRoot(root) {
         if (!root || typeof root !== 'object') return;
         const nextTasks = {};
-        if (root.tasks && typeof root.tasks === 'object') {
-          Object.entries(root.tasks).forEach(([k, v]) => { if (v) { const t = normTask({ ...v, id: v.id || k }, this.user); nextTasks[t.id] = t; } });
-        }
+        if (root.tasks && typeof root.tasks === 'object') Object.entries(root.tasks).forEach(([k, v]) => { if (v) { const t = normTask({ ...v, id: v.id || k }, this.user); nextTasks[t.id] = t; } });
         const nextExp = {};
-        if (root.expenses && typeof root.expenses === 'object') {
-          Object.entries(root.expenses).forEach(([k, v]) => { if (v) { const e = normExpense({ ...v, id: v.id || k }); nextExp[e.id] = e; } });
-        }
+        if (root.expenses && typeof root.expenses === 'object') Object.entries(root.expenses).forEach(([k, v]) => { if (v) { const e = normExpense({ ...v, id: v.id || k }); nextExp[e.id] = e; } });
         this.tasksMap = nextTasks;
         this.expensesMap = nextExp;
         if (root.audit && typeof root.audit === 'object') {
@@ -1863,15 +1763,12 @@
             if (data.tasks !== undefined) this.applyCloudStreamDelta('/tasks', data.tasks, false);
             if (data.expenses !== undefined) this.applyCloudStreamDelta('/expenses', data.expenses, false);
             if (data.audit !== undefined) this.applyCloudStreamDelta('/audit', data.audit, false);
-          } else if (data) {
-            this.hydrateFromCloudRoot(data);
-          }
+          } else if (data) this.hydrateFromCloudRoot(data);
           return;
         }
         const parts = path.split('/').filter(Boolean);
         const col = parts[0], id = parts[1];
         if (parts.length === 2 && this.cloud.isEcho(col, id, data)) return;
-
         const map = col === 'tasks' ? this.tasksMap : col === 'expenses' ? this.expensesMap : col === 'audit' ? this.auditMap : null;
         if (!map) return;
 
@@ -1899,7 +1796,7 @@
         }
 
         this.saveLocal();
-        if (col === 'audit' && this.tab !== 'hub') return;
+        if (col === 'audit') return;
         this.renderMainPreservingFocus();
       }
 
@@ -1907,8 +1804,7 @@
         const entry = {
           id: uid('log'), ts: Date.now(), actorId: this.user,
           actorName: USERS[this.user].name, actorAvatar: USERS[this.user].avatar,
-          action, detail,
-          time: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
+          action, detail, time: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
         };
         this.auditMap[entry.id] = entry;
         const sorted = Object.values(this.auditMap).sort((a, b) => (b.ts || 0) - (a.ts || 0));
@@ -1976,15 +1872,13 @@
         const el = document.createElement('div');
         el.className = `toast-item toast-${tone}`;
         el.innerHTML = `<span style="flex:1">${esc(msg)}</span>${action ? `<button type="button" class="toast-action">${esc(action.label)}</button>` : ''}`;
-        if (action) {
-          el.querySelector('button').addEventListener('click', () => { action.onClick(); el.remove(); });
-        }
+        if (action) el.querySelector('button').addEventListener('click', () => { action.onClick(); el.remove(); });
         root.appendChild(el);
         setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 180); }, action ? 5200 : 2800);
       }
 
       // =======================================================================
-      // רינדור מהיר (Native CSS, אפס קימפול JS)
+      // רינדור הממשק הנקי (2 לשוניות בלבד)
       // =======================================================================
       renderAll() {
         this.renderHeader();
@@ -2003,15 +1897,14 @@
         if (inMain && activeId) {
           const el = document.getElementById(activeId);
           if (el) {
-            el.value = val;
-            el.focus();
+            el.value = val; el.focus();
             if (pos !== null && el.setSelectionRange) try { el.setSelectionRange(pos, pos); } catch {}
           }
         }
       }
 
       renderHeader() {
-        const cl = this.cloudStatus === 'online' ? 'ענן חי' : this.cloudStatus === 'connecting' ? 'מתחבר...' : this.cloudStatus === 'error' ? 'אופליין' : 'חבר ענן';
+        const cl = this.cloudStatus === 'online' ? 'ענן חי' : this.cloudStatus === 'connecting' ? 'מתחבר' : this.cloudStatus === 'error' ? 'אופליין' : 'חבר ענן';
         document.getElementById('header-root').innerHTML = `
           <header class="top-header">
             <div class="container header-inner">
@@ -2019,25 +1912,25 @@
                 <div class="brand-icon">⚡</div>
                 <div class="brand-title truncate">
                   <span>רונן & עדי</span>
-                  <button type="button" data-act="open-sheet" data-sheet="cloud" class="cloud-pill">
+                  <button type="button" data-act="open-sheet" data-sheet="cloud" class="cloud-dot-btn">
                     <span id="hdr-cloud-dot" class="dot dot-${this.cloudStatus}"></span>
                     <span id="hdr-cloud-txt">${cl}</span>
                   </button>
                 </div>
               </div>
 
-              <nav class="desk-nav">
+              <!-- 2 לשוניות נקיות בדסקטופ -->
+              <nav class="desk-tabs">
                 <button type="button" data-act="tab" data-tab="home" class="${this.tab === 'home' ? 'active' : ''}">⚡ משימות</button>
                 <button type="button" data-act="tab" data-tab="wallet" class="${this.tab === 'wallet' ? 'active' : ''}">💸 התחשבנות</button>
-                <button type="button" data-act="tab" data-tab="hub" class="${this.tab === 'hub' ? 'active' : ''}">🧰 כלים</button>
               </nav>
 
               <div class="header-actions">
                 <button type="button" data-act="toggle-user" class="user-pill user-${this.user}" title="החלף משתמש">
                   <span>${USERS[this.user].avatar}</span><span>${USERS[this.user].name}</span>
                 </button>
-                <button type="button" data-act="toggle-sound" class="icon-btn" title="צלילים">${this.settings.soundEnabled ? '🔊' : '🔇'}</button>
                 <button type="button" data-act="toggle-theme" class="icon-btn" title="מצב כהה/בהיר">${this.darkMode ? '☀️' : '🌙'}</button>
+                <button type="button" data-act="open-sheet" data-sheet="tools" class="icon-btn" title="כלים, התראות והגדרות">⚙️</button>
                 <button type="button" data-act="open-quick" data-mode="${this.tab === 'wallet' ? 'expense' : 'task'}" class="desk-new-btn">+ חדש</button>
               </div>
             </div>
@@ -2052,15 +1945,10 @@
               <button type="button" data-act="tab" data-tab="home" class="nav-btn ${this.tab === 'home' ? 'active' : ''}">
                 <span class="ico">⚡</span><span>משימות</span>
               </button>
+              <button type="button" data-act="open-quick" data-mode="${this.tab === 'wallet' ? 'expense' : 'task'}" class="fab-btn" aria-label="הוספה מהירה">+</button>
               <button type="button" data-act="tab" data-tab="wallet" class="nav-btn ${this.tab === 'wallet' ? 'active' : ''}">
                 <span class="ico">💸</span><span>התחשבנות</span>
               </button>
-              <button type="button" data-act="tab" data-tab="hub" class="nav-btn ${this.tab === 'hub' ? 'active' : ''}">
-                <span class="ico">🧰</span><span>כלים</span>
-              </button>
-              <div>
-                <button type="button" data-act="open-quick" data-mode="${this.tab === 'wallet' ? 'expense' : 'task'}" class="fab-btn" aria-label="הוספה מהירה">+</button>
-              </div>
             </div>
           </div>
         `;
@@ -2068,13 +1956,11 @@
 
       renderMain() {
         const m = document.getElementById('main-root');
-        if (this.tab === 'home') m.innerHTML = this.buildHomeView();
-        else if (this.tab === 'wallet') m.innerHTML = this.buildWalletView();
-        else m.innerHTML = this.buildHubView();
+        m.innerHTML = this.tab === 'home' ? this.buildHomeView() : this.buildWalletView();
       }
 
       // -----------------------------------------------------------------------
-      // מסך 1: דופק ומשימות
+      // לשונית 1: משימות ודופק
       // -----------------------------------------------------------------------
       buildHomeView() {
         const all = this.tasksList;
@@ -2086,7 +1972,6 @@
           if (this.taskFilters.radarOnly && !radar.some(u => u.id === t.id)) return false;
           if (this.taskFilters.who === 'ronen' && !(t.assignee === 'ronen' || t.assignee === 'both')) return false;
           if (this.taskFilters.who === 'adi' && !(t.assignee === 'adi' || t.assignee === 'both')) return false;
-          if (this.taskFilters.who === 'both' && t.assignee !== 'both') return false;
           if (this.taskFilters.category !== 'all' && t.category !== this.taskFilters.category) return false;
           if (q && !`${t.title} ${t.notes} ${(t.subtasks || []).map(s => s.title).join(' ')}`.toLowerCase().includes(q)) return false;
           return true;
@@ -2094,9 +1979,9 @@
 
         const sortG = arr => arr.sort((a, b) => {
           if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-          if (a.dueDate && b.dueDate && a.dueDate !== b.dueDate) return a.dueDate.localeCompare(b.dueDate);
-          if (a.dueDate && !b.dueDate) return -1;
-          if (!a.dueDate && b.dueDate) return 1;
+          const aKey = (a.dueDate || '9999-99-99') + (a.dueTime || '23:59');
+          const bKey = (b.dueDate || '9999-99-99') + (b.dueTime || '23:59');
+          if (aKey !== bKey) return aKey.localeCompare(bKey);
           return (PRIORITIES[b.priority]?.weight || 2) - (PRIORITIES[a.priority]?.weight || 2);
         });
 
@@ -2111,38 +1996,47 @@
         return `
           <section class="bento-grid">
             <button type="button" data-act="toggle-radar-filter" class="card bento-card ${radarClass} ${this.taskFilters.radarOnly ? 'ring-active' : ''}">
-              <div class="bento-top"><span>🔔 רדאר דדליינים</span><span class="mono">${radar.length}</span></div>
+              <div class="bento-top"><span>🔔 דדליינים קרובים</span><span class="mono">${radar.length}</span></div>
               <div class="bento-val truncate">${radar.length ? `${radar.length} מתקרבים` : 'הכל רגוע ✨'}</div>
-              <div class="bento-sub truncate">${nextU ? `${formatShortHebDate(nextU.dueDate)} • ${esc(nextU.title)}` : 'אין דדליינים ב-3 ימים הקרובים'}</div>
+              <div class="bento-sub truncate">${nextU ? `${formatShortHebDate(nextU.dueDate)}${nextU.dueTime ? ' ' + nextU.dueTime : ''} • ${esc(nextU.title)}` : 'אין דדליינים ב-3 ימים הקרובים'}</div>
             </button>
 
             <button type="button" data-act="tab" data-tab="wallet" class="card bento-card">
               <div class="bento-top"><span>💸 מאזן החזרים</span><span style="color:var(--indigo)">לארנק ←</span></div>
               <div class="bento-val mono truncate" style="${fin.balanceAgorot === 0 ? 'color:var(--emerald)' : ''}">${esc(fin.direction.shortText)}</div>
-              <div class="bento-sub truncate">החודש: ${formatILS(fin.thisMonthTotalAgorot)} (כולל משותף)</div>
+              <div class="bento-sub truncate">${fin.openPersonal.length ? `${fin.openPersonal.length} הוצאות פתוחות` : 'אין חובות פתוחים'}</div>
             </button>
           </section>
 
           <section class="launch-row">
             <button type="button" data-act="open-quick" data-mode="task" class="card launch-main">
-              <span class="truncate">✨ הוסף משימה... ("פילטרים מחר @רונן")</span>
+              <span class="truncate">✨ הוסף משימה... ("מחר להכין אוכל עד 19:00")</span>
               <span class="pill-mini">+ משימה</span>
             </button>
             <button type="button" data-act="open-quick" data-mode="expense" class="card launch-exp">💸 + הוצאה</button>
           </section>
 
-          <section class="filter-wrap">
-            <div class="chip-strip no-scroll">
-              ${[{ id: 'all', l: 'הכל' }, { id: 'ronen', l: '👨🏻‍💻 רונן' }, { id: 'adi', l: '👩🏻 עדי' }, { id: 'both', l: '💑 משותף' }].map(p =>
-                `<button type="button" data-act="filter-who" data-val="${p.id}" class="chip ${this.taskFilters.who === p.id ? 'active' : ''}">${p.l}</button>`
-              ).join('')}
-              <span style="color:var(--text-3)">|</span>
-              <button type="button" data-act="filter-cat" data-val="all" class="chip-ghost ${this.taskFilters.category === 'all' ? 'active' : ''}">כל הנושאים</button>
-              ${Object.values(CATEGORIES).map(c =>
-                `<button type="button" data-act="filter-cat" data-val="${c.id}" class="chip-ghost ${this.taskFilters.category === c.id ? 'active' : ''}">${c.icon} ${c.label}</button>`
-              ).join('')}
+          <!-- סרגל סינון קומפקטי אחד (ללא עומס כפתורים) -->
+          <section class="stack-sm">
+            <div class="compact-filter">
+              <div class="seg-bar">
+                <button type="button" data-act="filter-who" data-val="all" class="${this.taskFilters.who === 'all' ? 'active' : ''}">הכל</button>
+                <button type="button" data-act="filter-who" data-val="ronen" class="${this.taskFilters.who === 'ronen' ? 'active' : ''}">👨🏻‍💻 רונן</button>
+                <button type="button" data-act="filter-who" data-val="adi" class="${this.taskFilters.who === 'adi' ? 'active' : ''}">👩🏻 עדי</button>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:6px">
+                <select id="home-cat-select" class="cat-select" aria-label="סנן לפי נושא">
+                  <option value="all" ${this.taskFilters.category === 'all' ? 'selected' : ''}>כל הנושאים</option>
+                  ${Object.values(CATEGORIES).map(c => `<option value="${c.id}" ${this.taskFilters.category === c.id ? 'selected' : ''}>${c.icon} ${c.label}</option>`).join('')}
+                </select>
+                <button type="button" data-act="toggle-search" class="icon-btn" style="${this.showSearchBar || this.taskFilters.q ? 'border-color:var(--indigo);color:var(--indigo)' : ''}" title="חיפוש">🔍</button>
+              </div>
             </div>
-            <input type="search" id="home-search-input" value="${esc(this.taskFilters.q)}" placeholder="🔍 חיפוש מהיר..." class="field field-sm" />
+
+            ${this.showSearchBar || this.taskFilters.q ? `
+              <input type="search" id="home-search-input" value="${esc(this.taskFilters.q)}" placeholder="🔍 חפש לפי מילה, הערה או שלב..." class="field field-sm" />
+            ` : ''}
           </section>
 
           <div class="stack-md">
@@ -2193,6 +2087,10 @@
         const dateCls = bucket === 'overdue' ? 'badge-overdue' : bucket === 'today' ? 'badge-today' : '';
         const href = safeUrl(t.link);
 
+        const timeBadge = (t.dueDate || t.dueTime)
+          ? `<span class="badge ${dateCls}">📅 ${t.dueDate ? esc(formatShortHebDate(t.dueDate)) : ''}${t.dueTime ? (t.dueDate ? ' • ⏰ ' : '⏰ ') + esc(t.dueTime) : ''}</span>`
+          : '';
+
         return `
           <article class="card task-card ${t.done ? 'is-done' : ''} ${t.pinned && !t.done ? 'is-pinned' : ''}" data-swipe-id="${t.id}">
             <div class="task-main">
@@ -2206,7 +2104,7 @@
                 </div>
                 <div class="task-meta">
                   <span>${cat.icon} ${cat.label}</span>
-                  ${t.dueDate ? `<span class="badge ${dateCls}">📅 ${esc(formatShortHebDate(t.dueDate))}${t.dueTime ? ' ' + esc(t.dueTime) : ''}</span>` : ''}
+                  ${timeBadge}
                   ${subs.length ? `<span class="badge mono">✓ ${subsDone}/${subs.length}</span>` : ''}
                   ${t.estimatedBudget > 0 ? `<span class="mono" style="color:var(--emerald);font-weight:800">₪${t.estimatedBudget.toLocaleString()}</span>` : ''}
                   ${t.reaction ? `<span>${esc(t.reaction)}</span>` : ''}
@@ -2261,53 +2159,99 @@
       }
 
       // -----------------------------------------------------------------------
-      // מסך 2: התחשבנות וארנק
+      // לשונית 2: התחשבנות ידידותית (פתוחות מול היסטוריה שנסגרה + אשראי משותף)
       // -----------------------------------------------------------------------
       buildWalletView() {
         const all = this.expensesList;
         const fin = FinanceEngine.computeSummary(all);
-        const month = todayISO(0).slice(0, 7);
-
-        const visible = all.filter(e => {
-          if (this.walletFilter.period === 'month' && !(e.date || '').startsWith(month)) return false;
-          if (this.walletFilter.method === 'personal') return e.paymentMethod === 'personal' || e.splitType === 'settlement';
-          if (this.walletFilter.method === 'joint_card') return e.paymentMethod === 'joint_card' && e.splitType !== 'settlement';
-          return true;
-        });
-
+        const heroCls = fin.balanceAgorot === 0 ? 'hero-balanced' : fin.balanceAgorot > 0 ? 'hero-ronen-owed' : 'hero-adi-owed';
+        const jointList = all.filter(e => e.paymentMethod === 'joint_card' && e.splitType !== 'settlement');
         const totalCat = Object.values(fin.byCategory).reduce((a, b) => a + b, 0) || 1;
         const cats = Object.entries(fin.byCategory).sort((a, b) => b[1] - a[1]);
-        const heroCls = fin.balanceAgorot === 0 ? 'hero-balanced' : fin.balanceAgorot > 0 ? 'hero-ronen-owed' : 'hero-adi-owed';
+
+        let listContent = '';
+        if (this.walletTab === 'open') {
+          listContent = `
+            ${fin.openPersonal.length ? `
+              <div class="stack-sm">
+                <div class="group-head" style="color:var(--indigo)">
+                  <span>💳 הוצאות פתוחות שמחושבות במאזן הנוכחי</span>
+                  <span class="mono" style="color:var(--text-3)">${fin.openPersonal.length}</span>
+                </div>
+                ${fin.openPersonal.map(e => this.buildExpenseRow(e)).join('')}
+              </div>
+            ` : `
+              <div class="card empty-box">
+                <div style="font-size:32px">🤝</div>
+                <strong>הכל מאוזן!</strong>
+                <span style="font-size:12px;color:var(--text-2)">שילמת משהו מהכרטיס האישי במקום מהמשותף? לחץ "+ הוצאה" למעלה.</span>
+              </div>
+            `}
+
+            ${fin.settledPersonal.length ? `
+              <section style="margin-top:6px">
+                <button type="button" data-act="toggle-settled-history" style="font-size:12px;font-weight:800;color:var(--text-3);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+                  <span>${this.showSettledHistory ? '▾' : '◂'}</span>
+                  <span>📜 התחשבנויות קודמות שנסגרו (${fin.settledPersonal.length})</span>
+                </button>
+                ${this.showSettledHistory ? `<div class="stack-sm" style="opacity:0.78">${fin.settledPersonal.map(e => this.buildExpenseRow(e)).join('')}</div>` : ''}
+              </section>
+            ` : ''}
+          `;
+        } else if (this.walletTab === 'joint') {
+          listContent = jointList.length
+            ? `<div class="stack-sm">${jointList.map(e => this.buildExpenseRow(e)).join('')}</div>`
+            : `<div class="card empty-box"><div style="font-size:32px">🏦</div><strong>אין עדיין הוצאות באשראי משותף</strong><span style="font-size:12px;color:var(--text-2)">אפשר לתעד כאן הוצאות מהמשותף למעקב תקציב — הן לא נכנסות לחישוב ההחזרים.</span></div>`;
+        } else {
+          listContent = all.length
+            ? `<div class="stack-sm">${all.map(e => this.buildExpenseRow(e)).join('')}</div>`
+            : `<div class="card empty-box"><div style="font-size:32px">💳</div><strong>אין עדיין תנועות</strong></div>`;
+        }
 
         return `
           <section class="hero-wallet ${heroCls}">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
               <div>
-                <div style="font-size:12px;opacity:.85;font-weight:700">מאזן התחשבנות אישי (ללא אשראי משותף)</div>
-                <div class="mono" style="font-size:28px;font-weight:900;margin-top:3px">${fin.balanceAgorot === 0 ? '₪0 — מאוזנים!' : formatILS(Math.abs(fin.balanceAgorot))}</div>
-                <div style="font-size:13px;font-weight:700;margin-top:2px">${esc(fin.direction.fullText)}</div>
+                <div style="font-size:13px;font-weight:800;opacity:.95">${esc(fin.direction.headline)}</div>
+                <div class="mono" style="font-size:32px;font-weight:900;margin-top:2px;line-height:1.1">${fin.balanceAgorot === 0 ? '₪0' : formatILS(Math.abs(fin.balanceAgorot))}</div>
+                <div style="font-size:11px;opacity:.85;margin-top:4px">
+                  ${fin.balanceAgorot === 0 ? 'אין חובות פתוחים ביניכם כרגע' : `מבוסס על ${fin.openPersonal.length} תנועות אישיות פתוחות (לא כולל אשראי משותף)`}
+                </div>
               </div>
-              <button type="button" data-act="open-quick" data-mode="expense" style="background:#fff;color:#0f172a;padding:9px 14px;border-radius:14px;font-size:12px;font-weight:900;flex-shrink:0">+ הוצאה</button>
-            </div>
-
-            <div class="hero-stats">
-              <div class="hero-stat-box">👨🏻‍💻 אישי רונן<strong class="mono">${formatILS(fin.personalRonenAgorot)}</strong></div>
-              <div class="hero-stat-box">👩🏻 אישי עדי<strong class="mono">${formatILS(fin.personalAdiAgorot)}</strong></div>
-              <div class="hero-stat-box">🏦 אשראי משותף<strong class="mono">${formatILS(fin.jointCardAgorot)}</strong></div>
+              <button type="button" data-act="open-quick" data-mode="expense" style="background:#fff;color:#0f172a;padding:10px 14px;border-radius:14px;font-size:13px;font-weight:900;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.15)">
+                + הוצאה
+              </button>
             </div>
 
             ${fin.balanceAgorot !== 0 ? `
               <div class="grid-2">
-                <button type="button" data-act="open-sheet" data-sheet="settle" style="background:rgba(255,255,255,0.2);color:#fff;padding:10px;border-radius:12px;font-size:12px;font-weight:800">🤝 סגור חשבון</button>
-                <button type="button" data-act="wa-send-balance" style="background:#10b981;color:#fff;padding:10px;border-radius:12px;font-size:12px;font-weight:800">📲 פירוט לביט</button>
+                <button type="button" data-act="open-sheet" data-sheet="settle" style="background:rgba(255,255,255,0.22);color:#fff;padding:10px;border-radius:12px;font-size:12px;font-weight:800">🤝 סגור חשבון</button>
+                <button type="button" data-act="wa-send-balance" style="background:#10b981;color:#fff;padding:10px;border-radius:12px;font-size:12px;font-weight:800">📲 שלח פירוט לביט</button>
               </div>
             ` : ''}
+
+            <div class="hero-stats">
+              <div class="hero-stat-box">👨🏻‍💻 אישי רונן<strong class="mono">${formatILS(fin.personalRonenAgorot)}</strong></div>
+              <div class="hero-stat-box">👩🏻 אישי עדי<strong class="mono">${formatILS(fin.personalAdiAgorot)}</strong></div>
+              <div class="hero-stat-box">🏦 משותף<strong class="mono">${formatILS(fin.jointCardAgorot)}</strong></div>
+            </div>
           </section>
 
+          <!-- סרגל סינון יחיד ונקי -->
+          <section style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <div class="seg-bar" style="width:100%;display:grid;grid-template-columns:repeat(3,1fr)">
+              <button type="button" data-act="wallet-tab" data-val="open" class="${this.walletTab === 'open' ? 'active-indigo' : ''}">💳 להתחשבנות</button>
+              <button type="button" data-act="wallet-tab" data-val="joint" class="${this.walletTab === 'joint' ? 'active-indigo' : ''}">🏦 משותף</button>
+              <button type="button" data-act="wallet-tab" data-val="all" class="${this.walletTab === 'all' ? 'active-indigo' : ''}">📜 הכל</button>
+            </div>
+          </section>
+
+          ${listContent}
+
           ${cats.length ? `
-            <section class="card" style="padding:14px;display:flex;flex-direction:column;gap:9px">
+            <section class="card" style="padding:14px;display:flex;flex-direction:column;gap:8px">
               <div style="display:flex;justify-content:space-between;font-size:12px">
-                <strong>📊 פילוח הוצאות כולל</strong>
+                <strong>📊 סיכום הוצאות לפי נושא</strong>
                 <span class="mono" style="color:var(--text-2);font-weight:700">החודש: ${formatILS(fin.thisMonthTotalAgorot)}</span>
               </div>
               <div class="cat-bar">
@@ -2318,152 +2262,44 @@
               </div>
             </section>
           ` : ''}
-
-          <section style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-            <div class="seg-bar">
-              <button type="button" data-act="wallet-method" data-val="personal" class="${this.walletFilter.method === 'personal' ? 'active' : ''}">💳 להתחשבנות</button>
-              <button type="button" data-act="wallet-method" data-val="joint_card" class="${this.walletFilter.method === 'joint_card' ? 'active' : ''}">🏦 משותף</button>
-              <button type="button" data-act="wallet-method" data-val="all" class="${this.walletFilter.method === 'all' ? 'active' : ''}">הכל</button>
-            </div>
-            <div class="seg-bar">
-              <button type="button" data-act="wallet-period" data-val="all" class="${this.walletFilter.period === 'all' ? 'active-dark' : ''}">הכל</button>
-              <button type="button" data-act="wallet-period" data-val="month" class="${this.walletFilter.period === 'month' ? 'active-dark' : ''}">החודש</button>
-            </div>
-          </section>
-
-          <section class="stack-sm">
-            ${!visible.length ? `
-              <div class="card empty-box">
-                <div style="font-size:32px">💳</div>
-                <strong>אין תנועות בתצוגה זו</strong>
-                <span style="font-size:12px;color:var(--text-2)">שילמת משהו בכרטיס אישי במקום במשותף? לחץ "+ הוצאה" והמאזן יתעדכן מיד.</span>
-              </div>
-            ` : visible.map(e => {
-              const cat = CATEGORIES[e.category] || CATEGORIES.other;
-              const delta = FinanceEngine.expenseDelta(e);
-              const isSet = e.splitType === 'settlement';
-              const payer = USERS[e.paidBy] || USERS.ronen;
-              const badge = isSet ? `<span class="badge badge-emerald">🤝 העברת התחשבנות</span>`
-                : e.paymentMethod === 'joint_card' ? `<span class="badge">🏦 משותף • ללא החזר</span>`
-                : delta > 0 ? `<span class="badge badge-indigo">עדי ← רונן ${formatILS(delta)}</span>`
-                : delta < 0 ? `<span class="badge badge-pink">רונן ← עדי ${formatILS(Math.abs(delta))}</span>`
-                : `<span class="badge">ללא החזר</span>`;
-              const splitLbl = isSet ? '' : e.paymentMethod === 'joint_card' ? 'אשראי משותף' : e.splitType === 'equal' ? 'חצי-חצי' : e.splitType === 'for_other' ? `100% עבור ${e.paidBy === 'ronen' ? 'עדי' : 'רונן'}` : 'חלוקה מותאמת';
-
-              return `
-                <article class="card exp-row">
-                  <div style="display:flex;align-items:center;gap:11px;min-width:0;flex:1;cursor:pointer" data-act="open-edit-expense" data-id="${e.id}">
-                    <div class="exp-icon">${isSet ? '🤝' : cat.icon}</div>
-                    <div style="min-width:0;flex:1">
-                      <div style="font-size:14px;font-weight:800" class="truncate">${esc(e.title)}</div>
-                      <div style="font-size:11px;color:var(--text-2);margin-top:2px">${esc(formatShortHebDate(e.date))} • ${payer.avatar} ${payer.name}${splitLbl ? ' • ' + splitLbl : ''}</div>
-                      <div style="margin-top:5px">${badge}</div>
-                    </div>
-                  </div>
-                  <div style="text-align:left;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-                    <div class="mono" style="font-size:16px;font-weight:900">${formatILS(e.amountAgorot)}</div>
-                    ${e.currency !== 'ILS' ? `<div class="mono" style="font-size:10px;color:var(--text-3)">${e.originalAmount} ${e.currency}</div>` : ''}
-                    <button type="button" data-act="del-expense" data-id="${e.id}" style="font-size:13px;color:var(--text-3)">🗑️</button>
-                  </div>
-                </article>
-              `;
-            }).join('')}
-          </section>
         `;
       }
 
-      // -----------------------------------------------------------------------
-      // מסך 3: כלים, התראות וסנכרון
-      // -----------------------------------------------------------------------
-      buildHubView() {
-        const perm = ('Notification' in window) ? Notification.permission : 'unsupported';
-        const permTxt = perm === 'granted' ? '✅ מאושר' : perm === 'denied' ? '🚫 חסום' : perm === 'default' ? '⏳ ממתין' : 'לא נתמך';
+      buildExpenseRow(e) {
+        const cat = CATEGORIES[e.category] || CATEGORIES.other;
+        const delta = FinanceEngine.expenseDelta(e);
+        const isSet = e.splitType === 'settlement';
+        const payer = USERS[e.paidBy] || USERS.ronen;
+
+        const impact = isSet ? `<span class="badge badge-emerald">🤝 העברה לסגירת חשבון</span>`
+          : e.paymentMethod === 'joint_card' ? `<span class="badge">🏦 אשראי משותף</span>`
+          : delta > 0 ? `<span class="badge badge-indigo">עדי מחזירה ${formatILS(delta)}</span>`
+          : delta < 0 ? `<span class="badge badge-pink">רונן מחזיר ${formatILS(Math.abs(delta))}</span>`
+          : `<span class="badge">ללא החזר</span>`;
+
+        const splitLbl = isSet ? '' : e.paymentMethod === 'joint_card' ? '' : e.splitType === 'equal' ? 'חצי-חצי' : e.splitType === 'for_other' ? `הכל על ${e.paidBy === 'ronen' ? 'עדי' : 'רונן'}` : 'מותאם';
 
         return `
-          <section class="hub-grid">
-            <button type="button" data-act="open-sheet" data-sheet="wa-import" class="card hub-tile">
-              <span style="font-size:22px">📥</span>
-              <strong style="font-size:13px">ייבוא מ-WhatsApp</strong>
-              <span style="font-size:11px;color:var(--text-2)">חילוץ משימות והוצאות</span>
-            </button>
-            <button type="button" data-act="open-sheet" data-sheet="wa-share" class="card hub-tile">
-              <span style="font-size:22px">📲</span>
-              <strong style="font-size:13px">שלח עדכון לעדי</strong>
-              <span style="font-size:11px;color:var(--text-2)">סיכום + קישור ענן</span>
-            </button>
-            <button type="button" data-act="open-sheet" data-sheet="gemini" class="card hub-tile">
-              <span style="font-size:22px">✨</span>
-              <strong style="font-size:13px">גשר Gemini</strong>
-              <span style="font-size:11px;color:var(--text-2)">מיזוג חכם לפי ID</span>
-            </button>
-            <button type="button" data-act="open-sheet" data-sheet="cloud" class="card hub-tile">
-              <span style="font-size:22px">☁️</span>
-              <strong style="font-size:13px">ענן Firebase</strong>
-              <span style="font-size:11px;color:var(--text-2)">${this.cloudUrl ? 'מחובר חי' : 'לא מחובר'}</span>
-            </button>
-          </section>
-
-          <section class="card" style="padding:15px;display:flex;flex-direction:column;gap:12px">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <strong style="font-size:14px">🔔 מרכז התראות דדליין</strong>
-              <span style="font-size:11px;font-weight:700;color:var(--text-2)">${permTxt}</span>
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:8px">
-              <button type="button" data-act="req-notif-perm" class="btn-primary" style="font-size:12px">🔔 הפעל התראות דפדפן</button>
-              <button type="button" data-act="ics-all" class="btn-soft">📅 ייצא דדליינים ליומן (.ics)</button>
-            </div>
-            <div style="padding-top:10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
-              <strong style="font-size:12px">📱 התראות Push חיות בין טלפונים (ntfy.sh — אופציונלי)</strong>
-              <span style="font-size:11px;color:var(--text-2)">התקינו את האפליקציה החינמית ntfy, בחרו שם ערוץ סודי וארוך והזינו כאן:</span>
-              <div style="display:flex;gap:6px">
-                <input type="text" id="hub-ntfy-topic" value="${esc(this.settings.ntfyTopic)}" placeholder="ronen-adi-pulse-9482" class="field field-sm mono" style="flex:1" />
-                <button type="button" data-act="save-ntfy" class="btn-dark" style="padding:7px 12px;font-size:12px">שמור</button>
-                <button type="button" data-act="test-ntfy" class="btn-soft">בדוק</button>
+          <article class="card exp-row">
+            <div style="display:flex;align-items:center;gap:11px;min-width:0;flex:1;cursor:pointer" data-act="open-edit-expense" data-id="${e.id}">
+              <div class="exp-icon">${isSet ? '🤝' : cat.icon}</div>
+              <div style="min-width:0;flex:1">
+                <div style="font-size:14px;font-weight:800" class="truncate">${esc(e.title)}</div>
+                <div style="font-size:11px;color:var(--text-2);margin-top:2px">${esc(formatShortHebDate(e.date))} • שילם/ה: ${payer.avatar} ${payer.name}${splitLbl ? ' • ' + splitLbl : ''}</div>
+                <div style="margin-top:5px">${impact}</div>
               </div>
             </div>
-          </section>
-
-          <section class="grid-2">
-            <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px">
-              <strong style="font-size:13px">💱 שערי מטבע (חו״ל)</strong>
-              <div class="grid-2">
-                <label><span class="lbl">1 € = ₪</span><input type="number" step="0.01" id="rate-eur" value="${this.settings.rates.EUR}" class="field field-sm mono" /></label>
-                <label><span class="lbl">1 $ = ₪</span><input type="number" step="0.01" id="rate-usd" value="${this.settings.rates.USD}" class="field field-sm mono" /></label>
-              </div>
-              <button type="button" data-act="save-rates" class="btn-soft" style="width:100%">💾 עדכן שערים</button>
+            <div style="text-align:left;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+              <div class="mono" style="font-size:16px;font-weight:900">${formatILS(e.amountAgorot)}</div>
+              ${e.currency !== 'ILS' ? `<div class="mono" style="font-size:10px;color:var(--text-3)">${e.originalAmount} ${e.currency}</div>` : ''}
+              <button type="button" data-act="del-expense" data-id="${e.id}" style="font-size:13px;color:var(--text-3)" title="מחק">🗑️</button>
             </div>
-
-            <div class="card" style="padding:14px;display:flex;flex-direction:column;justify-content:space-between;gap:10px">
-              <div>
-                <strong style="font-size:13px">💾 גיבוי ושחזור</strong>
-                <div style="font-size:11px;color:var(--text-2);margin-top:4px">שומר את כל המשימות וההתחשבנות לקובץ JSON.</div>
-              </div>
-              <div class="grid-2">
-                <button type="button" data-act="export-json" class="btn-dark" style="padding:8px;font-size:12px">⬇️ הורד</button>
-                <label class="btn-soft" style="cursor:pointer">⬆️ שחזר<input type="file" id="import-json-file" accept=".json" class="hidden" /></label>
-              </div>
-            </div>
-          </section>
-
-          <section class="card" style="overflow:hidden">
-            <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-              <strong style="font-size:13px">🕒 יומן פעילות (${this.auditList.length})</strong>
-              <button type="button" data-act="force-sync" style="font-size:12px;font-weight:800;color:var(--indigo)">🔄 סנכרן עכשיו</button>
-            </div>
-            <div style="max-height:240px;overflow-y:auto">
-              ${this.auditList.map(a => `
-                <div style="padding:9px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px;font-size:12px">
-                  <div class="truncate">${a.actorAvatar || '⚡'} <strong>${esc(a.actorName || '')}</strong> <span style="color:var(--text-2)">${esc(a.action || '')}</span> ${a.detail || a.taskTitle ? `<strong style="color:var(--indigo)">"${esc(a.detail || a.taskTitle)}"</strong>` : ''}</div>
-                  <span class="mono" style="font-size:11px;color:var(--text-3);flex-shrink:0">${esc(a.time || '')}</span>
-                </div>
-              `).join('') || '<div style="padding:20px;text-align:center;font-size:12px;color:var(--text-3)">אין פעילות עדיין</div>'}
-            </div>
-          </section>
+          </article>
         `;
       }
 
       // =======================================================================
-      // 8. Bottom Sheets — ללא stopPropagation וללא בנייה מחדש בלחיצת צ'יפ!
+      // 8. שכבת Bottom Sheets ומגירת כלים והגדרות (⚙️)
       // =======================================================================
       renderSheet() {
         const root = document.getElementById('sheet-root');
@@ -2474,16 +2310,13 @@
         else if (this.sheet === 'edit-task' && this.editingTask) html = this.buildEditTaskSheet();
         else if (this.sheet === 'edit-expense' && this.editingExpense) html = this.buildEditExpenseSheet();
         else if (this.sheet === 'settle') html = this.buildSettleSheet();
+        else if (this.sheet === 'tools') html = this.buildToolsSheet();
         else if (this.sheet === 'wa-import') html = this.buildWaImportSheet();
         else if (this.sheet === 'wa-share') html = this.buildWaShareSheet();
         else if (this.sheet === 'gemini') html = this.buildGeminiSheet();
         else if (this.sheet === 'cloud') html = this.buildCloudSheet();
 
-        root.innerHTML = `
-          <div id="sheet-backdrop" class="sheet-backdrop">
-            <div class="sheet-panel">${html}</div>
-          </div>
-        `;
+        root.innerHTML = `<div id="sheet-backdrop" class="sheet-backdrop"><div class="sheet-panel">${html}</div></div>`;
 
         if (this.sheet === 'quick-add') {
           this.syncQuickSheetUI();
@@ -2505,23 +2338,24 @@
         return `
           <div class="sheet-head">
             <div class="seg-bar">
-              <button type="button" data-act="quick-mode" data-mode="task" id="qa-tab-task" class="${isTask ? 'active' : ''}">✅ משימה</button>
-              <button type="button" data-act="quick-mode" data-mode="expense" id="qa-tab-exp" class="${!isTask ? 'active' : ''}" style="${!isTask ? 'background:var(--emerald)' : ''}">💸 הוצאה</button>
+              <button type="button" data-act="quick-mode" data-mode="task" id="qa-tab-task" class="${isTask ? 'active-indigo' : ''}">✅ משימה</button>
+              <button type="button" data-act="quick-mode" data-mode="expense" id="qa-tab-exp" class="${!isTask ? 'active-indigo' : ''}">💸 הוצאה</button>
             </div>
             <button type="button" data-act="close-sheet" class="close-btn">✕</button>
           </div>
 
-          <!-- טופס משימה (נשאר ב-DOM — עדכונים ב-<1ms) -->
+          <!-- טופס משימה חכם -->
           <form id="quick-task-form" class="stack-md ${isTask ? '' : 'hidden'}">
             <div style="display:flex;gap:6px">
-              <input type="text" id="qa-task-input" value="${esc(td.rawInput)}" placeholder='מה צריך לעשות? ("לסגור צלם מחר 18:00 @עדי !דחוף")' class="field" style="font-weight:700;flex:1" autocomplete="off" required />
+              <input type="text" id="qa-task-input" value="${esc(td.rawInput)}" placeholder='למשל: "מחר להכין אוכל עד 19:00" או "לקנות בשר @רונן"' class="field" style="font-weight:700;flex:1" autocomplete="off" required />
               ${hasVoice ? `<button type="button" data-act="voice-input" class="icon-btn" style="width:44px;height:44px;font-size:18px" title="הכתבה קולית">🎤</button>` : ''}
             </div>
 
+            <!-- תצוגת זיהוי חכם חיה -->
             <div id="qa-nlp-preview" class="stack-sm"></div>
 
             <div>
-              <span class="lbl">📅 דדליין (לחץ לבחירה מהירה או בחר תאריך)</span>
+              <span class="lbl">📅 מתי?</span>
               <div class="chip-strip no-scroll" style="margin-bottom:8px">
                 <button type="button" data-act="qa-date-chip" data-days="0" class="chip">היום</button>
                 <button type="button" data-act="qa-date-chip" data-days="1" class="chip">מחר</button>
@@ -2530,9 +2364,9 @@
                 <button type="button" data-act="qa-date-chip" data-days="-1" class="chip">ללא תאריך</button>
               </div>
               <div class="grid-3">
-                <input type="date" id="qa-date-manual" value="${esc(td.dueDate)}" class="field field-sm" />
-                <input type="time" id="qa-time-manual" value="${esc(td.dueTime)}" class="field field-sm" />
-                <select id="qa-remind-lead" class="field field-sm">
+                <input type="date" id="qa-date-manual" value="${esc(td.dueDate)}" class="field field-sm" aria-label="תאריך" />
+                <input type="time" id="qa-time-manual" value="${esc(td.dueTime)}" class="field field-sm" aria-label="שעה" />
+                <select id="qa-remind-lead" class="field field-sm" aria-label="תזכורת">
                   <option value="0" ${td.remindLead == 0 ? 'selected' : ''}>🔔 ביום היעד</option>
                   <option value="1" ${td.remindLead == 1 ? 'selected' : ''}>🔔 יום לפני</option>
                   <option value="3" ${td.remindLead == 3 ? 'selected' : ''}>🔔 3 ימים לפני</option>
@@ -2554,72 +2388,91 @@
               ${Object.values(CATEGORIES).map(c => `<button type="button" data-act="qa-cat" data-val="${c.id}" class="chip">${c.icon} ${c.label}</button>`).join('')}
             </div>
 
-            <button type="submit" class="btn-primary" style="width:100%;padding:13px;font-size:14px">⚡ הוסף משימה ללוח</button>
+            <button type="submit" class="btn-primary" style="width:100%;padding:13px;font-size:14px">⚡ הוסף משימה</button>
           </form>
 
-          <!-- טופס הוצאה (נשאר ב-DOM — עדכונים ב-<1ms) -->
+          <!-- טופס הוצאה ידידותי במיוחד -->
           <form id="quick-expense-form" class="stack-md ${!isTask ? '' : 'hidden'}">
             <div style="display:flex;gap:8px;align-items:center">
-              <input type="number" step="0.01" inputmode="decimal" id="qa-exp-amount" value="${esc(ed.amountStr)}" placeholder="0" required class="field mono amount-input" style="flex:1" />
-              <button type="button" data-act="qa-exp-curr" id="qa-exp-curr-btn" class="btn-soft mono" style="height:54px;min-width:54px;font-size:18px;font-weight:900">₪</button>
+              <input type="number" step="0.01" inputmode="decimal" id="qa-exp-amount" value="${esc(ed.amountStr)}" placeholder="כמה שילמת?" required class="field mono amount-input" style="flex:1" />
+              <button type="button" data-act="qa-exp-curr" id="qa-exp-curr-btn" class="btn-soft mono" style="height:56px;min-width:56px;font-size:19px;font-weight:900" title="החלף מטבע">₪</button>
             </div>
             <div id="qa-exp-fx-hint" class="mono hidden" style="text-align:center;font-size:12px;color:var(--text-2);margin-top:-6px"></div>
 
-            <input type="text" id="qa-exp-title" value="${esc(ed.title)}" placeholder="על מה שילמת? (סופר, קצביה, דלק, מתנה...)" required class="field" style="font-weight:700" />
-
-            <div>
-              <span class="lbl">באיזה כרטיס שולם?</span>
-              <div class="grid-3">
-                <button type="button" data-act="qa-exp-pay" data-method="personal" data-payer="ronen" class="chip" style="padding:10px 6px;text-align:center">💳 אישי רונן</button>
-                <button type="button" data-act="qa-exp-pay" data-method="personal" data-payer="adi" class="chip" style="padding:10px 6px;text-align:center">💳 אישי עדי</button>
-                <button type="button" data-act="qa-exp-pay" data-method="joint_card" data-payer="${this.user === 'adi' ? 'adi' : 'ronen'}" class="chip" style="padding:10px 6px;text-align:center">🏦 משותף</button>
+            <!-- תיאור + תבניות מהירות בנגיעה -->
+            <div class="stack-sm">
+              <input type="text" id="qa-exp-title" value="${esc(ed.title)}" placeholder="על מה שילמת?" required class="field" style="font-weight:700" />
+              <div class="chip-strip no-scroll">
+                ${EXPENSE_PRESETS.map((pr, idx) => `<button type="button" data-act="qa-exp-preset" data-idx="${idx}" class="chip">${pr.label}</button>`).join('')}
               </div>
             </div>
 
-            <div id="qa-exp-split-wrap" class="stack-sm">
-              <span class="lbl" style="margin:0">איך מחלקים?</span>
+            <!-- מי שילם? -->
+            <div>
+              <span class="lbl">מי שילם?</span>
               <div class="grid-3">
-                <button type="button" data-act="qa-exp-split" data-val="equal" class="chip" style="padding:8px;text-align:center">50 / 50</button>
-                <button type="button" data-act="qa-exp-split" data-val="for_other" id="qa-split-other-btn" class="chip" style="padding:8px;text-align:center">100% עבור השני</button>
-                <button type="button" data-act="qa-exp-split" data-val="custom" class="chip" style="padding:8px;text-align:center">מותאם ₪</button>
+                <button type="button" data-act="qa-exp-pay" data-method="personal" data-payer="ronen" class="payer-card">👨🏻‍💻 רונן (אישי)</button>
+                <button type="button" data-act="qa-exp-pay" data-method="personal" data-payer="adi" class="payer-card">👩🏻 עדי (אישי)</button>
+                <button type="button" data-act="qa-exp-pay" data-method="joint_card" data-payer="${this.user === 'adi' ? 'adi' : 'ronen'}" class="payer-card">🏦 משותף</button>
               </div>
+            </div>
+
+            <!-- כרטיסי חלוקה שמראים בשקלים כמה השני מחזיר! -->
+            <div id="qa-exp-split-wrap" class="stack-sm">
+              <span class="lbl" style="margin:0">איך מתחלקים?</span>
+              <div class="grid-3">
+                <button type="button" data-act="qa-exp-split" data-val="equal" class="split-card">
+                  <span class="sc-title">⚖️ חצי-חצי</span>
+                  <span id="sc-sub-equal" class="sc-sub">50%</span>
+                </button>
+                <button type="button" data-act="qa-exp-split" data-val="for_other" class="split-card">
+                  <span id="sc-title-other" class="sc-title">🎁 הכל על עדי</span>
+                  <span id="sc-sub-other" class="sc-sub">100%</span>
+                </button>
+                <button type="button" data-act="qa-exp-split" data-val="custom" class="split-card">
+                  <span class="sc-title">✏️ סכום אחר</span>
+                  <span id="sc-sub-custom" class="sc-sub">מותאם</span>
+                </button>
+              </div>
+
               <div id="qa-exp-custom-wrap" class="grid-2 hidden">
                 <label><span class="lbl">חלק רונן (₪)</span><input type="number" step="0.01" inputmode="decimal" id="qa-exp-custom-ronen" value="${esc(ed.customRonenStr)}" class="field field-sm mono" /></label>
-                <div><span class="lbl">חלק עדי (אוטומטי)</span><div id="qa-exp-custom-adi" class="field field-sm mono" style="background:var(--bg-elev)">₪0</div></div>
+                <label><span class="lbl">חלק עדי (₪)</span><input type="number" step="0.01" inputmode="decimal" id="qa-exp-custom-adi" value="${esc(ed.customAdiStr)}" class="field field-sm mono" /></label>
               </div>
             </div>
 
-            <div class="chip-strip no-scroll">
-              ${Object.values(CATEGORIES).map(c => `<button type="button" data-act="qa-exp-cat" data-val="${c.id}" class="chip">${c.icon} ${c.label}</button>`).join('')}
+            <div class="grid-2">
+              <select id="qa-exp-cat-sel" class="field field-sm" aria-label="קטגוריה">
+                ${Object.values(CATEGORIES).map(c => `<option value="${c.id}" ${ed.category === c.id ? 'selected' : ''}>${c.icon} ${c.label}</option>`).join('')}
+              </select>
+              <input type="date" id="qa-exp-date" value="${esc(ed.date)}" class="field field-sm" aria-label="תאריך" />
             </div>
 
-            <div id="qa-exp-impact" class="impact-box">הזן סכום כדי לראות את ההשפעה על ההתחשבנות</div>
+            <div id="qa-exp-impact" class="impact-box">הזן סכום כדי לראות כמה השני מחזיר</div>
 
             <button type="submit" class="btn-emerald" style="width:100%;padding:13px;font-size:14px">💸 שמור הוצאה</button>
           </form>
         `;
       }
 
-      // עדכון מהיר (<1ms) של כל הצ'יפים ב-Quick Add בלי להרוס את החלון!
       syncQuickSheetUI() {
         const td = this.quickTaskDraft;
         const ed = this.quickExpenseDraft;
         const isTask = this.quickMode === 'task';
 
-        // מתג עליון
         const tabT = document.getElementById('qa-tab-task');
         const tabE = document.getElementById('qa-tab-exp');
         const formT = document.getElementById('quick-task-form');
         const formE = document.getElementById('quick-expense-form');
         if (tabT && tabE && formT && formE) {
-          tabT.className = isTask ? 'active' : '';
-          tabE.className = !isTask ? 'active' : '';
+          tabT.className = isTask ? 'active-indigo' : '';
+          tabE.className = !isTask ? 'active-indigo' : '';
           tabE.style.background = !isTask ? 'var(--emerald)' : '';
           formT.classList.toggle('hidden', !isTask);
           formE.classList.toggle('hidden', isTask);
         }
 
-        // צ'יפי משימה
+        // משימה
         document.querySelectorAll('[data-act="qa-date-chip"]').forEach(b => {
           const d = Number(b.dataset.days);
           const match = d === -1 ? !td.dueDate : td.dueDate === todayISO(d);
@@ -2630,17 +2483,11 @@
         const tm = document.getElementById('qa-time-manual');
         if (tm && tm.value !== td.dueTime) tm.value = td.dueTime;
 
-        document.querySelectorAll('[data-act="qa-assignee"]').forEach(b => {
-          b.className = `chip ${b.dataset.val === td.assignee ? 'active-indigo' : ''}`;
-        });
-        document.querySelectorAll('[data-act="qa-priority"]').forEach(b => {
-          b.className = `chip ${b.dataset.val === td.priority ? 'active-rose' : ''}`;
-        });
-        document.querySelectorAll('[data-act="qa-cat"]').forEach(b => {
-          b.className = `chip ${b.dataset.val === td.category ? 'active' : ''}`;
-        });
+        document.querySelectorAll('[data-act="qa-assignee"]').forEach(b => b.className = `chip ${b.dataset.val === td.assignee ? 'active-indigo' : ''}`);
+        document.querySelectorAll('[data-act="qa-priority"]').forEach(b => b.className = `chip ${b.dataset.val === td.priority ? 'active-rose' : ''}`);
+        document.querySelectorAll('[data-act="qa-cat"]').forEach(b => b.className = `chip ${b.dataset.val === td.category ? 'active' : ''}`);
 
-        // צ'יפי הוצאה
+        // הוצאה
         const currBtn = document.getElementById('qa-exp-curr-btn');
         if (currBtn) currBtn.textContent = ed.currency === 'ILS' ? '₪' : ed.currency === 'EUR' ? '€' : '$';
 
@@ -2648,28 +2495,27 @@
           const isMatch = ed.paymentMethod === 'joint_card'
             ? b.dataset.method === 'joint_card'
             : (b.dataset.method === 'personal' && b.dataset.payer === ed.paidBy);
-          const cls = !isMatch ? 'chip'
-            : b.dataset.method === 'joint_card' ? 'chip active'
-            : b.dataset.payer === 'ronen' ? 'chip active-blue' : 'chip active-pink';
-          b.className = cls;
+          b.className = !isMatch ? 'payer-card'
+            : b.dataset.method === 'joint_card' ? 'payer-card active-joint'
+            : b.dataset.payer === 'ronen' ? 'payer-card active-ronen' : 'payer-card active-adi';
         });
 
         const splitWrap = document.getElementById('qa-exp-split-wrap');
         if (splitWrap) splitWrap.classList.toggle('hidden', ed.paymentMethod === 'joint_card');
 
-        const otherBtn = document.getElementById('qa-split-other-btn');
-        if (otherBtn) otherBtn.textContent = `100% עבור ${ed.paidBy === 'ronen' ? 'עדי' : 'רונן'}`;
+        const otherName = ed.paidBy === 'ronen' ? 'עדי' : 'רונן';
+        const otherTitle = document.getElementById('sc-title-other');
+        if (otherTitle) otherTitle.textContent = `🎁 הכל על ${otherName}`;
 
         document.querySelectorAll('[data-act="qa-exp-split"]').forEach(b => {
-          b.className = `chip ${b.dataset.val === ed.splitType ? 'active-emerald' : ''}`;
+          b.className = `split-card ${b.dataset.val === ed.splitType ? 'active' : ''}`;
         });
 
         const customWrap = document.getElementById('qa-exp-custom-wrap');
         if (customWrap) customWrap.classList.toggle('hidden', ed.splitType !== 'custom');
 
-        document.querySelectorAll('[data-act="qa-exp-cat"]').forEach(b => {
-          b.className = `chip ${b.dataset.val === ed.category ? 'active' : ''}`;
-        });
+        const catSel = document.getElementById('qa-exp-cat-sel');
+        if (catSel && catSel.value !== ed.category) catSel.value = ed.category;
 
         this.updateExpenseImpactLive();
       }
@@ -2679,23 +2525,29 @@
         td.rawInput = rawVal;
         const p = NLPEngine.parseQuickTaskInput(rawVal);
 
-        // עדכון אוטומטי של שדות שהמשתמש לא נגע בהם ידנית
-        if (p.dueDate && !td.touched.date) td.dueDate = p.dueDate;
-        if (p.dueTime) td.dueTime = p.dueTime;
-        if (p.assignee && !td.touched.assignee) td.assignee = p.assignee;
-        if (p.category && !td.touched.category) td.category = p.category;
-        if (p.priority && !td.touched.priority) td.priority = p.priority;
+        // עדכון נקי ודו-כיווני לשדות שלא נערכו ידנית
+        if (!td.touched.date) td.dueDate = p.dueDate;
+        if (!td.touched.time) td.dueTime = p.dueTime;
+        if (!td.touched.assignee) td.assignee = p.assignee || 'both';
+        if (!td.touched.category) td.category = p.category || 'home';
+        if (!td.touched.priority) td.priority = p.priority || 'medium';
         td.estimatedBudget = p.estimatedBudget || 0;
 
         this.syncQuickSheetUI();
 
         const box = document.getElementById('qa-nlp-preview');
         if (!box) return;
+        const badges = [];
+        if (td.dueDate) badges.push(`📅 ${formatShortHebDate(td.dueDate)}`);
+        if (td.dueTime) badges.push(`⏰ ${td.dueTime}`);
+        if (p.category) badges.push(`${CATEGORIES[p.category].icon} ${CATEGORIES[p.category].label}`);
+        if (p.estimatedBudget > 0) badges.push(`💰 ₪${p.estimatedBudget.toLocaleString()}`);
+
+        let html = badges.length
+          ? `<div style="display:flex;flex-wrap:wrap;gap:5px">${badges.map(b => `<span class="badge badge-indigo">✨ ${esc(b)}</span>`).join('')}</div>`
+          : '';
+
         const pm = NLPEngine.findParentMatch(p.cleanTitle || rawVal, this.tasksList);
-        let html = '';
-        if (p.estimatedBudget > 0) {
-          html += `<span class="badge badge-emerald" style="align-self:flex-start">💰 תקציב משוער זוהה: ₪${p.estimatedBudget.toLocaleString()}</span>`;
-        }
         if (pm) {
           html += `
             <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:12px;background:var(--indigo-soft);font-size:12px">
@@ -2712,6 +2564,8 @@
         const amt = parseFloat(ed.amountStr) || 0;
         const rate = ed.currency === 'ILS' ? 1 : (Number(this.settings.rates[ed.currency]) || 1);
         const agorot = Math.round(amt * rate * 100);
+        const otherName = ed.paidBy === 'ronen' ? 'עדי' : 'רונן';
+        const oweVerb = ed.paidBy === 'ronen' ? 'מחזירה' : 'מחזיר';
 
         const fx = document.getElementById('qa-exp-fx-hint');
         if (fx) {
@@ -2719,19 +2573,113 @@
           if (ed.currency !== 'ILS' && amt > 0) fx.textContent = `≈ ${formatILS(agorot)} (לפי שער ${rate})`;
         }
 
+        // עדכון הסכום החי ישירות על כרטיסי החלוקה!
+        const halfAgorot = Math.floor(agorot / 2);
+        const subEq = document.getElementById('sc-sub-equal');
+        const subOt = document.getElementById('sc-sub-other');
+        if (subEq) subEq.textContent = agorot > 0 ? `${otherName} ${oweVerb} ${formatILS(ed.paidBy === 'ronen' ? halfAgorot : agorot - halfAgorot)}` : '50%';
+        if (subOt) subOt.textContent = agorot > 0 ? `${otherName} ${oweVerb} ${formatILS(agorot)}` : '100%';
+
         const ronenAgorot = ed.splitType === 'custom' ? Math.round((parseFloat(ed.customRonenStr) || 0) * 100) : 0;
         const prev = normExpense({ ...ed, amountAgorot: agorot, ronenShareAgorot: ronenAgorot });
-        const adiBox = document.getElementById('qa-exp-custom-adi');
-        if (adiBox) adiBox.textContent = formatILS(prev.adiShareAgorot);
+        const delta = FinanceEngine.expenseDelta(prev);
 
         const el = document.getElementById('qa-exp-impact');
         if (!el) return;
-        const delta = FinanceEngine.expenseDelta(prev);
-        if (agorot <= 0) el.textContent = 'הזן סכום כדי לראות את ההשפעה על ההתחשבנות';
+        if (agorot <= 0) el.textContent = 'הזן סכום כדי לראות כמה השני מחזיר';
         else if (ed.paymentMethod === 'joint_card') el.textContent = `🏦 יירשם תחת אשראי משותף (${formatILS(agorot)}) — ללא החזר ביניכם`;
         else if (delta > 0) el.textContent = `💡 עדי תצטרך להחזיר לרונן ${formatILS(delta)} על הוצאה זו`;
         else if (delta < 0) el.textContent = `💡 רונן יצטרך להחזיר לעדי ${formatILS(Math.abs(delta))} על הוצאה זו`;
         else el.textContent = '✨ ללא שינוי במאזן ההחזרים';
+      }
+
+      // מגירת הכלים וההגדרות (מחליפה את הטאב השלישי!)
+      buildToolsSheet() {
+        const perm = ('Notification' in window) ? Notification.permission : 'unsupported';
+        const permTxt = perm === 'granted' ? '✅ פעיל' : perm === 'denied' ? '🚫 חסום' : perm === 'default' ? '⏳ לא הופעל' : 'לא נתמך';
+
+        return `
+          <div class="sheet-head">
+            <strong style="font-size:16px">⚙️ כלים, התראות והגדרות</strong>
+            <button type="button" data-act="close-sheet" class="close-btn">✕</button>
+          </div>
+
+          <div class="tool-grid">
+            <button type="button" data-act="open-sheet" data-sheet="wa-import" class="tool-tile">
+              <span style="font-size:20px">📥</span>
+              <strong style="font-size:13px">ייבוא מ-WhatsApp</strong>
+              <span style="font-size:11px;color:var(--text-2)">משימות, שלבים והוצאות</span>
+            </button>
+            <button type="button" data-act="open-sheet" data-sheet="wa-share" class="tool-tile">
+              <span style="font-size:20px">📲</span>
+              <strong style="font-size:13px">שלח עדכון לעדי</strong>
+              <span style="font-size:11px;color:var(--text-2)">רשימה + קישור ענן</span>
+            </button>
+            <button type="button" data-act="open-sheet" data-sheet="gemini" class="tool-tile">
+              <span style="font-size:20px">✨</span>
+              <strong style="font-size:13px">גשר Gemini</strong>
+              <span style="font-size:11px;color:var(--text-2)">מיזוג JSON לפי ID</span>
+            </button>
+            <button type="button" data-act="open-sheet" data-sheet="cloud" class="tool-tile">
+              <span style="font-size:20px">☁️</span>
+              <strong style="font-size:13px">ענן Firebase</strong>
+              <span style="font-size:11px;color:var(--text-2)">${this.cloudUrl ? 'מחובר חי' : 'לא מחובר'}</span>
+            </button>
+          </div>
+
+          <!-- התראות דדליין -->
+          <div style="padding:12px;border-radius:14px;background:var(--bg-elev);display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <strong style="font-size:13px">🔔 התראות דדליין</strong>
+              <span style="font-size:11px;font-weight:700;color:var(--text-2)">${permTxt}</span>
+            </div>
+            <div class="grid-2">
+              <button type="button" data-act="req-notif-perm" class="btn-primary" style="font-size:12px;padding:8px">🔔 הפעל בדפדפן</button>
+              <button type="button" data-act="ics-all" class="btn-soft" style="background:var(--bg-card)">📅 ייצא ליומן (.ics)</button>
+            </div>
+            <div style="padding-top:8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:11px;font-weight:800;color:var(--text-2)">📱 Push חי בין טלפונים (ntfy.sh — אופציונלי)</span>
+              <div style="display:flex;gap:6px">
+                <input type="text" id="hub-ntfy-topic" value="${esc(this.settings.ntfyTopic)}" placeholder="שם ערוץ סודי ב-ntfy" class="field field-sm mono" style="flex:1" />
+                <button type="button" data-act="save-ntfy" class="btn-dark" style="padding:7px 11px;font-size:12px">שמור</button>
+                <button type="button" data-act="test-ntfy" class="btn-soft" style="background:var(--bg-card)">בדוק</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- העדפות, מטבע וגיבוי -->
+          <div class="grid-2">
+            <button type="button" data-act="toggle-sound" class="btn-soft">${this.settings.soundEnabled ? '🔊 צלילים: פועל' : '🔇 צלילים: מושתק'}</button>
+            <button type="button" data-act="force-sync" class="btn-soft">🔄 סנכרן ענן עכשיו</button>
+          </div>
+
+          <div class="grid-2">
+            <label><span class="lbl">1 € יורו = ₪</span><input type="number" step="0.01" id="rate-eur" value="${this.settings.rates.EUR}" class="field field-sm mono" /></label>
+            <label><span class="lbl">1 $ דולר = ₪</span><input type="number" step="0.01" id="rate-usd" value="${this.settings.rates.USD}" class="field field-sm mono" /></label>
+          </div>
+          <button type="button" data-act="save-rates" class="btn-soft" style="width:100%">💱 שמור שערי מטבע</button>
+
+          <div class="grid-2">
+            <button type="button" data-act="export-json" class="btn-dark" style="padding:9px;font-size:12px">⬇️ הורד גיבוי JSON</button>
+            <label class="btn-soft" style="cursor:pointer">⬆️ שחזר מגיבוי<input type="file" id="import-json-file" accept=".json" class="hidden" /></label>
+          </div>
+
+          <!-- יומן פעילות מתקפל -->
+          <div style="border-top:1px solid var(--border);padding-top:10px">
+            <button type="button" data-act="toggle-tools-audit" style="font-size:12px;font-weight:800;color:var(--text-2);display:flex;align-items:center;gap:6px">
+              <span>${this.showToolsAudit ? '▾' : '◂'}</span>
+              <span>🕒 יומן פעילות אחרונה (${this.auditList.length})</span>
+            </button>
+            <div id="tools-audit-list" class="${this.showToolsAudit ? '' : 'hidden'}" style="margin-top:8px;max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:12px">
+              ${this.auditList.map(a => `
+                <div style="padding:7px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px;font-size:11px">
+                  <div class="truncate">${a.actorAvatar || '⚡'} <strong>${esc(a.actorName || '')}</strong> ${esc(a.action || '')} ${a.detail || a.taskTitle ? `<strong style="color:var(--indigo)">"${esc(a.detail || a.taskTitle)}"</strong>` : ''}</div>
+                  <span class="mono" style="color:var(--text-3);flex-shrink:0">${esc(a.time || '')}</span>
+                </div>
+              `).join('') || '<div style="padding:14px;text-align:center;font-size:11px;color:var(--text-3)">אין פעילות עדיין</div>'}
+            </div>
+          </div>
+        `;
       }
 
       buildEditTaskSheet() {
@@ -2743,9 +2691,8 @@
           </div>
           <form id="edit-task-form" class="stack-md">
             <div><span class="lbl">כותרת</span><input type="text" id="ed-title" required value="${esc(t.title)}" class="field" style="font-weight:700" /></div>
-
             <div>
-              <span class="lbl">📅 דדליין מהיר</span>
+              <span class="lbl">📅 דדליין</span>
               <div class="chip-strip no-scroll" style="margin-bottom:8px">
                 <button type="button" data-act="ed-date-chip" data-days="0" class="chip">היום</button>
                 <button type="button" data-act="ed-date-chip" data-days="1" class="chip">מחר</button>
@@ -2764,7 +2711,6 @@
                 </select>
               </div>
             </div>
-
             <div class="grid-3">
               <div><span class="lbl">אחראי</span>
                 <select id="ed-assignee" class="field field-sm">
@@ -2784,25 +2730,18 @@
                 </select>
               </div>
             </div>
-
             <div class="grid-2">
               <div><span class="lbl">תקציב משוער (₪)</span><input type="number" id="ed-budget" value="${Number(t.estimatedBudget) || 0}" class="field field-sm mono" /></div>
               <div><span class="lbl">קישור (Waze / אתר)</span><input type="url" id="ed-link" value="${esc(t.link)}" placeholder="https://..." class="field field-sm mono" /></div>
             </div>
-
             <div><span class="lbl">הערות</span><textarea id="ed-notes" rows="2" class="field field-sm">${esc(t.notes)}</textarea></div>
-
-            <!-- עריכת שלבים בתוך חלון העריכה -->
             <div class="stack-sm">
               <div style="display:flex;justify-content:space-between;align-items:center">
                 <span class="lbl" style="margin:0">שלבים ותתי-משימות</span>
                 <button type="button" data-act="ed-add-sub" class="mini-act indigo">+ הוסף שלב</button>
               </div>
-              <div id="ed-subs-list" class="stack-sm">
-                ${this.buildEditSubtasksHTML(t.subtasks || [])}
-              </div>
+              <div id="ed-subs-list" class="stack-sm">${this.buildEditSubtasksHTML(t.subtasks || [])}</div>
             </div>
-
             <div class="grid-2">
               <button type="button" data-act="close-sheet" class="btn-soft">ביטול</button>
               <button type="submit" class="btn-primary">💾 שמור שינויים</button>
@@ -2826,8 +2765,7 @@
         const val = document.getElementById('ed-dueDate')?.value || '';
         document.querySelectorAll('[data-act="ed-date-chip"]').forEach(b => {
           const d = Number(b.dataset.days);
-          const match = d === -1 ? !val : val === todayISO(d);
-          b.className = `chip ${match ? 'active-indigo' : ''}`;
+          b.className = `chip ${(d === -1 ? !val : val === todayISO(d)) ? 'active-indigo' : ''}`;
         });
       }
 
@@ -2899,28 +2837,32 @@
 
       syncEditExpenseCustomVisibility() {
         const split = document.getElementById('ee-split')?.value;
-        const wrap = document.getElementById('ee-custom-wrap');
-        if (wrap) wrap.classList.toggle('hidden', split !== 'custom');
+        document.getElementById('ee-custom-wrap')?.classList.toggle('hidden', split !== 'custom');
       }
 
       buildSettleSheet() {
-        const dir = FinanceEngine.computeSummary(this.expensesList).direction;
+        const fin = FinanceEngine.computeSummary(this.expensesList);
+        const dir = fin.direction;
         const def = (dir.amountAgorot / 100).toFixed(dir.amountAgorot % 100 ? 2 : 0);
         return `
           <div class="sheet-head">
-            <strong style="font-size:16px">🤝 סגירת חשבון / העברה</strong>
+            <strong style="font-size:16px">🤝 סגירת חשבון</strong>
             <button type="button" data-act="close-sheet" class="close-btn">✕</button>
           </div>
-          <div style="font-size:13px;color:var(--text-2)">${esc(dir.fullText)}. רשום את ההעברה שבוצעה (בביט / פייבוקס / בנק) כדי לעדכן את המאזן:</div>
+          <div class="impact-box">${esc(dir.fullText)}</div>
           <form id="settle-form" class="stack-md">
-            <div><span class="lbl">מי העביר את הכסף?</span>
+            <div><span class="lbl">מי העביר את הכסף (ביט / פייבוקס / בנק)?</span>
               <select id="st-payer" class="field field-sm">
                 <option value="adi" ${dir.debtor === 'adi' ? 'selected' : ''}>👩🏻 עדי העבירה לרונן</option>
                 <option value="ronen" ${dir.debtor === 'ronen' ? 'selected' : ''}>👨🏻‍💻 רונן העביר לעדי</option>
               </select>
             </div>
             <div><span class="lbl">סכום שהועבר (₪)</span><input type="number" step="0.01" inputmode="decimal" id="st-amount" required value="${def}" class="field mono amount-input" /></div>
-            <button type="submit" class="btn-emerald" style="width:100%;padding:13px">✅ רשום העברה ועדכן מאזן</button>
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text-2);cursor:pointer">
+              <input type="checkbox" id="st-send-wa" style="width:17px;height:17px;accent-color:var(--emerald)" />
+              <span>פתח גם אישור העברה בוואטסאפ לאחר השמירה</span>
+            </label>
+            <button type="submit" class="btn-emerald" style="width:100%;padding:13px">✅ רשום העברה ואפס מאזן</button>
           </form>
         `;
       }
@@ -2931,12 +2873,10 @@
             <strong style="font-size:16px">📥 ייבוא חכם מ-WhatsApp</strong>
             <button type="button" data-act="close-sheet" class="close-btn">✕</button>
           </div>
-          <div style="font-size:12px;color:var(--text-2)">הדבק הודעות מוואטסאפ — המנוע מזהה אוטומטית משימות, שלבים והוצאות.</div>
+          <div style="font-size:12px;color:var(--text-2)">הדבק הודעות מוואטסאפ — המנוע מזהה משימות, שלבים והוצאות.</div>
           <textarea id="wa-import-box" rows="4" placeholder="הדבק כאן הודעות מוואטסאפ..." class="field field-sm">${esc(this.waRawInput)}</textarea>
           <button type="button" data-act="analyze-wa" class="btn-dark" style="width:100%">🔍 נתח הודעות</button>
-          <div id="wa-drafts-wrap" class="stack-sm">
-            ${this.buildWaDraftsHTML()}
-          </div>
+          <div id="wa-drafts-wrap" class="stack-sm">${this.buildWaDraftsHTML()}</div>
         `;
       }
 
@@ -2964,7 +2904,6 @@
       }
 
       buildWaShareSheet() {
-        const msg = this.composeWaShareMsg();
         return `
           <div class="sheet-head">
             <strong style="font-size:16px">📲 שליחת עדכון ב-WhatsApp</strong>
@@ -2975,7 +2914,7 @@
             <button type="button" data-act="wa-share-mode" data-mode="all" class="chip ${this.waShareMode === 'all' ? 'active-emerald' : ''}">📋 הכל</button>
             <button type="button" data-act="wa-share-mode" data-mode="balance" class="chip ${this.waShareMode === 'balance' ? 'active-emerald' : ''}">💸 מאזן החזרים</button>
           </div>
-          <textarea id="wa-share-box" rows="7" class="field field-sm">${esc(msg)}</textarea>
+          <textarea id="wa-share-box" rows="7" class="field field-sm">${esc(this.composeWaShareMsg())}</textarea>
           <div class="grid-2">
             <button type="button" data-act="copy-wa-share" class="btn-soft">📋 העתק</button>
             <button type="button" data-act="send-wa-share" class="btn-emerald">🚀 פתח ב-WhatsApp</button>
@@ -2988,12 +2927,12 @@
         const link = this.cloudUrl ? `${base}?cloud=${encodeURIComponent(this.cloudUrl)}` : base;
         if (this.waShareMode === 'balance') {
           const fin = FinanceEngine.computeSummary(this.expensesList);
-          const rows = this.expensesList.filter(e => e.paymentMethod === 'personal' && e.splitType !== 'settlement').slice(0, 6).map(e => `• ${e.title}: ${formatILS(e.amountAgorot)} (${USERS[e.paidBy].name})`).join('\n');
-          return `היי ❤️ עדכון התחשבנות:\n\n💰 *${fin.direction.fullText}*\n\nהוצאות אחרונות בכרטיס אישי:\n${rows || 'אין הוצאות פתוחות'}\n\n🔗 לפתיחה:\n${link}`;
+          const rows = fin.openPersonal.slice(0, 8).map(e => `• ${e.title}: ${formatILS(e.amountAgorot)} (${USERS[e.paidBy].name})`).join('\n');
+          return `היי ❤️ עדכון התחשבנות:\n\n💰 *${fin.direction.fullText}*\n\nהוצאות פתוחות:\n${rows || 'אין הוצאות פתוחות'}\n\n🔗 לפתיחה:\n${link}`;
         }
         const open = this.tasksList.filter(t => !t.done);
         const list = this.waShareMode === 'adi_focus' ? open.filter(t => t.assignee === 'adi' || t.assignee === 'both') : open;
-        const rows = list.map((t, i) => `${i + 1}. *${t.title}*${t.dueDate ? ` (${formatShortHebDate(t.dueDate)})` : ''}`).join('\n');
+        const rows = list.map((t, i) => `${i + 1}. *${t.title}*${t.dueDate ? ` (${formatShortHebDate(t.dueDate)}${t.dueTime ? ' ' + t.dueTime : ''})` : ''}`).join('\n');
         return `היי עדי ❤️ הנה עדכון מהלוח המשותף שלנו:\n\n${rows || '🎉 כל המשימות הושלמו!'}\n\n🔗 לפתיחה וסימון בזמן אמת:\n${link}`;
       }
 
@@ -3028,7 +2967,7 @@
       }
 
       // =======================================================================
-      // 9. אירועים, קיצורי מקלדת ומחוות Swipe חלקות
+      // 9. ניהול אירועים, קיצורי מקלדת ומחוות Swipe
       // =======================================================================
       bindEvents() {
         window.addEventListener('beforeunload', () => this.saveLocalImmediate());
@@ -3041,7 +2980,7 @@
           else if ((e.key === 'e' || e.key === 'E') && !e.metaKey && !e.ctrlKey) { e.preventDefault(); this.openQuickSheet('expense'); }
         });
 
-        // מחוות Swipe במובייל (עם deadzone נקי ובלי להפריע לכפתורים/קלטים)
+        // Swipe חלק במובייל
         let sx = 0, sy = 0, swEl = null, swId = null, swActive = false;
         document.addEventListener('touchstart', e => {
           if (e.touches.length !== 1 || e.target.closest('button,input,textarea,select,a,label')) return;
@@ -3053,8 +2992,7 @@
 
         document.addEventListener('touchmove', e => {
           if (!swEl) return;
-          const dx = e.touches[0].clientX - sx;
-          const dy = e.touches[0].clientY - sy;
+          const dx = e.touches[0].clientX - sx, dy = e.touches[0].clientY - sy;
           if (!swActive) {
             if (Math.abs(dy) > 14 && Math.abs(dy) >= Math.abs(dx)) { swEl = null; return; }
             if (Math.abs(dx) > 22 && Math.abs(dx) > Math.abs(dy) * 1.4) swActive = true;
@@ -3066,10 +3004,10 @@
           if (!swEl) return;
           const dx = e.changedTouches[0].clientX - sx;
           swEl.style.transform = '';
-          const id = swId, wasActive = swActive;
+          const id = swId, was = swActive;
           swEl = null; swId = null; swActive = false;
-          if (wasActive && dx > 74) this.toggleTaskDone(id);
-          else if (wasActive && dx < -74) this.snoozeTaskToTomorrow(id);
+          if (was && dx > 74) this.toggleTaskDone(id);
+          else if (was && dx < -74) this.snoozeTaskToTomorrow(id);
         });
 
         // Input events
@@ -3077,18 +3015,45 @@
           const id = e.target.id;
           if (id === 'home-search-input') { this.taskFilters.q = e.target.value; this.renderMainPreservingFocus(); }
           else if (id === 'qa-task-input') this.updateQuickTaskNLP(e.target.value);
-          else if (id === 'qa-exp-amount') { this.quickExpenseDraft.amountStr = e.target.value; this.updateExpenseImpactLive(); }
-          else if (id === 'qa-exp-title') this.quickExpenseDraft.title = e.target.value;
-          else if (id === 'qa-exp-custom-ronen') { this.quickExpenseDraft.customRonenStr = e.target.value; this.updateExpenseImpactLive(); }
-          else if (id === 'wa-import-box') this.waRawInput = e.target.value;
+          else if (id === 'qa-exp-amount') {
+            this.quickExpenseDraft.amountStr = e.target.value;
+            this.updateExpenseImpactLive();
+          } else if (id === 'qa-exp-title') {
+            this.quickExpenseDraft.title = e.target.value;
+          } else if (id === 'qa-exp-custom-ronen') {
+            const ed = this.quickExpenseDraft;
+            ed.customRonenStr = e.target.value;
+            const totalILS = (parseFloat(ed.amountStr) || 0) * (ed.currency === 'ILS' ? 1 : (Number(this.settings.rates[ed.currency]) || 1));
+            const rVal = Math.min(totalILS, Math.max(0, parseFloat(e.target.value) || 0));
+            const adiVal = Math.max(0, +(totalILS - rVal).toFixed(2));
+            ed.customAdiStr = totalILS > 0 ? String(adiVal) : '';
+            const adiIn = document.getElementById('qa-exp-custom-adi');
+            if (adiIn) adiIn.value = ed.customAdiStr;
+            this.updateExpenseImpactLive();
+          } else if (id === 'qa-exp-custom-adi') {
+            const ed = this.quickExpenseDraft;
+            ed.customAdiStr = e.target.value;
+            const totalILS = (parseFloat(ed.amountStr) || 0) * (ed.currency === 'ILS' ? 1 : (Number(this.settings.rates[ed.currency]) || 1));
+            const aVal = Math.min(totalILS, Math.max(0, parseFloat(e.target.value) || 0));
+            const rVal = Math.max(0, +(totalILS - aVal).toFixed(2));
+            ed.customRonenStr = totalILS > 0 ? String(rVal) : '';
+            const ronIn = document.getElementById('qa-exp-custom-ronen');
+            if (ronIn) ronIn.value = ed.customRonenStr;
+            this.updateExpenseImpactLive();
+          } else if (id === 'wa-import-box') {
+            this.waRawInput = e.target.value;
+          }
         });
 
         // Change events
         document.addEventListener('change', e => {
           const el = e.target;
-          if (el.id === 'qa-date-manual') { this.quickTaskDraft.dueDate = el.value; this.quickTaskDraft.touched.date = true; this.syncQuickSheetUI(); }
-          else if (el.id === 'qa-time-manual') { this.quickTaskDraft.dueTime = el.value; }
+          if (el.id === 'home-cat-select') { this.taskFilters.category = el.value; this.renderMain(); }
+          else if (el.id === 'qa-date-manual') { this.quickTaskDraft.dueDate = el.value; this.quickTaskDraft.touched.date = true; this.syncQuickSheetUI(); }
+          else if (el.id === 'qa-time-manual') { this.quickTaskDraft.dueTime = el.value; this.quickTaskDraft.touched.time = true; }
           else if (el.id === 'qa-remind-lead') { this.quickTaskDraft.remindLead = Number(el.value); }
+          else if (el.id === 'qa-exp-cat-sel') { this.quickExpenseDraft.category = el.value; }
+          else if (el.id === 'qa-exp-date') { this.quickExpenseDraft.date = el.value || todayISO(0); }
           else if (el.id === 'ed-dueDate') { this.syncEditTaskDateChips(); }
           else if (el.id === 'ee-split') { this.syncEditExpenseCustomVisibility(); }
           else if (el.id === 'import-json-file') {
@@ -3115,8 +3080,7 @@
           if (form.dataset.subForm) {
             e.preventDefault();
             const tid = form.dataset.subForm;
-            const inp = document.getElementById(`sub-input-${tid}`);
-            const title = inp?.value.trim();
+            const title = document.getElementById(`sub-input-${tid}`)?.value.trim();
             if (!title || !this.tasksMap[tid]) return;
             const t = this.tasksMap[tid];
             this.saveTask({ ...t, subtasks: [...(t.subtasks || []), { id: uid('s'), title, done: false }] }, `הוסיף/ה שלב ("${title}")`);
@@ -3131,24 +3095,26 @@
             if (!raw) return;
             const p = NLPEngine.parseQuickTaskInput(raw);
             const td = this.quickTaskDraft;
-            const dueDate = td.touched.date ? td.dueDate : (td.dueDate || p.dueDate);
+            const dueTime = document.getElementById('qa-time-manual')?.value || td.dueTime || p.dueTime;
+            let dueDate = document.getElementById('qa-date-manual')?.value || (td.touched.date ? td.dueDate : (td.dueDate || p.dueDate));
+            if (dueTime && !dueDate) dueDate = todayISO(0);
+
             const task = normTask({
               title: p.cleanTitle || raw,
               assignee: td.touched.assignee ? td.assignee : (p.assignee || td.assignee),
               category: td.touched.category ? td.category : (p.category || td.category),
               priority: td.touched.priority ? td.priority : (p.priority || td.priority),
               dueDate,
-              dueTime: td.dueTime || p.dueTime,
+              dueTime,
               remindLead: Number(document.getElementById('qa-remind-lead')?.value ?? td.remindLead),
               estimatedBudget: p.estimatedBudget || td.estimatedBudget
             }, this.user);
 
-            this.sheet = null;
-            this.renderSheet();
+            this.sheet = null; this.renderSheet();
             this.saveTask(task, 'הוסיף/ה משימה');
             FeedbackEngine.play('pop', this.settings.soundEnabled);
             if (this.settings.ntfyTopic && this.settings.ntfyOnAssign && task.assignee !== this.user) {
-              AlertEngine.sendNtfyPush(this.settings.ntfyTopic, `⚡ ${USERS[this.user].name} הוסיף/ה משימה: ${task.title}${task.dueDate ? ' (' + formatShortHebDate(task.dueDate) + ')' : ''}`);
+              AlertEngine.sendNtfyPush(this.settings.ntfyTopic, `⚡ ${USERS[this.user].name} הוסיף/ה: ${task.title}${task.dueDate ? ' (' + formatShortHebDate(task.dueDate) + (task.dueTime ? ' ' + task.dueTime : '') + ')' : ''}`);
             }
             this.toast(`נוספה משימה: "${task.title}"`, 'indigo');
             return;
@@ -3163,13 +3129,16 @@
             const rate = ed.currency === 'ILS' ? 1 : (Number(this.settings.rates[ed.currency]) || 1);
             const agorot = Math.round(amt * rate * 100);
             const exp = normExpense({
-              ...ed, title, amountAgorot: agorot, originalAmount: amt, rateUsed: rate,
+              ...ed,
+              title,
+              category: document.getElementById('qa-exp-cat-sel')?.value || ed.category,
+              date: document.getElementById('qa-exp-date')?.value || todayISO(0),
+              amountAgorot: agorot, originalAmount: amt, rateUsed: rate,
               ronenShareAgorot: ed.splitType === 'custom' ? Math.round((parseFloat(ed.customRonenStr) || 0) * 100) : 0,
               createdBy: this.user
             });
 
-            this.sheet = null;
-            this.renderSheet();
+            this.sheet = null; this.renderSheet();
             this.saveExpense(exp, 'רשם/ה הוצאה');
             FeedbackEngine.play('coin', this.settings.soundEnabled);
             if (this.settings.ntfyTopic && this.settings.ntfyOnExpense && exp.paymentMethod === 'personal') {
@@ -3182,14 +3151,16 @@
 
           if (form.id === 'edit-task-form' && this.editingTask) {
             e.preventDefault();
+            const dueTime = document.getElementById('ed-dueTime').value;
+            let dueDate = document.getElementById('ed-dueDate').value;
+            if (dueTime && !dueDate) dueDate = todayISO(0);
             const updated = {
               ...this.editingTask,
               title: document.getElementById('ed-title').value.trim(),
               assignee: document.getElementById('ed-assignee').value,
               category: document.getElementById('ed-category').value,
               priority: document.getElementById('ed-priority').value,
-              dueDate: document.getElementById('ed-dueDate').value,
-              dueTime: document.getElementById('ed-dueTime').value,
+              dueDate, dueTime,
               remindLead: Number(document.getElementById('ed-remindLead').value),
               estimatedBudget: Number(document.getElementById('ed-budget').value) || 0,
               link: document.getElementById('ed-link').value.trim(),
@@ -3215,8 +3186,7 @@
               date: document.getElementById('ee-date').value || todayISO(0),
               paymentMethod: document.getElementById('ee-method').value,
               paidBy: document.getElementById('ee-payer').value,
-              splitType,
-              ronenShareAgorot: splitType === 'custom' ? ronenCustom : 0,
+              splitType, ronenShareAgorot: splitType === 'custom' ? ronenCustom : 0,
               category: document.getElementById('ee-cat').value
             };
             this.sheet = null; this.editingExpense = null; this.renderSheet();
@@ -3229,6 +3199,7 @@
             e.preventDefault();
             const amt = parseFloat(document.getElementById('st-amount').value || '0');
             const paidBy = document.getElementById('st-payer').value;
+            const sendWa = document.getElementById('st-send-wa')?.checked;
             if (!(amt > 0)) return;
             const set = normExpense({
               title: `העברת התחשבנות (${USERS[paidBy].name} ← ${paidBy === 'adi' ? 'רונן' : 'עדי'})`,
@@ -3240,14 +3211,16 @@
             FeedbackEngine.play('complete', this.settings.soundEnabled);
             FeedbackEngine.confetti();
             this.toast('ההעברה נרשמה והמאזן עודכן! 🤝', 'emerald');
+            if (sendWa) {
+              const msg = `🤝 סגרנו התחשבנות! נרשמה העברה של ${formatILS(set.amountAgorot)} (${USERS[paidBy].name} ← ${paidBy === 'adi' ? 'רונן' : 'עדי'}). המאזן התעדכן באפליקציה ✨`;
+              window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+            }
           }
         });
 
-        // Click events (Clean delegation — ZERO stopPropagation traps!)
+        // Click delegation
         document.addEventListener('click', e => {
-          if (e.target.id === 'sheet-backdrop') {
-            this.sheet = null; this.renderSheet(); return;
-          }
+          if (e.target.id === 'sheet-backdrop') { this.sheet = null; this.renderSheet(); return; }
           const btn = e.target.closest('[data-act]');
           if (!btn) return;
           const act = btn.dataset.act;
@@ -3269,7 +3242,10 @@
           }
           if (act === 'toggle-sound') {
             this.settings.soundEnabled = !this.settings.soundEnabled;
-            this.saveLocal(); this.renderHeader(); return;
+            this.saveLocal();
+            if (this.sheet === 'tools') this.renderSheet();
+            this.toast(this.settings.soundEnabled ? 'צלילים הופעלו 🔊' : 'צלילים הושתקו 🔇');
+            return;
           }
           if (act === 'toggle-theme') {
             this.darkMode = !this.darkMode;
@@ -3279,41 +3255,27 @@
           if (act === 'open-quick') { this.openQuickSheet(btn.dataset.mode || 'task'); return; }
           if (act === 'open-sheet') { this.sheet = btn.dataset.sheet; this.renderSheet(); return; }
 
-          // Quick Add in-place instant toggles (NO sheet rebuild!)
+          // Quick Add instant in-place updates
           if (act === 'quick-mode') {
             this.quickMode = btn.dataset.mode;
             this.syncQuickSheetUI();
-            const f = this.quickMode === 'task' ? 'qa-task-input' : 'qa-exp-amount';
-            document.getElementById(f)?.focus();
+            document.getElementById(this.quickMode === 'task' ? 'qa-task-input' : 'qa-exp-amount')?.focus();
             return;
           }
           if (act === 'qa-date-chip') {
             const days = Number(btn.dataset.days);
             this.quickTaskDraft.touched.date = true;
-            if (days === -1) {
-              this.quickTaskDraft.dueDate = '';
-            } else {
+            if (days === -1) this.quickTaskDraft.dueDate = '';
+            else {
               const target = todayISO(days);
               this.quickTaskDraft.dueDate = this.quickTaskDraft.dueDate === target ? '' : target;
             }
             this.syncQuickSheetUI();
             return;
           }
-          if (act === 'qa-assignee') {
-            this.quickTaskDraft.assignee = btn.dataset.val;
-            this.quickTaskDraft.touched.assignee = true;
-            this.syncQuickSheetUI(); return;
-          }
-          if (act === 'qa-priority') {
-            this.quickTaskDraft.priority = btn.dataset.val;
-            this.quickTaskDraft.touched.priority = true;
-            this.syncQuickSheetUI(); return;
-          }
-          if (act === 'qa-cat') {
-            this.quickTaskDraft.category = btn.dataset.val;
-            this.quickTaskDraft.touched.category = true;
-            this.syncQuickSheetUI(); return;
-          }
+          if (act === 'qa-assignee') { this.quickTaskDraft.assignee = btn.dataset.val; this.quickTaskDraft.touched.assignee = true; this.syncQuickSheetUI(); return; }
+          if (act === 'qa-priority') { this.quickTaskDraft.priority = btn.dataset.val; this.quickTaskDraft.touched.priority = true; this.syncQuickSheetUI(); return; }
+          if (act === 'qa-cat') { this.quickTaskDraft.category = btn.dataset.val; this.quickTaskDraft.touched.category = true; this.syncQuickSheetUI(); return; }
           if (act === 'qa-attach-parent') {
             const pid = btn.dataset.parentId;
             const raw = document.getElementById('qa-task-input')?.value.trim();
@@ -3329,8 +3291,7 @@
           if (act === 'voice-input') {
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SR) return;
-            const rec = new SR();
-            rec.lang = 'he-IL'; rec.interimResults = false;
+            const rec = new SR(); rec.lang = 'he-IL'; rec.interimResults = false;
             this.toast('מקשיב בעברית... 🎤', 'indigo');
             rec.onresult = ev => {
               const spoken = ev.results?.[0]?.[0]?.transcript || '';
@@ -3339,6 +3300,16 @@
             };
             rec.onerror = () => this.toast('לא זוהתה הקלטה', 'amber');
             rec.start();
+            return;
+          }
+          if (act === 'qa-exp-preset') {
+            const pr = EXPENSE_PRESETS[Number(btn.dataset.idx)];
+            if (!pr) return;
+            this.quickExpenseDraft.title = pr.title;
+            this.quickExpenseDraft.category = pr.category;
+            const inp = document.getElementById('qa-exp-title');
+            if (inp) inp.value = pr.title;
+            this.syncQuickSheetUI();
             return;
           }
           if (act === 'qa-exp-curr') {
@@ -3353,14 +3324,23 @@
           }
           if (act === 'qa-exp-split') {
             this.quickExpenseDraft.splitType = btn.dataset.val;
-            this.syncQuickSheetUI(); return;
-          }
-          if (act === 'qa-exp-cat') {
-            this.quickExpenseDraft.category = btn.dataset.val;
+            if (btn.dataset.val === 'custom') {
+              const ed = this.quickExpenseDraft;
+              const totalILS = (parseFloat(ed.amountStr) || 0) * (ed.currency === 'ILS' ? 1 : (Number(this.settings.rates[ed.currency]) || 1));
+              if (totalILS > 0 && !ed.customRonenStr) {
+                const half = +(totalILS / 2).toFixed(2);
+                ed.customRonenStr = String(half);
+                ed.customAdiStr = String(+(totalILS - half).toFixed(2));
+                const rIn = document.getElementById('qa-exp-custom-ronen');
+                const aIn = document.getElementById('qa-exp-custom-adi');
+                if (rIn) rIn.value = ed.customRonenStr;
+                if (aIn) aIn.value = ed.customAdiStr;
+              }
+            }
             this.syncQuickSheetUI(); return;
           }
 
-          // Edit task in-place controls
+          // Edit task controls
           if (act === 'ed-date-chip') {
             const days = Number(btn.dataset.days);
             const inp = document.getElementById('ed-dueDate');
@@ -3374,16 +3354,11 @@
           if (act === 'ed-add-sub' && this.editingTask) {
             this.editingTask.subtasks = [...this.readEditSubtasksFromDOM(), { id: uid('s'), title: '', done: false }];
             const box = document.getElementById('ed-subs-list');
-            if (box) {
-              box.innerHTML = this.buildEditSubtasksHTML(this.editingTask.subtasks);
-              const inputs = box.querySelectorAll('.ed-sub-title');
-              inputs[inputs.length - 1]?.focus();
-            }
+            if (box) { box.innerHTML = this.buildEditSubtasksHTML(this.editingTask.subtasks); const ins = box.querySelectorAll('.ed-sub-title'); ins[ins.length - 1]?.focus(); }
             return;
           }
           if (act === 'ed-del-sub' && this.editingTask) {
-            const cur = this.readEditSubtasksFromDOM();
-            cur.splice(Number(btn.dataset.idx), 1);
+            const cur = this.readEditSubtasksFromDOM(); cur.splice(Number(btn.dataset.idx), 1);
             this.editingTask.subtasks = cur;
             const box = document.getElementById('ed-subs-list');
             if (box) box.innerHTML = this.buildEditSubtasksHTML(cur);
@@ -3393,115 +3368,86 @@
           // Home actions
           if (act === 'toggle-radar-filter') { this.taskFilters.radarOnly = !this.taskFilters.radarOnly; this.renderMain(); return; }
           if (act === 'filter-who') { this.taskFilters.who = btn.dataset.val; this.renderMain(); return; }
-          if (act === 'filter-cat') { this.taskFilters.category = btn.dataset.val; this.renderMain(); return; }
+          if (act === 'toggle-search') {
+            this.showSearchBar = !this.showSearchBar;
+            if (!this.showSearchBar) this.taskFilters.q = '';
+            this.renderMain();
+            if (this.showSearchBar) setTimeout(() => document.getElementById('home-search-input')?.focus(), 20);
+            return;
+          }
           if (act === 'toggle-done-section') { this.showDoneSection = !this.showDoneSection; this.renderMain(); return; }
           if (act === 'expand-task') { this.expandedTaskId = this.expandedTaskId === btn.dataset.id ? null : btn.dataset.id; this.renderMain(); return; }
           if (act === 'toggle-task') { this.toggleTaskDone(btn.dataset.id); return; }
           if (act === 'snooze-task') { this.snoozeTaskToTomorrow(btn.dataset.id); return; }
-          if (act === 'pin-task') {
-            const t = this.tasksMap[btn.dataset.id];
-            if (t) this.saveTask({ ...t, pinned: !t.pinned }, t.pinned ? 'שחרר/ה נעיצה' : 'נעץ/ה משימה');
-            return;
-          }
+          if (act === 'pin-task') { const t = this.tasksMap[btn.dataset.id]; if (t) this.saveTask({ ...t, pinned: !t.pinned }, t.pinned ? 'שחרר/ה נעיצה' : 'נעץ/ה משימה'); return; }
           if (act === 'react-task') {
-            const t = this.tasksMap[btn.dataset.id];
-            if (!t) return;
+            const t = this.tasksMap[btn.dataset.id]; if (!t) return;
             const cyc = ['', '❤️', '🔥', '👏', '🎉'];
             const next = cyc[(cyc.indexOf(t.reaction || '') + 1) % cyc.length];
             this.saveTask({ ...t, reaction: next }, next ? `פרגן/ה ${next}` : 'הסיר/ה תגובה');
-            FeedbackEngine.play('pop', this.settings.soundEnabled);
-            return;
+            FeedbackEngine.play('pop', this.settings.soundEnabled); return;
           }
           if (act === 'toggle-sub') {
-            const t = this.tasksMap[btn.dataset.id];
-            if (!t) return;
-            const subs = (t.subtasks || []).map(s => s.id === btn.dataset.sub ? { ...s, done: !s.done } : s);
-            this.saveTask({ ...t, subtasks: subs }, 'עדכן/ה שלב');
-            FeedbackEngine.play('pop', this.settings.soundEnabled);
-            return;
+            const t = this.tasksMap[btn.dataset.id]; if (!t) return;
+            this.saveTask({ ...t, subtasks: (t.subtasks || []).map(s => s.id === btn.dataset.sub ? { ...s, done: !s.done } : s) }, 'עדכן/ה שלב');
+            FeedbackEngine.play('pop', this.settings.soundEnabled); return;
           }
           if (act === 'del-sub') {
-            const t = this.tasksMap[btn.dataset.id];
-            if (!t) return;
-            this.saveTask({ ...t, subtasks: (t.subtasks || []).filter(s => s.id !== btn.dataset.sub) }, 'מחק/ה שלב');
-            return;
+            const t = this.tasksMap[btn.dataset.id]; if (!t) return;
+            this.saveTask({ ...t, subtasks: (t.subtasks || []).filter(s => s.id !== btn.dataset.sub) }, 'מחק/ה שלב'); return;
           }
           if (act === 'del-task') { this.deleteTask(btn.dataset.id); return; }
-          if (act === 'open-edit-task') {
-            const t = this.tasksMap[btn.dataset.id];
-            if (!t) return;
-            this.editingTask = JSON.parse(JSON.stringify(t));
-            this.sheet = 'edit-task'; this.renderSheet(); return;
-          }
+          if (act === 'open-edit-task') { const t = this.tasksMap[btn.dataset.id]; if (!t) return; this.editingTask = JSON.parse(JSON.stringify(t)); this.sheet = 'edit-task'; this.renderSheet(); return; }
           if (act === 'task-to-expense') {
-            const t = this.tasksMap[btn.dataset.id];
-            if (!t) return;
+            const t = this.tasksMap[btn.dataset.id]; if (!t) return;
             this.quickMode = 'expense';
             this.quickExpenseDraft = this.freshExpenseDraft({ title: t.title, amountStr: t.estimatedBudget > 0 ? String(t.estimatedBudget) : '', category: t.category, linkedTaskId: t.id });
             this.sheet = 'quick-add'; this.renderSheet(); return;
           }
-          if (act === 'ics-single') {
-            const t = this.tasksMap[btn.dataset.id];
-            if (t && AlertEngine.downloadICS([t], `task-${t.id}.ics`)) this.toast('קובץ ליומן ירד — פתח אותו להתראה בטוחה! 📅', 'indigo');
-            return;
-          }
-          if (act === 'ics-all') {
-            if (AlertEngine.downloadICS(this.tasksList, 'ronen-adi-deadlines.ics')) this.toast('כל הדדליינים יוצאו ליומן (.ics)! 📅', 'emerald');
-            else this.toast('אין משימות פתוחות עם תאריך יעד', 'amber');
-            return;
-          }
+          if (act === 'ics-single') { const t = this.tasksMap[btn.dataset.id]; if (t && AlertEngine.downloadICS([t], `task-${t.id}.ics`)) this.toast('קובץ ליומן ירד — פתח אותו להתראה בטוחה! 📅', 'indigo'); return; }
+          if (act === 'ics-all') { if (AlertEngine.downloadICS(this.tasksList, 'ronen-adi-deadlines.ics')) this.toast('כל הדדליינים יוצאו ליומן (.ics)! 📅', 'emerald'); else this.toast('אין משימות פתוחות עם תאריך יעד', 'amber'); return; }
           if (act === 'wa-single') {
-            const t = this.tasksMap[btn.dataset.id];
-            if (!t) return;
+            const t = this.tasksMap[btn.dataset.id]; if (!t) return;
             const subs = (t.subtasks || []).map(s => `${s.done ? '✅' : '▫️'} ${s.title}`).join('\n');
-            const msg = `⚡ *${t.title}*\nאחראי: ${USERS[t.assignee].name}${t.dueDate ? '\n📅 דדליין: ' + formatShortHebDate(t.dueDate) : ''}${t.notes ? '\n📝 ' + t.notes : ''}${subs ? '\n\n*שלבים:*\n' + subs : ''}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-            return;
+            const msg = `⚡ *${t.title}*\nאחראי: ${USERS[t.assignee].name}${t.dueDate ? '\n📅 ' + formatShortHebDate(t.dueDate) + (t.dueTime ? ' ' + t.dueTime : '') : ''}${t.notes ? '\n📝 ' + t.notes : ''}${subs ? '\n\n*שלבים:*\n' + subs : ''}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank'); return;
           }
 
           // Wallet actions
-          if (act === 'wallet-method') { this.walletFilter.method = btn.dataset.val; this.renderMain(); return; }
-          if (act === 'wallet-period') { this.walletFilter.period = btn.dataset.val; this.renderMain(); return; }
-          if (act === 'open-edit-expense') {
-            const ex = this.expensesMap[btn.dataset.id];
-            if (!ex) return;
-            this.editingExpense = JSON.parse(JSON.stringify(ex));
-            this.sheet = 'edit-expense'; this.renderSheet(); return;
-          }
+          if (act === 'wallet-tab') { this.walletTab = btn.dataset.val; this.renderMain(); return; }
+          if (act === 'toggle-settled-history') { this.showSettledHistory = !this.showSettledHistory; this.renderMain(); return; }
+          if (act === 'open-edit-expense') { const ex = this.expensesMap[btn.dataset.id]; if (!ex) return; this.editingExpense = JSON.parse(JSON.stringify(ex)); this.sheet = 'edit-expense'; this.renderSheet(); return; }
           if (act === 'del-expense') { this.deleteExpense(btn.dataset.id); return; }
           if (act === 'wa-send-balance') { this.waShareMode = 'balance'; this.sheet = 'wa-share'; this.renderSheet(); return; }
 
-          // Hub & modal actions
+          // Tools & Modals actions
+          if (act === 'toggle-tools-audit') {
+            this.showToolsAudit = !this.showToolsAudit;
+            document.getElementById('tools-audit-list')?.classList.toggle('hidden', !this.showToolsAudit);
+            return;
+          }
           if (act === 'req-notif-perm') {
             if (!('Notification' in window)) { this.toast('הדפדפן לא תומך — השתמש ב-.ics או ntfy', 'amber'); return; }
             Notification.requestPermission().then(p => {
-              this.renderMain();
+              if (this.sheet === 'tools') this.renderSheet();
               if (p === 'granted') { new Notification('⚡ Pulse Duo מוכן!', { body: 'תקבל התראות כשדדליינים מתקרבים.' }); this.toast('התראות הופעלו! 🔔', 'emerald'); }
               else this.toast('התראות נחסמו — אפשר להשתמש ב-.ics או ntfy', 'amber');
-            });
-            return;
+            }); return;
           }
-          if (act === 'save-ntfy') {
-            this.settings.ntfyTopic = document.getElementById('hub-ntfy-topic')?.value.trim() || '';
-            this.saveLocal();
-            this.toast(this.settings.ntfyTopic ? 'ערוץ ntfy נשמר! 📱' : 'ערוץ ntfy נוקה', 'emerald');
-            return;
-          }
+          if (act === 'save-ntfy') { this.settings.ntfyTopic = document.getElementById('hub-ntfy-topic')?.value.trim() || ''; this.saveLocal(); this.toast(this.settings.ntfyTopic ? 'ערוץ ntfy נשמר! 📱' : 'ערוץ ntfy נוקה', 'emerald'); return; }
           if (act === 'test-ntfy') {
             const topic = document.getElementById('hub-ntfy-topic')?.value.trim() || this.settings.ntfyTopic;
             if (!topic) { this.toast('הזן קודם שם ערוץ סודי', 'amber'); return; }
-            AlertEngine.sendNtfyPush(topic, '⚡ בדיקת Push מ-Pulse Duo — עובד מעולה!').then(ok => this.toast(ok ? 'הודעת בדיקה נשלחה! 📱' : 'שגיאה בשליחה ל-ntfy', ok ? 'emerald' : 'rose'));
-            return;
+            AlertEngine.sendNtfyPush(topic, '⚡ בדיקת Push מ-Pulse Duo — עובד מעולה!').then(ok => this.toast(ok ? 'הודעת בדיקה נשלחה! 📱' : 'שגיאה בשליחה ל-ntfy', ok ? 'emerald' : 'rose')); return;
           }
           if (act === 'save-rates') {
-            const eur = parseFloat(document.getElementById('rate-eur')?.value);
-            const usd = parseFloat(document.getElementById('rate-usd')?.value);
+            const eur = parseFloat(document.getElementById('rate-eur')?.value), usd = parseFloat(document.getElementById('rate-usd')?.value);
             if (eur > 0) this.settings.rates.EUR = eur;
             if (usd > 0) this.settings.rates.USD = usd;
             this.saveLocal(); this.toast('שערי המטבע עודכנו! 💱', 'emerald'); return;
           }
           if (act === 'export-json') {
-            const blob = new Blob([JSON.stringify({ version: '4.1', exportedAt: new Date().toISOString(), tasks: this.tasksList, expenses: this.expensesList }, null, 2)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify({ version: '5.0', exportedAt: new Date().toISOString(), tasks: this.tasksList, expenses: this.expensesList }, null, 2)], { type: 'application/json' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `pulse-duo-backup-${todayISO(0)}.json`; a.click();
             this.toast('קובץ גיבוי ירד 💾', 'emerald'); return;
           }
@@ -3510,8 +3456,7 @@
             this.waDrafts = NLPEngine.parseWhatsApp(this.waRawInput, this.tasksList);
             if (!this.waDrafts.length) this.toast('לא זוהו שורות טקסט תקינות', 'amber');
             const wrap = document.getElementById('wa-drafts-wrap');
-            if (wrap) wrap.innerHTML = this.buildWaDraftsHTML();
-            return;
+            if (wrap) wrap.innerHTML = this.buildWaDraftsHTML(); return;
           }
           if (act === 'commit-wa') {
             let tc = 0, sc = 0, ec = 0;
@@ -3528,8 +3473,7 @@
             this.waShareMode = btn.dataset.mode;
             document.querySelectorAll('[data-act="wa-share-mode"]').forEach(b => b.className = `chip ${b.dataset.mode === this.waShareMode ? 'active-emerald' : ''}`);
             const box = document.getElementById('wa-share-box');
-            if (box) box.value = this.composeWaShareMsg();
-            return;
+            if (box) box.value = this.composeWaShareMsg(); return;
           }
           if (act === 'copy-wa-share') { this.copyText(document.getElementById('wa-share-box')?.value || ''); return; }
           if (act === 'send-wa-share') { window.open(`https://wa.me/?text=${encodeURIComponent(document.getElementById('wa-share-box')?.value || '')}`, '_blank'); return; }
@@ -3559,8 +3503,7 @@
       }
 
       toggleTaskDone(id) {
-        const t = this.tasksMap[id];
-        if (!t) return;
+        const t = this.tasksMap[id]; if (!t) return;
         const next = !t.done;
         this.saveTask({ ...t, done: next, completedBy: next ? this.user : null, completedAt: next ? new Date().toISOString() : null }, next ? 'סימן/ה כבוצע ✅' : 'פתח/ה מחדש');
         if (next) {
@@ -3576,14 +3519,11 @@
               }
             });
           }
-        } else {
-          FeedbackEngine.play('pop', this.settings.soundEnabled);
-        }
+        } else FeedbackEngine.play('pop', this.settings.soundEnabled);
       }
 
       snoozeTaskToTomorrow(id) {
-        const t = this.tasksMap[id];
-        if (!t || t.done) return;
+        const t = this.tasksMap[id]; if (!t || t.done) return;
         this.saveTask({ ...t, dueDate: todayISO(1) }, 'דחה/תה למחר');
         FeedbackEngine.play('pop', this.settings.soundEnabled);
         this.toast(`"${t.title}" נדחה למחר ⏰`, 'amber');
